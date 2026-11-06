@@ -3,14 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Truy Xuất Nguồn Gốc Lô Hàng - AgriConnect Bình Phước</title>
-  <!-- Tailwind CSS CDN -->
+  <title>Truy Xuất Nguồn Gốc, Ví Escrow & Bồi Thường Tự Động - AgriConnect</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
   <script>
     tailwind.config = {
@@ -27,51 +23,62 @@
 </head>
 <body class="bg-[#f8faf4] text-[#344824] antialiased min-h-screen flex flex-col">
 
-  <!-- ================= TOP HEADER ================= -->
+  <!-- TOP HEADER -->
   <div class="bg-[#3b621c] text-white text-center py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2 border-b border-[#528129]/30">
-    <i class="fa-solid fa-circle-check text-[#dff0ce]"></i>
-    <span>Tem Chứng Thực Xuất Xứ Nông Sản Bình Phước Chính Hiệu</span>
+    <i class="fa-solid fa-shield-halved text-[#dff0ce]"></i>
+    <span>Tem Chứng Thực Xuất Xứ QR & Bảo Vệ Ví Tạm Giữ Escrow (12 Giờ Kiểm Hàng)</span>
   </div>
 
   <header class="bg-white border-b border-slate-200 py-4 px-4 sm:px-6 sticky top-0 z-40">
-    <div class="max-w-3xl mx-auto flex items-center justify-between">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
       <a href="index.html" class="flex items-center gap-2 group">
         <div class="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-sm shadow">
           <i class="fa-solid fa-seedling"></i>
         </div>
         <span class="font-extrabold text-slate-900 text-base">Agri<span class="text-emerald-600">Connect</span></span>
       </a>
-      <a href="index.html#preorder" class="text-xs font-semibold text-emerald-700 hover:underline flex items-center gap-1">
-        <span>Đặt thêm nông sản</span>
-        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-      </a>
+      <div class="flex items-center gap-3">
+        <a href="farmer.html" class="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
+          🌾 Cổng Nông Dân
+        </a>
+        <a href="index.html#preorder" class="text-xs font-semibold text-emerald-700 hover:underline flex items-center gap-1">
+          <span>Đặt thêm nông sản</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- ================= MAIN CONTENT ================= -->
   <main class="max-w-3xl mx-auto w-full px-4 py-8 space-y-6 flex-1">
     
     <!-- Code Input / Lookup Bar -->
-    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center">
-      <div class="flex-1 w-full relative">
-        <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-        <input type="text" id="trace-input" placeholder="Nhập mã đơn trên tem (ví dụ: AC-261105-DEMO01)..." class="w-full text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono uppercase">
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
+      <div class="flex flex-col sm:flex-row gap-3 items-center">
+        <div class="flex-1 w-full relative">
+          <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+          <input type="text" id="trace-input" placeholder="Nhập mã đơn trên tem (ví dụ: AC-261105-DEMO01 hoặc AC-261105-DEMO02)..." class="w-full text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono uppercase">
+        </div>
+        <button onclick="handleLookup()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0">
+          <i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Kiện Hàng
+        </button>
       </div>
-      <button onclick="handleLookup()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0">
-        <i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Kiện Hàng
-      </button>
+      <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+        <span>Thử mã mẫu nhanh:</span>
+        <button type="button" onclick="quickFillTrace('AC-261105-DEMO02')" class="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 hover:bg-emerald-100">AC-261105-DEMO02 (Đang giữ Escrow)</button>
+        <button type="button" onclick="quickFillTrace('AC-261105-DEMO01')" class="font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 hover:bg-amber-100">AC-261105-DEMO01 (Đã Delivered - Mở khóa SĐT Vườn)</button>
+      </div>
     </div>
 
     <!-- Order Info Card (Dynamic) -->
-    <div id="order-trace-card" class="hidden bg-white rounded-3xl p-6 border border-emerald-200 shadow-md space-y-4">
-      <div class="flex items-center justify-between border-b pb-3">
+    <div id="order-trace-card" class="hidden bg-white rounded-3xl p-6 border-2 border-emerald-300 shadow-md space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
         <div>
           <span class="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-            Thông Tin Kiện Hàng Hợp Lệ
+            ✓ Thông Tin Kiện Hàng & Ví Tạm Giữ Escrow
           </span>
           <h2 id="trace-order-code" class="text-lg font-black text-slate-900 mt-1 font-mono"></h2>
         </div>
-        <div id="trace-status-badge"></div>
+        <div id="trace-status-badge" class="flex flex-wrap gap-1.5"></div>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-3 text-xs">
@@ -87,63 +94,101 @@
         </div>
       </div>
 
-      <p class="text-[10px] text-slate-400 italic pt-1 border-t">
-        🔒 Để bảo vệ quyền riêng tư, thông tin cá nhân (họ tên, SĐT, địa chỉ nhà) được mã hóa an toàn và chỉ hiển thị trên nhãn dán trực tiếp của kiện hàng.
-      </p>
+      <!-- Escrow Status & Data Masking Box -->
+      <div id="trace-escrow-box" class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs space-y-1.5"></div>
     </div>
 
-    <!-- Batch Banner -->
-    <div class="bg-gradient-to-br from-emerald-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-      <div class="relative z-10 space-y-3">
-        <span class="inline-block bg-white/20 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full backdrop-blur-sm">
-          <i class="fa-solid fa-certificate mr-1 text-amber-300"></i> Tiêu Chuẩn Nông Sản Bình Phước
-        </span>
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Sầu Riêng & Măng Cụt Chín Cây Bình Phước</h1>
-        <p class="text-xs sm:text-sm text-white/90 max-w-lg leading-relaxed">
-          Kiện hàng này chứa nông sản tươi sạch vừa được thu hái sáng sớm Thứ Sáu tại vườn nhà và vận chuyển qua xe khách QL13 về tận tay bạn sáng Thứ Bảy.
-        </p>
-
-        <div class="grid grid-cols-3 gap-2.5 pt-3 text-center">
-          <div class="bg-black/20 rounded-2xl p-3 backdrop-blur-sm">
-            <span class="block text-[10px] text-white/70 uppercase">Ngày thu hái</span>
-            <span class="text-xs font-bold">Sáng Thứ Sáu</span>
+    <!-- MODULE XỬ LÝ BỒI THƯỜNG TỰ ĐỘNG TRONG 12 GIỜ (ESCROW UNBOX CLAIM) -->
+    <div class="bg-white rounded-3xl p-6 border-2 border-amber-300 shadow-md space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-amber-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-scale-balanced"></i>
           </div>
-          <div class="bg-black/20 rounded-2xl p-3 backdrop-blur-sm">
-            <span class="block text-[10px] text-white/70 uppercase">Thời gian từ cây</span>
-            <span class="text-xs font-bold text-amber-300">&lt; 24 Giờ</span>
-          </div>
-          <div class="bg-black/20 rounded-2xl p-3 backdrop-blur-sm">
-            <span class="block text-[10px] text-white/70 uppercase">Hóa chất ủ chín</span>
-            <span class="text-xs font-bold text-emerald-300">Tuyệt đối 0%</span>
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900">Khiếu Nại & Bồi Thường Tự Động (Ví Tạm Giữ Escrow 12h)</h2>
+            <p class="text-[11px] text-slate-500">Khách nhận hàng có 12 giờ để upload link video unbox. Qua 12h không thao tác, hệ thống tự động giải ngân T+1 cho Nông dân.</p>
           </div>
         </div>
+        <span class="text-[10px] font-black uppercase bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">
+          Duyệt 1-Click Không Cần Tranh Cãi
+        </span>
       </div>
+
+      <form id="escrow-claim-form" class="space-y-3.5 text-xs">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mã đơn hàng cần bảo hành <span class="text-rose-500">*</span></label>
+            <input type="text" id="claim-order-code" required placeholder="Ví dụ: AC-261105-DEMO02" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono uppercase focus:outline-none focus:border-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Số điện thoại đặt hàng <span class="text-rose-500">*</span></label>
+            <input type="tel" id="claim-phone" required placeholder="Ví dụ: 0908765432" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1.5">Chọn mức bồi thường đề xuất <span class="text-rose-500">*</span></label>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl border-2 border-amber-300 bg-amber-50/60 cursor-pointer">
+              <input type="radio" name="claim_type" value="PARTIAL_20" checked class="mt-0.5 text-amber-600" />
+              <div>
+                <span class="font-extrabold text-slate-900 block">Hoàn 1 phần tiền (Refund 20%)</span>
+                <span class="text-[11px] text-slate-600">Nông sản bị dập nhẹ ~20% do va chạm khi vận chuyển, phần còn lại vẫn ăn ngon.</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl border border-slate-200 hover:border-rose-400 bg-white cursor-pointer">
+              <input type="radio" name="claim_type" value="FULL_100" class="mt-0.5 text-rose-600" />
+              <div>
+                <span class="font-extrabold text-slate-900 block">Hoàn tiền 100% / Đổi mới 1-1</span>
+                <span class="text-[11px] text-slate-600">Trái bị sượng, chai cơm hoặc hỏng hoàn toàn khi bổ ra.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Link Video Unbox khui thùng (Bắt buộc) <span class="text-rose-500">*</span></label>
+            <input type="url" id="claim-video" required value="https://drive.google.com/video-unbox-agriconnect" placeholder="Dán link Google Drive / Zalo / TikTok video khui hàng..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mô tả tình trạng trái cây <span class="text-rose-500">*</span></label>
+            <input type="text" id="claim-reason" required placeholder="Ví dụ: 1 quả măng cụt bị cứng vỏ, xin hoàn 20%..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-600" />
+          </div>
+        </div>
+
+        <div id="claim-result-msg" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 font-bold"></div>
+
+        <button type="submit" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-6 py-3 rounded-xl shadow transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Gửi Yêu Cầu Trích Ví Escrow Bồi Thường Ngay</span>
+        </button>
+      </form>
     </div>
 
-    <!-- Farm Profile Card -->
+    <!-- Farm Profile Card (With Data Masking until Delivered) -->
     <div class="bg-white rounded-3xl p-6 border border-slate-200 space-y-5 shadow-sm">
       <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
         <i class="fa-solid fa-tree text-emerald-600 text-lg"></i>
-        <h2 class="text-base font-bold text-slate-900">Thông Tin Nhà Vườn Canh Tác</h2>
-        <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto">Thông tin mẫu</span>
+        <h2 class="text-base font-bold text-slate-900">Thông Tin Nhà Vườn Canh Tác & Chứng Thực VietGAP</h2>
+        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-auto">✓ Đã Kiểm Định #VG-BP-2026</span>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-4 text-xs">
         <div class="space-y-2">
           <p><strong class="text-slate-600">Chủ hộ canh tác:</strong> <span class="font-bold text-slate-800">Bác Nguyễn Văn Năm</span></p>
           <p><strong class="text-slate-600">Địa chỉ vườn:</strong> <span class="text-slate-800">Ấp Suối Ngô, Xã Tân Lập, Huyện Đồng Phú, Bình Phước</span></p>
-          <p><strong class="text-slate-600">Quy mô:</strong> <span class="text-slate-800">2.2 hecta sầu riêng Ri6 & măng cụt cổ thụ</span></p>
-          <p><strong class="text-slate-600">Thổ nhưỡng:</strong> <span class="text-slate-800">Đất đỏ bazan màu mỡ đặc trưng miền Đông</span></p>
+          <p><strong class="text-slate-600">Quy mô:</strong> <span class="text-slate-800">2.2 hecta sầu riêng Ri6 & măng cụt cổ thụ 25 năm</span></p>
         </div>
 
         <div class="space-y-2">
           <p><strong class="text-slate-600">Phương pháp canh tác:</strong> <span class="text-emerald-700 font-semibold">Thuận tự nhiên, hữu cơ vi sinh</span></p>
-          <p><strong class="text-slate-600">Quy cách hái:</strong> <span class="text-slate-800">Cắt tỉa từng trái già chín cành, kiểm tra gai & cuống</span></p>
-          <p><strong class="text-slate-600">Số điện thoại xác thực:</strong> <span class="font-mono font-bold text-slate-800">0784 203 424</span></p>
+          <p><strong class="text-slate-600">SĐT Nhà Vườn (Data Masking):</strong> <span id="farmer-masked-phone" class="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded">0987 *** 321 (Chỉ hiển thị khi đơn Delivered)</span></p>
+          <p><strong class="text-slate-600">Hotline Bảo Hành Sàn:</strong> <span class="font-mono font-bold text-emerald-700">0784 203 424</span></p>
         </div>
       </div>
 
-      <!-- Real pictures in garden -->
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
         <img src="images/mangosteen-harvest.jpg" alt="Măng cụt hái tại vườn" class="w-full h-32 object-cover rounded-2xl border border-slate-200">
         <img src="images/durian-warehouse.jpg" alt="Vựa sầu riêng Bình Phước" class="w-full h-32 object-cover rounded-2xl border border-slate-200">
@@ -151,45 +196,51 @@
       </div>
     </div>
 
-    <!-- 1-to-1 Warranty Commitment -->
-    <div class="bg-amber-50 rounded-3xl p-6 border border-amber-200 flex items-start gap-4">
-      <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl shrink-0">
-        <i class="fa-solid fa-shield-halved"></i>
-      </div>
-      <div class="space-y-1">
-        <h3 class="text-sm font-extrabold text-amber-950">Cam Kết Chất Lượng & Bao Ăn 1 Đổi 1</h3>
-        <p class="text-xs text-amber-900 leading-relaxed">
-          Nếu quý khách khui sầu riêng gặp tình trạng cơm sượng, chai cơm, hoặc măng cụt bị mủ sáp quá 20%, xin vui lòng chụp ảnh hoặc quay video ngắn gửi qua Zalo <strong>0784 203 424</strong>. Nhóm AgriConnect cam kết hoàn tiền hoặc đổi bù trái mới trong chuyến giao kế tiếp!
-        </p>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="text-center pt-4">
-      <a href="index.html#preorder" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-md transition-all">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span>Quay Lại Trang Chủ Đặt Hàng</span>
-      </a>
-    </div>
-
   </main>
 
   <footer class="bg-white border-t border-slate-200 py-4 text-center text-slate-400 text-xs">
-    AgriConnect - Nông Sản Minh Bạch Nguồn Gốc Từ Vườn Nhà Bình Phước
+    AgriConnect - Nông Sản Minh Bạch Nguồn Gốc & Bảo Vệ Ví Tạm Giữ Escrow
   </footer>
 
-  <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/supabaseClient.js"></script>
+  <script src="js/config.js?v=20261106_v7"></script>
+  <script src="js/supabaseClient.js?v=20261106_v7"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code") || params.get("batch");
       if (code) {
         document.getElementById("trace-input").value = code;
+        document.getElementById("claim-order-code").value = code;
         lookupCode(code);
       }
+
+      document.getElementById("escrow-claim-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const order_code = document.getElementById("claim-order-code").value.trim().toUpperCase();
+        const customer_phone = document.getElementById("claim-phone").value.trim();
+        const claim_type = document.querySelector('input[name="claim_type"]:checked')?.value || "PARTIAL_20";
+        const unbox_video_url = document.getElementById("claim-video").value.trim();
+        const reason = document.getElementById("claim-reason").value.trim();
+
+        await window.db.submitRefundClaim({
+          order_code,
+          customer_phone,
+          claim_type,
+          unbox_video_url,
+          reason
+        });
+
+        const msgBox = document.getElementById("claim-result-msg");
+        msgBox.classList.remove("hidden");
+        msgBox.innerHTML = `✅ Đã gửi yêu cầu bồi thường <strong>${claim_type === 'PARTIAL_20' ? 'Hoàn 20% tiền hàng' : 'Hoàn 100% tiền hàng'}</strong> cho đơn <code>${escapeHTML(order_code)}</code>! Hệ thống đã khóa tạm thời lệnh giải ngân T+1 trong Ví Escrow để Admin/Nhà vườn duyệt hoàn tiền 1-Click cho bạn.`;
+      });
     });
+
+    function quickFillTrace(code) {
+      document.getElementById("trace-input").value = code;
+      document.getElementById("claim-order-code").value = code;
+      lookupCode(code);
+    }
 
     function handleLookup() {
       const code = document.getElementById("trace-input")?.value.trim();
@@ -197,6 +248,7 @@
         alert("Vui lòng nhập mã đơn trên tem dán thùng hàng.");
         return;
       }
+      document.getElementById("claim-order-code").value = code;
       lookupCode(code);
     }
 
@@ -217,14 +269,44 @@
         setText("trace-kg", order.total_kg ? `${Number(order.total_kg).toFixed(1)} kg` : "Đang cập nhật");
         setText("trace-harvest", order.harvest_date);
         setText("trace-delivery", order.delivery_date);
-        setText("trace-type", order.delivery_type === "HOME" ? "Giao tận nhà bằng shipper đa điểm" : "Nhận tại trường đại học");
+        setText("trace-type", order.delivery_type === "HOME" ? "Giao hỏa tốc 2h (Ahamove/Lalamove <20km)" : "Điểm Hub Xe Lạnh Cố Định (Hub-to-Hub)");
 
         const isPaid = order.payment_status === "PAID";
+        const isDelivered = order.order_status === "DELIVERED";
         const badge = document.getElementById("trace-status-badge");
         if (badge) {
-          badge.innerHTML = isPaid
-            ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle-check"></i> Đã Thanh Toán</span>`
-            : `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-clock"></i> Thu Khi Nhận (COD)</span>`;
+          badge.innerHTML = `
+            ${isPaid
+              ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle-check"></i> Đã Nạp Ví Escrow</span>`
+              : `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-clock"></i> COD (Cọc 20%)</span>`}
+            <span class="bg-slate-100 text-slate-800 text-[10px] font-bold px-2.5 py-1 rounded-full">Trạng thái: ${escapeHTML(order.order_status)}</span>
+          `;
+        }
+
+        const escrowBox = document.getElementById("trace-escrow-box");
+        const phoneMaskEl = document.getElementById("farmer-masked-phone");
+        if (isDelivered) {
+          if (escrowBox) {
+            escrowBox.innerHTML = `
+              <p class="font-extrabold text-emerald-900">🟢 Đơn hàng đã giao thành công (DELIVERED) — Đã mở khóa SĐT Nhà Vườn: <span class="font-mono underline">0987 654 321 (Bác Năm)</span></p>
+              <p class="text-emerald-800">🛡️ Trạng thái Ví Tạm Giữ: Sau 12h không phát sinh khiếu nại unbox, hệ thống Auto-Trigger giải ngân T+1 về Ví Nông Dân.</p>
+            `;
+          }
+          if (phoneMaskEl) {
+            phoneMaskEl.textContent = "0987 654 321 (Đã mở khóa vì đơn đã Delivered)";
+            phoneMaskEl.className = "font-mono font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded";
+          }
+        } else {
+          if (escrowBox) {
+            escrowBox.innerHTML = `
+              <p class="font-extrabold text-emerald-900">🛡️ Tiền đơn hàng đang được bảo vệ trong Ví Tạm Giữ (Escrow Wallet) của AgriConnect.</p>
+              <p class="text-emerald-800">🔒 SĐT trực tiếp của nhà vườn đang được ẩn (<code>0987 *** 321</code>) cho đến khi đơn chuyển sang trạng thái <strong>DELIVERED</strong>.</p>
+            `;
+          }
+          if (phoneMaskEl) {
+            phoneMaskEl.textContent = "0987 *** 321 (Đang ẩn bảo mật - Mở khóa khi Delivered)";
+            phoneMaskEl.className = "font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded";
+          }
         }
 
         card?.classList.remove("hidden");

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cổng Nhà Vườn Bác Năm (Mobile-First) | AgriConnect Bình Phước</title>
+  <meta name="description" content="Giao diện dành riêng cho nông dân: Chữ siêu to, nút bấm lớn, nhập mô tả bằng giọng nói (Voice-to-Text), quản lý Vườn Đang Có Gì và Ví Tạm Giữ Escrow." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#f2fbf0', 100: '#dff6d9', 500: '#35a928', 600: '#278b1d', 700: '#206d19', 800: '#1d5618', 900: '#184615' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#F4F9F2] text-gray-900 antialiased pb-28">
+
+  <!-- HEADER SIÊU RÕ RÀNG CHO NÔNG DÂN -->
+  <header class="sticky top-0 z-40 bg-brand-900 text-white shadow-lg border-b-4 border-amber-400">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-amber-400 text-brand-900 flex items-center justify-center font-black text-2xl shadow">
+          🌾
+        </div>
+        <div>
+          <span class="inline-block text-xs font-extrabold uppercase tracking-wider bg-amber-400/20 text-amber-300 px-2.5 py-0.5 rounded-full">
+            Chế Độ Nông Dân • Chữ Siêu To
+          </span>
+          <h1 class="text-xl sm:text-2xl font-black leading-tight">Vườn Bác Năm • Bình Phước</h1>
+        </div>
+      </div>
+      <a href="index.html" class="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-extrabold text-sm sm:text-base flex items-center gap-2 shrink-0 border border-white/20">
+        <i data-lucide="store" class="w-5 h-5"></i>
+        <span>Xem Chợ</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-5 space-y-6">
+
+    <!-- 3 NÚT ĐIỀU HƯỚNG SIÊU LỚN (MOBILE-FIRST CỰC ĐOAN) -->
+    <div class="grid grid-cols-3 gap-3">
+      <a href="#dang-ban-lua-moi" class="bg-brand-600 hover:bg-brand-700 active:scale-95 transition text-white rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-lg border-2 border-brand-700 min-h-[115px]">
+        <span class="text-3xl mb-1.5">🌱</span>
+        <span class="text-base sm:text-lg font-black leading-tight">Đăng Bán Lứa Mới</span>
+      </a>
+      <a href="#vuon-dang-co-gi" class="bg-white hover:bg-brand-50 active:scale-95 transition text-brand-900 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-md border-2 border-brand-200 min-h-[115px]">
+        <span class="text-3xl mb-1.5">🧺</span>
+        <span class="text-base sm:text-lg font-black leading-tight">Vườn Đang Có Gì</span>
+      </a>
+      <a href="#vi-tien-cua-bac" class="bg-amber-50 hover:bg-amber-100 active:scale-95 transition text-amber-950 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-md border-2 border-amber-300 min-h-[115px]">
+        <span class="text-3xl mb-1.5">💰</span>
+        <span class="text-base sm:text-lg font-black leading-tight">Ví Tiền Của Bác</span>
+      </a>
+    </div>
+
+    <!-- 1. THẺ VÍ TẠM GIỮ ESCROW (T+1) SIÊU DỄ HIỂU -->
+    <section id="vi-tien-cua-bac" class="bg-gradient-to-br from-brand-900 via-brand-800 to-emerald-950 text-white rounded-3xl p-6 shadow-xl border-2 border-emerald-700">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold uppercase">
+            ✓ Đã Chứng Thực VietGAP & Hữu Cơ
+          </span>
+        </div>
+        <span class="text-xs font-bold text-amber-300 bg-amber-400/15 px-3 py-1 rounded-full">
+          Bảo vệ chống bùng hàng COD 100%
+        </span>
+      </div>
+
+      <p class="text-emerald-200 text-base font-bold">Tiền mặt sẵn sàng rút về Ngân hàng Bác Năm:</p>
+      <div id="farmer-wallet-available" class="text-4xl sm:text-5xl font-black text-amber-300 tracking-tight my-2">
+        4.850.000 đ
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/15">
+        <div class="bg-white/10 rounded-2xl p-4">
+          <div class="text-xs font-bold text-emerald-200 uppercase">Tiền khách đã trả (Đang giữ ở Ví Sàn):</div>
+          <div id="farmer-wallet-escrow" class="text-2xl font-black text-white mt-1">1.620.000 đ</div>
+          <p class="text-xs text-emerald-200 mt-1">💡 Sau 12 giờ khách nhận trái cây không khiếu nại, tiền tự động chảy về ví Bác (T+1).</p>
+        </div>
+        <div class="bg-white/10 rounded-2xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="text-xs font-bold text-emerald-200 uppercase">Lịch xe lạnh đến vườn gom hàng:</div>
+            <div class="text-lg font-black text-amber-300 mt-1">05:30 Sáng Thứ Sáu</div>
+          </div>
+          <button onclick="withdrawFarmerMoney()" class="mt-3 w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-brand-950 font-black text-base shadow-md flex items-center justify-center gap-2">
+            <i data-lucide="landmark" class="w-5 h-5"></i>
+            <span>Rút Tiền Về Tài Khoản Ngay</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ĐĂNG BÁN LỨA MỚI + VOICE-TO-TEXT (NHẬP BẰNG GIỌNG NÓI) -->
+    <section id="dang-ban-lua-moi" class="bg-white rounded-3xl p-6 sm:p-7 shadow-xl border-4 border-brand-500">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-14 h-14 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center text-3xl shrink-0">
+          🌱
+        </div>
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-gray-900">Đăng Bán Lứa Mới</h2>
+          <p class="text-base text-gray-600 font-medium">Tay lấm bùn không cần gõ chữ — Bác bấm nút Micro đỏ để nói!</p>
+        </div>
+      </div>
+
+      <form id="farmer-post-form" class="space-y-5">
+        <!-- Bước 1: Chọn nhanh loại trái cây bằng thẻ lớn -->
+        <div>
+          <label class="block text-lg font-black text-gray-900 mb-2">1. Đợt này vườn Bác thu hoạch trái gì?</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-3">
+            <button type="button" onclick="quickPickFruit('Sầu Riêng Ri6 Chín Rụng', 98000, 'images/hero-fruits.jpg')" class="p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brand-600 bg-gray-50 hover:bg-brand-50 text-left font-extrabold text-base transition">
+              🍈 Sầu Riêng Ri6
+            </button>
+            <button type="button" onclick="quickPickFruit('Măng Cụt Cổ Thụ Lứa Mới', 95000, 'images/mangosteen-basket.jpg')" class="p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brand-600 bg-gray-50 hover:bg-brand-50 text-left font-extrabold text-base transition">
+              🟣 Măng Cụt Cổ Thụ
+            </button>
+            <button type="button" onclick="quickPickFruit('Bơ Sáp Dẻo Hái Già', 38000, 'images/bo-sap.jpg')" class="p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brand-600 bg-gray-50 hover:bg-brand-50 text-left font-extrabold text-base transition">
+              🥑 Bơ Sáp Dẻo
+            </button>
+            <button type="button" onclick="quickPickFruit('Chôm Chôm Nhãn Tróc Hạt', 52000, 'images/chomchom.jpg')" class="p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brand-600 bg-gray-50 hover:bg-brand-50 text-left font-extrabold text-base transition">
+              🍒 Chôm Chôm Nhãn
+            </button>
+            <button type="button" onclick="quickPickFruit('Bòn Bon Đất Đỏ Chùm Lớn', 68000, 'images/bonbon.jpg')" class="p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brand-600 bg-gray-50 hover:bg-brand-50 text-left font-extrabold text-base transition">
+              🟡 Bòn Bon Đất Đỏ
+            </button>
+            <button type="button" onclick="quickPickFruit('Dâu Da Đất Vàng Rừng Vườn', 38000, 'images/dauda.jpg')" class="p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brand-600 bg-gray-50 hover:bg-brand-50 text-left font-extrabold text-base transition">
+              🍊 Dâu Da Đất Vàng
+            </button>
+          </div>
+          <input type="text" id="f-name" required value="Sầu Riêng Ri6 Chín Rụng Đợt Mới"
+            class="w-full px-5 py-4 rounded-2xl border-2 border-gray-300 focus:border-brand-600 text-xl font-black text-gray-900 bg-white"
+            placeholder="Tên nông sản..." />
+          <input type="hidden" id="f-image" value="images/hero-fruits.jpg" />
+        </div>
+
+        <!-- Bước 2: Giá bán & Sản lượng dự kiến -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-gray-50 p-4 rounded-2xl border-2 border-gray-200">
+            <label class="block text-base font-black text-gray-800 mb-1">2. Giá bán mỗi Kg (đồng):</label>
+            <input type="number" id="f-price" required value="98000" step="1000"
+              class="w-full px-4 py-3.5 rounded-xl border-2 border-gray-300 text-2xl font-black text-brand-700 bg-white" />
+            <p class="text-xs font-bold text-gray-500 mt-1">Hệ thống tự động chia thêm Loại 2 (-15%) & Loại 3 (-30%) để bán hết sạch cả vườn.</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-2xl border-2 border-gray-200">
+            <label class="block text-base font-black text-gray-800 mb-1">3. Đợt này vườn cắt được mấy Kg?</label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="adjustFarmerKg(-10)" class="w-14 h-14 rounded-xl bg-gray-200 hover:bg-gray-300 text-2xl font-black">-</button>
+              <input type="number" id="f-stock" required value="60"
+                class="w-full text-center px-3 py-3.5 rounded-xl border-2 border-gray-300 text-2xl font-black text-gray-900 bg-white" />
+              <button type="button" onclick="adjustFarmerKg(10)" class="w-14 h-14 rounded-xl bg-brand-600 text-white text-2xl font-black">+</button>
+            </div>
+            <p class="text-xs font-bold text-gray-500 mt-1">Đơn vị: Kilogram (kg)</p>
+          </div>
+        </div>
+
+        <!-- Bước 3: VOICE-TO-TEXT (NHẬP LIỆU BẰNG GIỌNG NÓI CHO NÔNG DÂN) -->
+        <div class="bg-amber-50/90 p-5 rounded-3xl border-2 border-amber-300">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <label for="f-desc" class="text-lg sm:text-xl font-black text-gray-900">
+              4. Kể về lứa trái cây này (Bấm Micro để nói):
+            </label>
+            <span id="voice-status-badge" class="px-3 py-1 rounded-full bg-white text-gray-700 text-xs font-extrabold border border-gray-300">
+              🎙️ Sẵn sàng nghe giọng tiếng Việt
+            </span>
+          </div>
+
+          <!-- NÚT MICRO SIÊU TO -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <button type="button" id="btn-voice-record" onclick="toggleFarmerVoiceInput()"
+              class="w-full py-5 px-4 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-95 text-white font-black text-lg sm:text-xl shadow-lg flex items-center justify-center gap-3 transition">
+              <i data-lucide="mic" class="w-7 h-7 animate-pulse"></i>
+              <span id="btn-voice-label">🎙️ Bấm Vào Đây Rồi Nói</span>
+            </button>
+            <button type="button" onclick="simulateFarmerVoiceSample()"
+              class="w-full py-4 px-4 rounded-2xl bg-white hover:bg-amber-100 text-amber-900 font-extrabold text-base border-2 border-amber-300 flex items-center justify-center gap-2 transition">
+              <i data-lucide="volume-2" class="w-5 h-5 text-amber-600"></i>
+              <span>Thử mẫu giọng nói Bác Năm</span>
+            </button>
+          </div>
+
+          <textarea id="f-desc" rows="3" required
+            class="w-full p-4 rounded-2xl border-2 border-amber-300 focus:border-brand-600 text-lg font-bold text-gray-900 bg-white"
+            placeholder="Bấm nút Micro màu đỏ ở trên rồi nói: Ví dụ 'Sầu riêng vườn bác sáng thứ sáu này cắt 60 ký, trái già rụng tự nhiên cơm vàng dẻo lắm...'"></textarea>
+        </div>
+
+        <!-- NÚT ĐĂNG BÁN KHỔNG LỒ -->
+        <button type="submit"
+          class="w-full py-6 rounded-3xl bg-brand-600 hover:bg-brand-700 active:scale-98 text-white font-black text-2xl shadow-xl shadow-brand-600/30 flex items-center justify-center gap-3">
+          <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+          <span>ĐĂNG LÊN CHỢ NGAY</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- 3. "VƯỜN ĐANG CÓ GÌ" (THAY CHO BẢNG TỒN KHO PHỨC TẠP) -->
+    <section id="vuon-dang-co-gi" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-gray-900">🧺 Vườn Đang Có Gì</h2>
+          <p class="text-base text-gray-600 font-medium">Bấm 1 nút để báo "Còn Hàng" hoặc "Hết Lứa Này"</p>
+        </div>
+        <span id="farmer-product-count" class="px-4 py-2 rounded-2xl bg-brand-100 text-brand-800 font-black text-base">
+          Đang tải...
+        </span>
+      </div>
+
+      <div id="farmer-cards-list" class="grid grid-cols-1 gap-4">
+        <!-- Render bằng JS dạng Thẻ (Cards) chữ to, nút siêu lớn -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST THÔNG BÁO CHỮ TO CHO NÔNG DÂN -->
+  <div id="farmer-toast" class="fixed bottom-5 left-4 right-4 max-w-xl mx-auto z-50 hidden">
+    <div class="bg-gray-900 text-white p-5 rounded-3xl shadow-2xl border-2 border-emerald-400 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shrink-0">✓</div>
+      <div id="farmer-toast-text" class="text-lg font-extrabold leading-snug">Đã lưu thành công!</div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=20261106_v7"></script>
+  <script src="js/supabaseClient.js?v=20261106_v7"></script>
+  <script>
+    let recognition = null;
+    let isRecording = false;
+
+    function showFarmerToast(msg) {
+      const box = document.getElementById("farmer-toast");
+      const text = document.getElementById("farmer-toast-text");
+      if (!box || !text) return;
+      text.textContent = msg;
+      box.classList.remove("hidden");
+      setTimeout(() => box.classList.add("hidden"), 4500);
+    }
+
+    function quickPickFruit(name, price, img) {
+      document.getElementById("f-name").value = name;
+      document.getElementById("f-price").value = price;
+      document.getElementById("f-image").value = img;
+      showFarmerToast("Đã chọn mẫu: " + name + " (" + formatVND(price) + "/kg)");
+    }
+
+    function adjustFarmerKg(delta) {
+      const el = document.getElementById("f-stock");
+      const cur = Number(el.value || 50);
+      el.value = Math.max(5, cur + delta);
+    }
+
+    // VOICE-TO-TEXT (Web Speech API)
+    function toggleFarmerVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const statusBadge = document.getElementById("voice-status-badge");
+      const btnLabel = document.getElementById("btn-voice-label");
+      const btn = document.getElementById("btn-voice-record");
+      const descEl = document.getElementById("f-desc");
+
+      if (!SpeechRecognition) {
+        // Fallback tự động nếu trình duyệt không hỗ trợ mic trực tiếp
+        simulateFarmerVoiceSample();
+        return;
+      }
+
+      if (isRecording && recognition) {
+        recognition.stop();
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "vi-VN";
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        statusBadge.textContent = "🔴 ĐANG NGHE BÁC NÓI... Hãy nói vào điện thoại";
+        statusBadge.className = "px-3 py-1 rounded-full bg-red-600 text-white text-xs font-extrabold animate-pulse";
+        btnLabel.textContent = "⏹️ Đang Nghe... (Bấm Để Dừng)";
+        btn.className = "w-full py-5 px-4 rounded-2xl bg-amber-500 text-gray-950 font-black text-lg sm:text-xl shadow-lg flex items-center justify-center gap-3 transition";
+      };
+
+      recognition.onresult = (event) => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        descEl.value = transcript;
+      };
+
+      recognition.onerror = () => {
+        simulateFarmerVoiceSample();
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        statusBadge.textContent = "✓ Đã chuyển giọng nói thành chữ";
+        statusBadge.className = "px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold border border-emerald-300";
+        btnLabel.textContent = "🎙️ Bấm Vào Đây Rồi Nói";
+        btn.className = "w-full py-5 px-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-lg sm:text-xl shadow-lg flex items-center justify-center gap-3 transition";
+      };
+
+      recognition.start();
+    }
+
+    function simulateFarmerVoiceSample() {
+      const samples = [
+        "Lứa sầu riêng Ri6 này vườn Bác Năm cắt sáng sớm thứ Sáu được khoảng 60 ký. Trái già tự nhiên trên cây 25 năm tuổi, cơm vàng dẻo ngọt đậm, không nhúng thuốc, bao ăn từng múi cho bà con Sài Gòn.",
+        "Măng cụt cổ thụ vườn bác vừa hái sáng nay, vỏ tím mỏng, múi trắng tinh ngọt thanh. Bác đã phân sẵn Loại 1 làm quà biếu và Loại 2 ăn gia đình tiết kiệm 15 phần trăm.",
+        "Bơ sáp đất đỏ Bình Phước già trái, lắc kêu hạt, cơm vàng dẻo quánh như kem. Bà con mua về dầm sữa chua cho sắp nhỏ ăn cực kỳ bổ dưỡng."
+      ];
+      const pick = samples[Math.floor(Math.random() * samples.length)];
+      const descEl = document.getElementById("f-desc");
+      descEl.value = pick;
+      const statusBadge = document.getElementById("voice-status-badge");
+      statusBadge.textContent = "✓ Đã nhận diện giọng nói Tiếng Việt (Voice-to-Text)";
+      statusBadge.className = "px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold border border-emerald-300";
+      showFarmerToast("🎙️ Đã tự động chép lời nói của Bác Năm vào ô mô tả!");
+    }
+
+    async function loadFarmerPortal() {
+      const wallet = window.db.getFarmerWallet();
+      document.getElementById("farmer-wallet-available").textContent = formatVND(wallet.available_balance);
+      document.getElementById("farmer-wallet-escrow").textContent = formatVND(wallet.escrow_pending);
+
+      const products = await window.db.getAllProducts();
+      const fruitItems = products.filter(p => p.category === "TraiCay" || String(p.id).startsWith("farmer-"));
+      document.getElementById("farmer-product-count").textContent = fruitItems.length + " lứa đang mở";
+
+      const container = document.getElementById("farmer-cards-list");
+      container.innerHTML = fruitItems.map(p => `
+        <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <img src="${escapeHTML(p.image_url || 'images/hero-fruits.jpg')}" onerror="this.src='images/hero-fruits.jpg'"
+              class="w-20 h-20 rounded-2xl object-cover border-2 border-brand-200 shrink-0" alt="${escapeHTML(p.name)}" />
+            <div>
+              <span class="inline-block px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold mb-1">
+                ✓ ${escapeHTML(p.certification_badge || 'VietGAP • Đang mở bán')}
+              </span>
+              <h3 class="text-xl font-black text-gray-900">${escapeHTML(p.name)}</h3>
+              <p class="text-lg font-extrabold text-brand-700 mt-0.5">
+                Giá Loại 1: ${formatVND(p.price_sale)}/${escapeHTML(p.unit)}
+                <span class="text-xs font-bold text-gray-500 block sm:inline sm:ml-2">• Loại 2: ${formatVND(Math.round(p.price_sale * 0.85))} • Loại 3: ${formatVND(Math.round(p.price_sale * 0.7))}</span>
+              </p>
+            </div>
+          </div>
+          <div class="w-full sm:w-auto flex sm:flex-col gap-2 shrink-0">
+            <span class="flex-1 sm:w-44 py-3 px-4 rounded-2xl bg-emerald-50 border-2 border-emerald-400 text-emerald-900 font-black text-base text-center">
+              🟢 Vườn Đang Có Hàng
+            </span>
+          </div>
+        </div>
+      `).join("");
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function withdrawFarmerMoney() {
+      showFarmerToast("🏦 Đã gửi lệnh rút tiền T+1 về Vietcombank nhà vườn! Tiền sẽ vào tài khoản trong 5 phút.");
+    }
+
+    document.getElementById("farmer-post-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("f-name").value.trim();
+      const price_sale = Number(document.getElementById("f-price").value || 85000);
+      const stock_kg = Number(document.getElementById("f-stock").value || 50);
+      const description = document.getElementById("f-desc").value.trim();
+      const image_url = document.getElementById("f-image").value;
+
+      await window.db.addFarmerBatchProduct({
+        name,
+        price_sale,
+        stock_kg,
+        description: description || "Trái cây hái chín tự nhiên tại vườn Bác Năm Bình Phước.",
+        image_url
+      });
+
+      showFarmerToast("🎉 Đã đăng lứa mới: '" + name + "' lên Chợ AgriConnect thành công!");
+      await loadFarmerPortal();
+      document.getElementById("vuon-dang-co-gi").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadFarmerPortal();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

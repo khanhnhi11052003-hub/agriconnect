@@ -413,3 +413,95 @@ WHERE NOT EXISTS (SELECT 1 FROM batches);
 -- 8. THÊM EMAIL QUẢN TRỊ (BẮT BUỘC)
 -- ---------------------------------------------------------------
 INSERT INTO admin_users (email) VALUES ('khanhnhi11052003@gmail.com') ON CONFLICT DO NOTHING;
+
+-- ---------------------------------------------------------------
+-- 9. NÂNG CẤP KIẾN TRÚC PRODUCTION-READY (5 TRỤ CỘT CHUYÊN GIA)
+--    Bổ sung: harvest_date, expiration_policy, delivery_radius,
+--    certification_docs, wallet_balance, is_fresh, is_dry,
+--    escrow_status, refund_requests & Cronjob giải ngân T+1
+-- ---------------------------------------------------------------
+
+-- 9.1. Bổ sung Ví Nông Dân (wallet_balance) & Hồ sơ Kiểm định (certification_docs)
+ALTER TABLE farms
+  ADD COLUMN IF NOT EXISTS wallet_balance NUMERIC(12,2) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS certification_docs JSONB NOT NULL DEFAULT '[{"type":"VietGAP","code":"VG-BP-2026-089","verified":true}]'::jsonb;
+
+-- 9.2. Bổ sung trường Cold Chain, Geo-fencing, Phân hạng (Variants) & Nhật ký canh tác cho Sản phẩm
+ALTER TABLE products
+  ADD COLUMN IF NOT EXISTS harvest_date VARCHAR(120) DEFAULT 'Thu hoạch sáng Thứ Sáu hàng tuần (Độ già 8.5 - 9 tuổi)',
+  ADD COLUMN IF NOT EXISTS expiration_policy VARCHAR(255) DEFAULT 'Bảo hành 1 đổi 1 hoặc hoàn tiền 100% trong 12h nếu sượng/hỏng (Kèm video unbox)',
+  ADD COLUMN IF NOT EXISTS delivery_radius INT NOT NULL DEFAULT 20,
+  ADD COLUMN IF NOT EXISTS is_fresh BOOLEAN NOT NULL DEFAULT TRUE,
+  ADD COLUMN IF NOT EXISTS is_dry BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS certification_badge VARCHAR(100) DEFAULT 'VietGAP & Hữu Cơ Thuận Tự Nhiên',
+  ADD COLUMN IF NOT EXISTS variants JSONB NOT NULL DEFAULT '[
+    {"code":"GRADE_1","label":"Loại 1 (Tuyển chọn Quà biếu VIP)","price_multiplier":1.0,"desc":"Trái đều đẹp nhất vườn, đóng hộp sang trọng"},
+    {"code":"GRADE_2","label":"Loại 2 (Ăn gia đình - Tiết kiệm 15%)","price_multiplier":0.85,"desc":"Trái hơi lệch mẫu mã vỏ ngoài, chất lượng múi tương đương"},
+    {"code":"GRADE_3","label":"Loại 3 (Dạt size / Làm sinh tố, mứt - Tiết kiệm 30%)","price_multiplier":0.70,"desc":"Trái nhỏ cuối cành, thích hợp tách múi cấp đông, làm bánh, sinh tố"}
+  ]'::jsonb;
+
+-- 9.3. Bổ sung Ví Tạm Giữ (Escrow Wallet), Subscription/Pre-order & Khiếu nại cho Đơn hàng
+ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS order_mode VARCHAR(30) DEFAULT 'SINGLE' CHECK (order_mode IN ('SINGLE', 'SUBSCRIPTION_WEEKLY', 'PREORDER_FUTURE')),
+  ADD COLUMN IF NOT EXISTS deposit_amount NUMERIC(12,2) DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS escrow_status VARCHAR(30) DEFAULT 'HELD_IN_ESCROW' CHECK (escrow_status IN ('HELD_IN_ESCROW', 'RELEASED_TO_FARMER', 'REFUNDED_PARTIAL', 'REFUNDED_FULL')),
+  ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS refund_status VARCHAR(30) DEFAULT 'NONE' CHECK (refund_status IN ('NONE', 'REQUESTED_20', 'REQUESTED_100', 'APPROVED_20', 'APPROVED_100', 'REJECTED')),
+  ADD COLUMN IF NOT EXISTS refund_amount NUMERIC(12,2) DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS unbox_video_url TEXT;
+
+-- 9.4. Bảng Yêu cầu Bồi thường tự động (1-Click Refund Requests)
+CREATE TABLE IF NOT EXISTS refund_requests (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_code VARCHAR(30) NOT NULL,
+  customer_phone VARCHAR(20) NOT NULL,
+  claim_type VARCHAR(30) NOT NULL CHECK (claim_type IN ('PARTIAL_20', 'FULL_100')),
+  reason TEXT NOT NULL,
+  unbox_video_url TEXT NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')),
+  resolved_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE refund_requests ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Khach gui yeu cau boi thuong" ON refund_requests;
+CREATE POLICY "Khach gui yeu cau boi thuong" ON refund_requests
+  FOR INSERT TO anon, authenticated WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Admin quan ly yeu cau boi thuong" ON refund_requests;
+CREATE POLICY "Admin quan ly yeu cau boi thuong" ON refund_requests
+  FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- 9.5. Hàm Cronjob / Auto-Trigger: Giải ngân tiền từ Ví Tạm Giữ (Escrow) về Ví Nông Dân sau 12h-24h giao hàng thành công
+CREATE OR REPLACE FUNCTION public.auto_release_escrow_to_farmer()
+RETURNS INT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_released_count INT := 0;
+  v_total_released NUMERIC(12,2) := 0;
+BEGIN
+  WITH eligible AS (
+    UPDATE orders
+    SET escrow_status = 'RELEASED_TO_FARMER'
+    WHERE order_status = 'DELIVERED'
+      AND escrow_status = 'HELD_IN_ESCROW'
+      AND refund_status = 'NONE'
+      AND COALESCE(delivered_at, created_at) <= NOW() - INTERVAL '12 hours'
+    RETURNING total_amount
+  )
+  SELECT COUNT(*), COALESCE(SUM(total_amount), 0)
+  INTO v_released_count, v_total_released
+  FROM eligible;
+
+  IF v_total_released > 0 THEN
+    UPDATE farms SET wallet_balance = wallet_balance + v_total_released;
+  END IF;
+
+  RETURN v_released_count;
+END;
+$$;
+

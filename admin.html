@@ -44,13 +44,16 @@
       </div>
 
       <div class="flex items-center gap-4">
+        <a href="farmer.html" class="text-xs text-amber-300 hover:text-amber-100 transition-colors flex items-center gap-1.5 font-bold">
+          <span>🌾 Cổng Nông Dân (Voice)</span>
+        </a>
         <a href="index.html" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
           <i class="fa-solid fa-globe"></i>
           <span>Xem Trang Khách Hàng</span>
         </a>
         <a href="trace.html" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
           <i class="fa-solid fa-qrcode"></i>
-          <span>Quét Tem QR</span>
+          <span>Quét Tem QR & Ví Escrow</span>
         </a>
         <button onclick="adminLogout()" class="text-xs text-rose-300 hover:text-rose-100 transition-colors flex items-center gap-1 bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">
           <i class="fa-solid fa-right-from-bracket"></i>
@@ -173,6 +176,61 @@
 
     </div>
 
+    <!-- ESCROW WALLET & 1-CLICK AUTOMATED REFUND MODULE (TRỤ CỘT TÀI CHÍNH & NÔNG SẢN) -->
+    <div class="grid lg:grid-cols-12 gap-6">
+      <!-- Ví Tạm Giữ Escrow & Giải Ngân T+1 -->
+      <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-emerald-950 text-white rounded-3xl p-6 shadow-md space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-400/30">
+            🛡️ Hệ Thống Ví Tạm Giữ (Escrow Wallet)
+          </span>
+          <span class="text-[11px] text-amber-300 font-bold">Auto-Trigger T+1 (Sau 12h)</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white/10 p-3.5 rounded-2xl">
+            <span class="text-[10px] text-emerald-200 uppercase font-bold block">Đang Tạm Giữ (Escrow):</span>
+            <span id="admin-escrow-pending" class="text-xl font-black text-amber-300">1.620.000 đ</span>
+          </div>
+          <div class="bg-white/10 p-3.5 rounded-2xl">
+            <span class="text-[10px] text-emerald-200 uppercase font-bold block">Đã Giải Ngân Cho Vườn:</span>
+            <span id="admin-escrow-released" class="text-xl font-black text-emerald-300">4.850.000 đ</span>
+          </div>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Khách nhận hàng có <strong>12 giờ</strong> để upload video unbox khiếu nại. Qua 12 giờ không có tranh chấp, Cronjob tự động chuyển trạng thái <code>Completed</code> và đẩy tiền về Ví Nông Dân (T+1).
+        </p>
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button type="button" onclick="triggerCronReleaseEscrow()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Chạy Cronjob Giải Ngân T+1 Ngay</span>
+          </button>
+          <a href="farmer.html" class="bg-white/15 hover:bg-white/25 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5">
+            <span>Xem Ví Bác Năm</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Module Xử Lý Bồi Thường Tự Động 1-Click -->
+      <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-amber-500"></i>
+              <span>Module Xử Lý Bồi Thường Tự Động (1-Click Refund)</span>
+            </h3>
+            <p class="text-[11px] text-slate-500">Duyệt nhanh Hoàn 20% (dập nhẹ) hoặc Hoàn 100% (hỏng/sượng) kèm Video Unbox chỉ với 1 cú click</p>
+          </div>
+          <span class="text-[10px] font-extrabold bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-full border border-emerald-200">
+            ✓ Đã Cấp Tick Xanh VietGAP: Hộ Bác Năm
+          </span>
+        </div>
+
+        <div id="admin-refund-claims-list" class="space-y-2.5 max-h-52 overflow-y-auto pr-1">
+          <!-- Rendered by js/admin.js -->
+        </div>
+      </div>
+    </div>
+
     <!-- Orders Table Card -->
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
       
@@ -276,8 +334,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/supabaseClient.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="js/config.js?v=20261106_v7"></script>
+  <script src="js/supabaseClient.js?v=20261106_v7"></script>
+  <script src="js/admin.js?v=20261106_v7"></script>
 </body>
 </html>
