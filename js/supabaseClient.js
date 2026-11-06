@@ -189,6 +189,96 @@ const DEMO_PRODUCTS = [
   }
 ].map(enrichProductMeta);
 
+// Trụ cột 8: Sản phẩm "Happy Hour / Cứu Hộ Nông Sản" (Ugly Food - Xấu mã ngoài da nhưng ruột ngon 100%, giảm 55% - 65% khung giờ 17h00 - 19h00 để đẩy sạch kho, 0% rác thải thực phẩm)
+const HAPPY_HOUR_UGLY_FOOD = [
+  {
+    id: "ugly-1",
+    name: "[Cứu Hộ Nông Sản -60%] Bơ Sáp & Măng Cụt Rám Nắng (Ugly Food Ruột Ngon 100%)",
+    category: "UglyFood",
+    is_ugly_food: true,
+    happy_hour_discount_pct: 60,
+    highlights: [
+      "⚡ Happy Hour 17h-19h: Giảm 60% đẩy sạch kho lưu tạm",
+      "Vỏ ngoài rám nắng/xấu mã tự nhiên, ruột dẻo ngọt 100%",
+      "🌱 Chung tay giảm Food Waste (Chống lãng phí nông sản)"
+    ],
+    description: "Lô bơ sáp và măng cụt cổ thụ bị gió cọ cành làm rám vỏ ngoài, không đủ chuẩn trưng bày quà biếu nhưng phần cơm bên trong vẫn dẻo béo, ngọt thanh 100%. Mở bán cứu hộ khung giờ vàng 17:00 – 19:00 giảm 60% (từ 80.000 đ còn 32.000 đ/kg)!",
+    unit: "kg",
+    weight_kg: 1,
+    price_original: 80000,
+    price_sale: 32000,
+    image_url: "images/bo-sap.jpg",
+    is_available: true,
+    certification_badge: "⚡ Cứu Hộ Ugly Food (-60%)"
+  },
+  {
+    id: "ugly-2",
+    name: "[Happy Hour -55%] Khay Sầu Riêng Ri6 Quá Chín Tách Múi (Làm Sinh Tố / Làm Bánh)",
+    category: "UglyFood",
+    is_ugly_food: true,
+    happy_hour_discount_pct: 55,
+    highlights: [
+      "⚡ Giờ vàng 17h-19h: Giảm 55% giải phóng Hub Lạnh",
+      "Múi chín mềm rụng tự nhiên, cực hợp xay sinh tố, làm kem",
+      "🌱 Bảo hành an toàn thực phẩm • Zero Food Waste"
+    ],
+    description: "Những quả sầu riêng Ri6 chín kỹ cuối ngày tại Hub trung chuyển được bóc tách lấy nguyên múi vàng thơm lừng. Cực kỳ hời cho tiệm bánh, quán sinh tố hoặc gia đình cấp đông ăn dần. Giá gốc 120.000 đ xả kho giờ vàng chỉ 54.000 đ/khay 500g!",
+    unit: "khay",
+    weight_kg: 0.5,
+    price_original: 120000,
+    price_sale: 54000,
+    image_url: "images/durian-open.jpg",
+    is_available: true,
+    certification_badge: "⚡ Happy Hour 17h-19h (-55%)"
+  },
+  {
+    id: "ugly-3",
+    name: "[Cứu Hộ Nông Sản -65%] Set 3Kg Trái Cây Dạt Size Cuối Ngày (Chôm Chôm + Nhãn + Dâu Da)",
+    category: "UglyFood",
+    is_ugly_food: true,
+    happy_hour_discount_pct: 65,
+    highlights: [
+      "⚡ Giảm sâu 65% khung giờ 17h-19h (3kg chỉ 55.000 đ)",
+      "Trái rụng cuống/nhỏ size cuối ngày, vẫn tươi ngọt mọng nước",
+      "🌱 Giải pháp ESG chống rác thải nông nghiệp"
+    ],
+    description: "Combo 3kg trái cây miệt vườn (Chôm chôm nhãn, Nhãn xuồng, Dâu da) bị rụng rời khỏi chùm trong quá trình vận chuyển. Chất lượng ruột ngọt mát nguyên vẹn, bán giá cứu hộ 55.000 đ/set 3kg để không lãng phí 1 quả nào của bác nông dân!",
+    unit: "set 3kg",
+    weight_kg: 3,
+    price_original: 158000,
+    price_sale: 55000,
+    image_url: "images/chomchom.jpg",
+    is_available: true,
+    certification_badge: "⚡ Cứu Hộ Cuối Ngày (-65%)"
+  }
+].map(enrichProductMeta);
+
+// Danh sách Đối tác Kinh tế Tuần hoàn ESG mặc định (Trụ cột 8)
+const DEMO_ESG_PARTNERS = [
+  {
+    id: "esg-01",
+    org_name: "Trại Sinh Học Ruồi Lính Đen EcoLarvae Củ Chi",
+    partner_type: "BLACK_SOLDIER_FLY",
+    partner_type_label: "Trại Chăn Nuôi Ruồi Lính Đen (BSF)",
+    contact_name: "Kỹ sư Lê Hoàng Nam",
+    phone: "0909 888 112",
+    pickup_area: "Thu gom tại Hub Lạnh Thủ Đức & Bình Thạnh",
+    capacity_kg_per_week: 250,
+    status: "ACTIVE"
+  },
+  {
+    id: "esg-02",
+    org_name: "Xưởng Phân Bón Vi Sinh Hữu Cơ GreenCompost Bình Dương",
+    partner_type: "ORGANIC_COMPOST",
+    partner_type_label: "Xưởng Ủ Phân Bón Hữu Cơ Sinh Học",
+    contact_name: "Chị Nguyễn Thu Trang",
+    phone: "0918 223 445",
+    pickup_area: "Thu gom vỏ sầu riêng, măng cụt & trái dập tại Dĩ An / QL13",
+    capacity_kg_per_week: 500,
+    status: "ACTIVE"
+  }
+];
+
 const DEMO_ORDERS = [
   {
     id: "ord-001", order_code: "AC-261105-DEMO01", customer_name: "Thầy Trần Văn Minh (demo)", customer_phone: "0912345678",
@@ -244,6 +334,9 @@ const LS = {
   contacts: "agri_v2_contacts",
   refundClaims: "agri_v2_refund_claims",
   farmerWallet: "agri_v2_farmer_wallet",
+  insuranceFund: "agri_v2_insurance_fund",
+  esgPartners: "agri_v2_esg_partners",
+  esgMetrics: "agri_v2_esg_metrics",
   chatMessages: "agri_v2_inapp_chat",
   adminSession: "agri_v2_admin_demo_session"
 };
@@ -273,9 +366,25 @@ class AgriDB {
 
   initDemoData() {
     try {
-      localStorage.setItem(LS.products, JSON.stringify(DEMO_PRODUCTS));
+      localStorage.setItem(LS.products, JSON.stringify([...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD]));
       if (!localStorage.getItem(LS.orders)) localStorage.setItem(LS.orders, JSON.stringify(DEMO_ORDERS));
       if (!localStorage.getItem(LS.refundClaims)) localStorage.setItem(LS.refundClaims, JSON.stringify(DEMO_REFUND_CLAIMS));
+      if (!localStorage.getItem(LS.esgPartners)) localStorage.setItem(LS.esgPartners, JSON.stringify(DEMO_ESG_PARTNERS));
+      if (!localStorage.getItem(LS.esgMetrics)) {
+        localStorage.setItem(LS.esgMetrics, JSON.stringify({
+          recycled_kg: 148.5,
+          co2_saved_kg: 282.0,
+          waste_cost_saved_vnd: 1485000,
+          batches_dispatched: 6
+        }));
+      }
+      if (!localStorage.getItem(LS.insuranceFund)) {
+        localStorage.setItem(LS.insuranceFund, JSON.stringify({
+          balance_vnd: 1245000,
+          covered_orders: 142,
+          instant_claims_paid: 2
+        }));
+      }
       if (!localStorage.getItem(LS.farmerWallet)) {
         localStorage.setItem(LS.farmerWallet, JSON.stringify({
           available_balance: 4850000,
@@ -333,14 +442,14 @@ class AgriDB {
           .from("products").select("*").eq("is_available", true).order("created_at", { ascending: true });
         if (!error && data && data.length > 0) {
           const cloudEnriched = data.map((p, idx) => enrichProductMeta(p, idx));
-          return [...customFarmerItems.map((p, i) => enrichProductMeta(p, i)), ...cloudEnriched];
+          return [...customFarmerItems.map((p, i) => enrichProductMeta(p, i)), ...cloudEnriched, ...HAPPY_HOUR_UGLY_FOOD];
         }
       } catch (err) {
         console.warn("[AgriConnect] Không tải được từ Supabase, dùng dữ liệu dự phòng:", err);
       }
     }
     const local = this._read(LS.products);
-    const base = (local && local.length > 0) ? local.filter(p => p.is_available !== false) : DEMO_PRODUCTS;
+    const base = (local && local.length > 0) ? local.filter(p => p.is_available !== false) : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
     return [...customFarmerItems, ...base].map((p, idx) => enrichProductMeta(p, idx));
   }
 
@@ -350,14 +459,14 @@ class AgriDB {
       try {
         const { data, error } = await this.client.from("products").select("*");
         if (!error && data && data.length > 0) {
-          return [...customFarmerItems, ...data].map((p, idx) => enrichProductMeta(p, idx));
+          return [...customFarmerItems, ...data, ...HAPPY_HOUR_UGLY_FOOD].map((p, idx) => enrichProductMeta(p, idx));
         }
       } catch (err) {
         console.warn("[AgriConnect] Lỗi lấy sản phẩm admin:", err);
       }
     }
     const local = this._read(LS.products);
-    const base = (local && local.length > 0) ? local : DEMO_PRODUCTS;
+    const base = (local && local.length > 0) ? local : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
     return [...customFarmerItems, ...base].map((p, idx) => enrichProductMeta(p, idx));
   }
 
@@ -434,8 +543,12 @@ class AgriDB {
       created_at: new Date().toISOString()
     };
 
+    if (Number(orderInput.insurance_fee || 0) > 0) {
+      this.addInsuranceFee(Number(orderInput.insurance_fee));
+    }
+
     if (this.isCloud) {
-      // Nếu giỏ hàng có sản phẩm vừa được nông dân tạo cục bộ (id bắt đầu bằng "farmer-"),
+      // Nếu giỏ hàng có sản phẩm vừa được nông dân tạo cục bộ ("farmer-*") hoặc Cứu hộ Ugly Food ("ugly-*"),
       // ánh xạ sang id sản phẩm thật trên Supabase để trigger compute_order_totals không báo lỗi
       let fallbackCloudProdId = null;
       try {
@@ -443,18 +556,21 @@ class AgriDB {
         if (cloudProds && cloudProds[0]) fallbackCloudProdId = cloudProds[0].id;
       } catch (e) {}
 
+      const validCloudRoles = ["SinhVien", "GiangVien", "CanBo", "Khac"];
+      const safeRole = validCloudRoles.includes(orderInput.customer_role) ? orderInput.customer_role : "CanBo";
+
       const payload = {
         order_code: orderInput.order_code,
         customer_name: orderInput.customer_name,
         customer_phone: orderInput.customer_phone,
-        customer_role: orderInput.customer_role,
+        customer_role: safeRole,
         delivery_type: orderInput.delivery_type,
         department: orderInput.department,
         delivery_address: orderInput.delivery_address,
         items: orderInput.items.map(i => {
-          const resolvedId = String(i.productId || "").startsWith("farmer-") && fallbackCloudProdId
-            ? fallbackCloudProdId
-            : i.productId;
+          const pidStr = String(i.productId || "");
+          const isLocalCustomId = pidStr.startsWith("farmer-") || pidStr.startsWith("ugly-") || pidStr.startsWith("p");
+          const resolvedId = (isLocalCustomId && fallbackCloudProdId) ? fallbackCloudProdId : i.productId;
           return {
             id: resolvedId,
             product_id: resolvedId,
@@ -597,6 +713,119 @@ class AgriDB {
     w.last_release_at = new Date().toISOString();
     localStorage.setItem(LS.farmerWallet, JSON.stringify(w));
     return w;
+  }
+
+  // ================= TRỤ CỘT 6: QUỸ BẢO HIỂM NÔNG SẢN & ATVSTP (1.000đ/ĐƠN) =================
+  getInsuranceFund() {
+    try {
+      return JSON.parse(localStorage.getItem(LS.insuranceFund) || '{"balance_vnd":1245000,"covered_orders":142,"instant_claims_paid":2}');
+    } catch (e) {
+      return { balance_vnd: 1245000, covered_orders: 142, instant_claims_paid: 2 };
+    }
+  }
+
+  addInsuranceFee(fee = 1000) {
+    const fund = this.getInsuranceFund();
+    fund.balance_vnd = Number(fund.balance_vnd || 0) + Number(fee || 1000);
+    fund.covered_orders = Number(fund.covered_orders || 0) + 1;
+    localStorage.setItem(LS.insuranceFund, JSON.stringify(fund));
+    return fund;
+  }
+
+  // ================= TRỤ CỘT 7: GO-TO-MARKET (BAO TIÊU MỒI GIẢI BÀI TOÁN CON GÀ - QUẢ TRỨNG) =================
+  async createGtmSeedOrder() {
+    const seedCode = "AC-GTM-SEED" + Math.floor(10 + Math.random() * 89);
+    const seedOrder = {
+      id: "ord-gtm-" + Date.now(),
+      order_code: seedCode,
+      customer_name: "Quỹ Bao Tiêu Mồi AgriConnect (GTM Quận 1 & Quận 3)",
+      customer_phone: "0784203424",
+      customer_role: "CanBo",
+      delivery_type: "CAMPUS",
+      department: "Hub Văn Phòng Quận 1 & Quận 3 (Hyper-Local Beachhead)",
+      delivery_address: "Tòa nhà Văn phòng Quận 1 & Quận 3, TP.HCM",
+      items: [
+        { productId: "p1", name: "Sầu Riêng Ri6 Ruột Vàng (Bao tiêu mồi)", unit: "kg", qty: 15, price: 98000, subtotal: 1470000 },
+        { productId: "p2", name: "Măng Cụt Cổ Thụ (Bao tiêu mồi)", unit: "kg", qty: 15, price: 95000, subtotal: 1425000 }
+      ],
+      total_kg: 30,
+      shipping_fee: 0,
+      total_amount: 2895000,
+      payment_method: "VIETQR",
+      payment_status: "PAID",
+      order_status: "CONFIRMED",
+      order_mode: "SUBSCRIPTION_WEEKLY",
+      escrow_status: "HELD_IN_ESCROW",
+      notes: "[GTM BAO TIÊU MỒI] Admin thu mua sỉ 30kg tạo động lực cho Vườn Bác Năm & cấp hàng cho cụm Văn phòng Q.1 - Q.3",
+      created_at: new Date().toISOString()
+    };
+    const orders = this._read(LS.orders);
+    orders.unshift(seedOrder);
+    this._write(LS.orders, orders);
+    return seedOrder;
+  }
+
+  // ================= TRỤ CỘT 8: ĐỐI TÁC KINH TẾ TUẦN HOÀN & ESG (FOOD WASTE) =================
+  getEsgPartners() {
+    const list = this._read(LS.esgPartners);
+    return (list && list.length > 0) ? list : DEMO_ESG_PARTNERS;
+  }
+
+  getEsgMetrics() {
+    try {
+      return JSON.parse(localStorage.getItem(LS.esgMetrics) || '{"recycled_kg":148.5,"co2_saved_kg":282.0,"waste_cost_saved_vnd":1485000,"batches_dispatched":6}');
+    } catch (e) {
+      return { recycled_kg: 148.5, co2_saved_kg: 282.0, waste_cost_saved_vnd: 1485000, batches_dispatched: 6 };
+    }
+  }
+
+  async registerEsgPartner(partnerInput) {
+    const typeLabels = {
+      BLACK_SOLDIER_FLY: "Trại Chăn Nuôi Ruồi Lính Đen (BSF)",
+      ORGANIC_COMPOST: "Xưởng Ủ Phân Bón Hữu Cơ Sinh Học",
+      BIO_ENZYME: "Xưởng Chế Phẩm Sinh Học / Enzyme",
+      ANIMAL_FEED: "Trang Trại Thức Ăn Chăn Nuôi Sinh Học"
+    };
+    const item = {
+      id: "esg-" + Date.now(),
+      org_name: partnerInput.org_name,
+      partner_type: partnerInput.partner_type || "ORGANIC_COMPOST",
+      partner_type_label: typeLabels[partnerInput.partner_type] || "Đối tác Kinh tế Tuần hoàn ESG",
+      contact_name: partnerInput.contact_name,
+      phone: partnerInput.phone,
+      pickup_area: partnerInput.pickup_area || "TP.HCM & Bình Dương",
+      capacity_kg_per_week: Number(partnerInput.capacity_kg_per_week || 150),
+      status: "ACTIVE",
+      created_at: new Date().toISOString()
+    };
+    const list = this.getEsgPartners();
+    list.unshift(item);
+    this._write(LS.esgPartners, list);
+
+    if (this.isCloud) {
+      try {
+        await this.client.from("esg_circular_partners").insert([{
+          org_name: item.org_name,
+          partner_type: item.partner_type,
+          contact_name: item.contact_name,
+          phone: item.phone,
+          pickup_area: item.pickup_area,
+          capacity_kg_per_week: item.capacity_kg_per_week
+        }]);
+      } catch (e) {}
+    }
+    return item;
+  }
+
+  dispatchWasteToEsgPartner(kgAmount = 18.5) {
+    const m = this.getEsgMetrics();
+    const kg = Number(kgAmount || 18.5);
+    m.recycled_kg = Number((Number(m.recycled_kg || 0) + kg).toFixed(1));
+    m.co2_saved_kg = Number((Number(m.co2_saved_kg || 0) + kg * 1.9).toFixed(1));
+    m.waste_cost_saved_vnd = Number(m.waste_cost_saved_vnd || 0) + Math.round(kg * 10000);
+    m.batches_dispatched = Number(m.batches_dispatched || 0) + 1;
+    localStorage.setItem(LS.esgMetrics, JSON.stringify(m));
+    return m;
   }
 
   // ================= TRA CỨU ĐƠN (trang trace.html) =================

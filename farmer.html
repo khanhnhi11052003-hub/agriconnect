@@ -196,6 +196,28 @@
             placeholder="Bấm nút Micro màu đỏ ở trên rồi nói: Ví dụ 'Sầu riêng vườn bác sáng thứ sáu này cắt 60 ký, trái già rụng tự nhiên cơm vàng dẻo lắm...'"></textarea>
         </div>
 
+        <!-- Bước 5: TÙY CHỌN GIỜ VÀNG CỨU HỘ NÔNG SẢN (UGLY FOOD - TRỤ CỘT 8) -->
+        <label class="flex items-start gap-4 p-4 rounded-3xl bg-orange-50 border-2 border-orange-300 cursor-pointer">
+          <input type="checkbox" id="f-is-ugly" class="mt-1 w-7 h-7 accent-orange-600 rounded-lg shrink-0" />
+          <div>
+            <span class="text-lg font-black text-orange-950 block">⚡ Đẩy vào "Giờ Vàng Cứu Hộ Nông Sản" (Ugly Food 17h–19h Giảm 50%–70%)</span>
+            <span class="text-sm font-bold text-orange-800">Dành cho trái xấu mã ngoài da hoặc chín kỹ cuối ngày cần bán nhanh trong ngày để không phải vứt bỏ.</span>
+          </div>
+        </label>
+
+        <!-- Bước 6: HỢP ĐỒNG ĐIỆN TỬ & CAM KẾT PHÁP LÝ AN TOÀN VỆ SINH THỰC PHẨM (TRỤ CỘT 6) -->
+        <div class="p-5 rounded-3xl bg-emerald-50 border-2 border-emerald-500 space-y-2">
+          <div class="flex items-center gap-2 text-emerald-900 font-black text-base">
+            <span>⚖️ Hợp Đồng Điện Tử & Trách Nhiệm Pháp Lý An Toàn Thực Phẩm (Bắt buộc)</span>
+          </div>
+          <label class="flex items-start gap-4 cursor-pointer pt-1">
+            <input type="checkbox" id="f-safety-commit" required checked class="mt-1 w-7 h-7 accent-brand-600 rounded-lg shrink-0" />
+            <span class="text-base font-bold text-gray-800 leading-snug">
+              Tôi (Chủ hộ canh tác) cam kết <strong>100% không sử dụng thuốc trừ sâu cấm, hóa chất nhúng chín hoặc vượt quá liều lượng</strong> và đảm bảo đúng thời gian cách ly sinh học. Tôi hiểu AgriConnect là nền tảng công nghệ (Marketplace) và tôi chịu trách nhiệm pháp lý trực tiếp về an toàn vệ sinh thực phẩm của lô hàng này.
+            </span>
+          </label>
+        </div>
+
         <!-- NÚT ĐĂNG BÁN KHỔNG LỒ -->
         <button type="submit"
           class="w-full py-6 rounded-3xl bg-brand-600 hover:bg-brand-700 active:scale-98 text-white font-black text-2xl shadow-xl shadow-brand-600/30 flex items-center justify-center gap-3">
@@ -372,21 +394,32 @@
 
     document.getElementById("farmer-post-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = document.getElementById("f-name").value.trim();
-      const price_sale = Number(document.getElementById("f-price").value || 85000);
+      const safetyOk = document.getElementById("f-safety-commit")?.checked;
+      if (!safetyOk) {
+        alert("Bác vui lòng bấm chọn ô Cam kết không sử dụng thuốc trừ sâu cấm trước khi đăng bán!");
+        return;
+      }
+      const isUgly = document.getElementById("f-is-ugly")?.checked;
+      const rawName = document.getElementById("f-name").value.trim();
+      const name = isUgly ? `[Cứu Hộ Nông Sản -60%] ${rawName} (Ugly Food)` : rawName;
+      const rawPrice = Number(document.getElementById("f-price").value || 85000);
+      const price_sale = isUgly ? Math.round(rawPrice * 0.4) : rawPrice;
       const stock_kg = Number(document.getElementById("f-stock").value || 50);
       const description = document.getElementById("f-desc").value.trim();
       const image_url = document.getElementById("f-image").value;
 
       await window.db.addFarmerBatchProduct({
         name,
+        category: isUgly ? "UglyFood" : "TraiCay",
+        is_ugly_food: isUgly,
         price_sale,
         stock_kg,
-        description: description || "Trái cây hái chín tự nhiên tại vườn Bác Năm Bình Phước.",
+        description: description || "Trái cây hái chín tự nhiên tại vườn Bác Năm Bình Phước (Đã ký cam kết ATVSTP).",
+        certification_badge: isUgly ? "⚡ Cứu Hộ Ugly Food (-60%)" : "VietGAP • Đã Cam Kết ATVSTP",
         image_url
       });
 
-      showFarmerToast("🎉 Đã đăng lứa mới: '" + name + "' lên Chợ AgriConnect thành công!");
+      showFarmerToast("🎉 Đã ký Hợp đồng điện tử ATVSTP & đăng lứa mới: '" + name + "' lên Chợ thành công!");
       await loadFarmerPortal();
       document.getElementById("vuon-dang-co-gi").scrollIntoView({ behavior: "smooth" });
     });

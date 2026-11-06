@@ -231,6 +231,77 @@
       </div>
     </div>
 
+    <!-- TRỤ CỘT 6, 7, 8: PHÁP LÝ BẢO HIỂM ATVSTP, BAO TIÊU MỒI GTM & KINH TẾ TUẦN HOÀN ESG -->
+    <div class="grid md:grid-cols-3 gap-5">
+      <!-- Trụ cột 6: Quỹ Dự Phòng Bảo Hiểm Nông Sản (1.000đ/đơn) -->
+      <div class="bg-white rounded-3xl p-5 border border-emerald-200 shadow-sm flex flex-col justify-between space-y-3">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">
+              ⚖️ Trụ cột 6: Pháp lý & Bảo hiểm
+            </span>
+            <span class="text-[10px] font-bold text-slate-400">+1.000 đ / đơn</span>
+          </div>
+          <h3 class="text-sm font-black text-slate-900">Quỹ Dự Phòng Rủi Ro ATVSTP</h3>
+          <div class="flex items-baseline gap-2">
+            <span id="admin-insurance-balance" class="text-2xl font-black text-emerald-700">4.850.000 đ</span>
+            <span id="admin-insurance-orders" class="text-[11px] font-bold text-slate-500">(142 đơn đã đóng)</span>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            Hợp đồng điện tử miễn trừ trách nhiệm Marketplace đã kích hoạt. Khi có sự cố sức khỏe nhẹ, trích quỹ bồi thường ngay + tặng Voucher để xử lý khủng hoảng truyền thông trong 30 phút.
+          </p>
+        </div>
+        <button type="button" onclick="triggerInsuranceCompensation()" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-black text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-shield-heart"></i>
+          <span>Chi Bồi Thường Khẩn Cấp (200k + Voucher)</span>
+        </button>
+      </div>
+
+      <!-- Trụ cột 7: Go-To-Market "Con Gà - Quả Trứng" (Bao tiêu mồi 30kg) -->
+      <div class="bg-white rounded-3xl p-5 border border-amber-200 shadow-sm flex flex-col justify-between space-y-3">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">
+              🎯 Trụ cột 7: Go-To-Market
+            </span>
+            <span class="text-[10px] font-bold text-amber-700">Ngách Q.1 & Q.3</span>
+          </div>
+          <h3 class="text-sm font-black text-slate-900">Giải Bài Toán "Con Gà - Quả Trứng"</h3>
+          <p class="text-[11px] text-slate-600 leading-relaxed">
+            Chiến lược <strong>"Fake it till you make it" (Trợ giá & Bao tiêu mồi giai đoạn đầu)</strong>: Admin đóng vai người mua sỉ <strong>30kg</strong> của nông dân để Bác Năm thấy có đơn ngay và giữ nhiệt gắn bó với sàn, sau đó phân phối cho nhân viên văn phòng Quận 1 & Quận 3.
+          </p>
+        </div>
+        <button type="button" onclick="triggerGtmSeedOrder()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-seedling"></i>
+          <span>Tạo Đơn Bao Tiêu Mồi 30kg (Giữ Nhiệt Vườn)</span>
+        </button>
+      </div>
+
+      <!-- Trụ cột 8: Kinh Tế Tuần Hoàn & Xử Lý Rác Thải Nông Nghiệp (ESG) -->
+      <div class="bg-white rounded-3xl p-5 border border-teal-200 shadow-sm flex flex-col justify-between space-y-3">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase bg-teal-100 text-teal-900 px-2.5 py-1 rounded-full">
+              ♻️ Trụ cột 8: Chuẩn ESG
+            </span>
+            <span id="admin-esg-co2" class="text-[10px] font-extrabold text-teal-700">-412 kg CO2e</span>
+          </div>
+          <h3 class="text-sm font-black text-slate-900">Điều Phối Rác Thải Nông Nghiệp</h3>
+          <div class="flex items-baseline gap-2">
+            <span id="admin-esg-recycled" class="text-2xl font-black text-teal-700">217 kg</span>
+            <span class="text-[11px] font-bold text-slate-500">đã chuyển cho Trại Ruồi Lính Đen & Phân Hữu Cơ</span>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            Hàng lành lặn xấu mã đã đẩy vào tab <strong>Happy Hour 17h–19h (-60%)</strong>. Hàng dập hỏng cuối ngày bấm nút dưới để báo đối tác ESG đến thu gom.
+          </p>
+        </div>
+        <button type="button" onclick="triggerEsgWasteDispatch()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-black text-xs py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-recycle"></i>
+          <span>Báo Trại Ruồi Lính Đen Thu Gom (15kg)</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Orders Table Card -->
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
       
@@ -246,6 +317,7 @@
             <span class="text-slate-500 font-medium">Đối tượng:</span>
             <select id="filter-role" onchange="renderOrdersTable()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-700 text-xs">
               <option value="ALL">Tất cả đối tượng</option>
+              <option value="NhanVienVanPhong">NV Văn Phòng (Q.1 & Q.3)</option>
               <option value="GiangVien">Thầy Cô</option>
               <option value="SinhVien">Sinh Viên</option>
               <option value="CanBo">Cán Bộ</option>
@@ -334,8 +406,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/config.js?v=20261106_v7"></script>
-  <script src="js/supabaseClient.js?v=20261106_v7"></script>
-  <script src="js/admin.js?v=20261106_v7"></script>
+  <script src="js/config.js?v=20261106_v8"></script>
+  <script src="js/supabaseClient.js?v=20261106_v8"></script>
+  <script src="js/admin.js?v=20261106_v8"></script>
 </body>
 </html>

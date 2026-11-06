@@ -94,6 +94,22 @@ async function renderEscrowAndClaims() {
   if (pendingEl) pendingEl.textContent = formatVND(wallet.escrow_pending);
   if (releasedEl) releasedEl.textContent = formatVND(wallet.available_balance);
 
+  if (window.db.getInsuranceFund) {
+    const ins = window.db.getInsuranceFund();
+    const balEl = document.getElementById("admin-insurance-balance");
+    const ordEl = document.getElementById("admin-insurance-orders");
+    if (balEl) balEl.textContent = formatVND(ins.balance);
+    if (ordEl) ordEl.textContent = `(${ins.orders_insured} đơn đã đóng • Đã chi ${ins.claims_paid || 0} vụ)`;
+  }
+
+  if (window.db.getEsgMetrics) {
+    const esg = window.db.getEsgMetrics();
+    const recEl = document.getElementById("admin-esg-recycled");
+    const co2El = document.getElementById("admin-esg-co2");
+    if (recEl) recEl.textContent = `${Number(esg.total_waste_recycled_kg || 217).toFixed(0)} kg`;
+    if (co2El) co2El.textContent = `-${Number(esg.co2_saved_kg || 412).toFixed(0)} kg CO2e`;
+  }
+
   const listEl = document.getElementById("admin-refund-claims-list");
   if (!listEl || !window.db.getRefundClaims) return;
 
@@ -157,6 +173,35 @@ window.triggerCronReleaseEscrow = async function () {
   alert("⚡ Cronjob Auto-Trigger hoàn tất: Đã kiểm tra các đơn Delivered quá 12h không có khiếu nại và giải ngân T+1 về Ví Nông Dân (Bác Năm)!");
 };
 
+window.triggerInsuranceCompensation = async function () {
+  const raw = localStorage.getItem("agriconnect_insurance_fund_v1");
+  let fund = { balance: 4850000, orders_insured: 142, claims_paid: 2 };
+  try { if (raw) fund = JSON.parse(raw); } catch {}
+  fund.balance = Math.max(0, Number(fund.balance || 4850000) - 200000);
+  fund.claims_paid = Number(fund.claims_paid || 2) + 1;
+  localStorage.setItem("agriconnect_insurance_fund_v1", JSON.stringify(fund));
+  await renderEscrowAndClaims();
+  alert("🛡️ Đã trích 200.000 đ từ Quỹ Dự Phòng Bảo Hiểm Nông Sản (1.000đ/đơn) + Gửi mã Voucher 100.000 đ cho khách hàng trong 30 phút để xoa dịu sự cố truyền thông trước khi phân định trách nhiệm với nhà vườn!");
+};
+
+window.triggerGtmSeedOrder = async function () {
+  if (!window.db.createGtmSeedOrder) return;
+  try {
+    const order = await window.db.createGtmSeedOrder();
+    await loadData();
+    alert(`🚀 Đã tạo Đơn Bao Tiêu Mồi GTM (${order.order_code} - 30kg nông sản Bình Phước)! Nông dân Bác Năm đã nhận thông báo có đơn sỉ ngay lập tức ("Fake it till you make it" giải quyết bài toán Con Gà - Quả Trứng) để phân phối cho Nhân viên văn phòng Quận 1 & Quận 3.`);
+  } catch (err) {
+    alert("Lỗi tạo đơn bao tiêu mồi: " + err.message);
+  }
+};
+
+window.triggerEsgWasteDispatch = async function () {
+  if (!window.db.dispatchWasteToEsgPartner) return;
+  window.db.dispatchWasteToEsgPartner(15, "esg-1");
+  await renderEscrowAndClaims();
+  alert("♻️ Đã phát lệnh thu gom 15kg nông sản dập/quá chín cuối ngày cho Đối tác Kinh tế Tuần hoàn (Trại Ruồi Lính Đen BSF Củ Chi & Xưởng Phân Bón Hữu Cơ)! Giảm phát thải 28.5kg khí nhà kính CO2e và tiết kiệm 100% chi phí xử lý rác.");
+};
+
 function activeOrders() {
   return allOrders.filter(o => o.order_status !== "CANCELLED");
 }
@@ -213,7 +258,7 @@ function calculateMetrics() {
 }
 
 // ================= BẢNG ĐƠN HÀNG =================
-const ROLE_NAME = { GiangVien: "Thầy Cô", SinhVien: "Sinh Viên", CanBo: "Cán Bộ", Khac: "Khách Đô Thị" };
+const ROLE_NAME = { NhanVienVanPhong: "NV Văn Phòng (Q1/Q3)", GiangVien: "Thầy Cô", SinhVien: "Sinh Viên", CanBo: "Cán Bộ", Khac: "Khách Đô Thị" };
 
 window.renderOrdersTable = function () {
   const tbody = document.getElementById("orders-tbody");

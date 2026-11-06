@@ -505,3 +505,41 @@ BEGIN
 END;
 $$;
 
+-- ---------------------------------------------------------------
+-- 10. MỞ RỘNG TRỤ CỘT 6, 7, 8 (PHÁP LÝ ATVSTP, GO-TO-MARKET HYPER-LOCAL & KINH TẾ TUẦN HOÀN ESG)
+-- ---------------------------------------------------------------
+
+-- 10.1. Trụ cột 6 (Pháp lý & Bảo hiểm Nông sản 1.000đ/đơn)
+ALTER TABLE products
+  ADD COLUMN IF NOT EXISTS farmer_safety_commitment BOOLEAN NOT NULL DEFAULT TRUE,
+  ADD COLUMN IF NOT EXISTS is_ugly_food BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS happy_hour_discount_pct INT NOT NULL DEFAULT 0;
+
+ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS insurance_fee NUMERIC(12,2) NOT NULL DEFAULT 1000,
+  ADD COLUMN IF NOT EXISTS tos_accepted BOOLEAN NOT NULL DEFAULT TRUE;
+
+-- 10.2. Trụ cột 8 (Đối tác Kinh tế Tuần hoàn ESG: Trại ruồi lính đen, Xưởng phân bón hữu cơ)
+CREATE TABLE IF NOT EXISTS esg_circular_partners (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  org_name VARCHAR(255) NOT NULL,
+  partner_type VARCHAR(100) NOT NULL CHECK (partner_type IN ('BLACK_SOLDIER_FLY', 'ORGANIC_COMPOST', 'BIO_ENZYME', 'ANIMAL_FEED')),
+  contact_name VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  pickup_area VARCHAR(255) NOT NULL,
+  capacity_kg_per_week NUMERIC(10,2) DEFAULT 100,
+  status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE esg_circular_partners ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Doi tac ESG dang ky thu gom" ON esg_circular_partners;
+CREATE POLICY "Doi tac ESG dang ky thu gom" ON esg_circular_partners
+  FOR INSERT TO anon, authenticated WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Cong khai danh sach doi tac ESG" ON esg_circular_partners;
+CREATE POLICY "Cong khai danh sach doi tac ESG" ON esg_circular_partners
+  FOR SELECT TO anon, authenticated USING (true);
+
+

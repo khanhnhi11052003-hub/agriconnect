@@ -52,6 +52,7 @@ async function initApp() {
     showPageError("Không tải được dữ liệu sản phẩm: " + err.message);
   }
 
+  renderEsgCircularSection();
   updateOrderSummary();
 }
 
@@ -145,8 +146,18 @@ function initCountdownTimer() {
   setInterval(updateTimer, 1000);
 }
 
-// ================= BIẾN THỂ QUY CÁCH (LOẠI 1, LOẠI 2, LOẠI 3) =================
+// ================= BIẾN THỂ QUY CÁCH (LOẠI 1, LOẠI 2, LOẠI 3 & HAPPY HOUR UGLY FOOD) =================
 function getProductVariantInfo(p) {
+  if (p.is_ugly_food) {
+    const uglyVar = {
+      code: "GRADE_UGLY",
+      label: `Cứu Hộ Nông Sản Happy Hour (-${p.happy_hour_discount_pct || 60}%)`,
+      shortLabel: `Happy Hour (-${p.happy_hour_discount_pct || 60}%)`,
+      multiplier: 1.0,
+      badge: "Cứu hộ nông sản"
+    };
+    return { variants: [uglyVar], activeVariant: uglyVar, unitPrice: Math.round(Number(p.price_sale || 0)) };
+  }
   const variants = Array.isArray(p.variants) && p.variants.length > 0
     ? p.variants
     : [
@@ -271,8 +282,11 @@ function renderProductGrid() {
           <div class="flex items-center justify-between gap-2">
             <div>
               <span class="text-[11px] text-[#5f7e45] font-semibold block">${escapeHTML(activeVariant.shortLabel)}:</span>
-              <span class="text-xl font-black text-[#22720d]">${priceFormatted}</span>
-              <span class="text-xs text-[#5f7e45]"> / ${unit}</span>
+              <div class="flex items-baseline gap-1.5 flex-wrap">
+                <span class="text-xl font-black ${p.is_ugly_food ? "text-amber-700" : "text-[#22720d]"}">${priceFormatted}</span>
+                ${p.is_ugly_food && p.price_original ? `<span class="text-xs text-slate-400 line-through font-bold">${formatVND(p.price_original)}</span>` : ""}
+                <span class="text-xs text-[#5f7e45]"> / ${unit}</span>
+              </div>
             </div>
             <div class="shrink-0">
               ${actionBtnHtml}
@@ -727,7 +741,9 @@ function priceCart() {
   const promoDiscount = (appliedDiscount > 0 && subtotal > 0) ? appliedDiscount : 0;
 
   const totalDiscount = Math.min(subtotal, promoDiscount + cashlessDiscount + subscriptionDiscount);
-  const totalAmount = Math.max(0, subtotal + shippingFee - totalDiscount);
+  const wantInsurance = document.getElementById("order-insurance-check")?.checked !== false;
+  const insuranceFee = (items.length > 0 && wantInsurance) ? 1000 : 0;
+  const totalAmount = Math.max(0, subtotal + shippingFee - totalDiscount + insuranceFee);
 
   // Tính số tiền cần thanh toán / đặt cọc ngay
   let payableNow = totalAmount;
@@ -747,6 +763,7 @@ function priceCart() {
     discount: totalDiscount,
     cashless_discount: cashlessDiscount,
     subscription_discount: subscriptionDiscount,
+    insurance_fee: insuranceFee,
     total_amount: totalAmount,
     payable_now: payableNow,
     deposit_label: depositLabel,
@@ -796,6 +813,16 @@ function updateOrderSummary() {
       setText("summary-deposit-now", formatVND(priced.payable_now));
     } else {
       rowDeposit.classList.add("hidden");
+    }
+  }
+
+  const rowInsurance = document.getElementById("row-insurance");
+  if (rowInsurance) {
+    if (priced.insurance_fee > 0) {
+      rowInsurance.classList.remove("hidden");
+      setText("summary-insurance", `+${formatVND(priced.insurance_fee)}`);
+    } else {
+      rowInsurance.classList.add("hidden");
     }
   }
 
@@ -942,7 +969,8 @@ async function handleOrderSubmit(e) {
     payment_method: paymentMethod,
     order_mode: selectedOrderMode,
     deposit_amount: priced.payable_now,
-    notes: (modePrefix + rawNotes).trim()
+    insurance_fee: priced.insurance_fee,
+    notes: (modePrefix + (priced.insurance_fee > 0 ? "[BẢO HIỂM ATVSTP +1K] " : "") + rawNotes).trim()
   };
 
   const btn = document.getElementById("btn-submit-order");
@@ -954,6 +982,7 @@ async function handleOrderSubmit(e) {
     showSuccessModal(order, priced);
     cart = {};
     updateCartUI();
+    renderEsgCircularSection();
     document.getElementById("preorder-form")?.reset();
     setDeliveryType(selectedDeliveryType);
     loadBatchInfo().catch(() => {});
@@ -1006,4 +1035,92 @@ window.closeSuccessModal = function () {
 
 window.toggleMobileNav = function () {
   document.getElementById("mobile-menu")?.classList.toggle("hidden");
+};
+
+// ================= TRỤ CỘT 6 & 8: BẢO HIỂM ATVSTP, PHÁP LÝ & KINH TẾ TUẦN HOÀN ESG =================
+function renderEsgCircularSection() {
+  if (!window.db) return;
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+
+  if (typeof window.db.getEsgMetrics === "function") {
+    const m = window.db.getEsgMetrics();
+    setText("esg-stat-recycled", `${Number(m.total_waste_recycled_kg || 217).toFixed(0)} kg`);
+    setText("esg-stat-co2", `-${Number(m.co2_saved_kg || 412).toFixed(0)} kg`);
+    setText("esg-stat-saved", formatVND(m.disposal_cost_saved_vnd || 3250000));
+  }
+
+  if (typeof window.db.getInsuranceFund === "function") {
+    const f = window.db.getInsuranceFund();
+    setText("esg-stat-insurance", formatVND(f.balance || 4850000));
+  }
+
+  const grid = document.getElementById("esg-partners-grid");
+  if (grid && typeof window.db.getEsgPartners === "function") {
+    const partners = window.db.getEsgPartners();
+    grid.innerHTML = partners.map(pt => {
+      const isBsf = pt.partner_type === "BSF_FARM";
+      const badgeLabel = isBsf ? "🪰 Trại Ruồi Lính Đen (BSF)" : pt.partner_type === "ORGANIC_FERTILIZER" ? "🌱 Xưởng Phân Bón Hữu Cơ" : "🐄 Hợp Tác Xã Chăn Nuôi Sinh Học";
+      return `
+        <div class="p-4 rounded-2xl bg-emerald-900/60 border border-emerald-700/70 flex flex-col justify-between gap-2.5">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-[#fef08a] border border-emerald-400/40">${badgeLabel}</span>
+              <span class="text-[10px] font-bold text-emerald-300">✓ Đã thu gom ${Number(pt.collected_kg || 0)} kg</span>
+            </div>
+            <h4 class="font-black text-sm text-white">${escapeHTML(pt.org_name)}</h4>
+            <p class="text-[11px] text-emerald-100/80 mt-1">📍 ${escapeHTML(pt.address)} • 📞 ${escapeHTML(pt.phone)}</p>
+          </div>
+          <div class="pt-2 border-t border-emerald-800/80 flex items-center justify-between text-[11px]">
+            <span class="text-emerald-200 font-semibold">${escapeHTML(pt.pricing_note || "Thu gom miễn phí")}</span>
+            <span class="text-[#fef08a] font-black">ESG Active</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+}
+
+window.openEsgPartnerModal = function () {
+  document.getElementById("esg-partner-modal")?.classList.remove("hidden");
+};
+
+window.closeEsgPartnerModal = function () {
+  document.getElementById("esg-partner-modal")?.classList.add("hidden");
+};
+
+window.handleRegisterEsgPartner = function (e) {
+  e.preventDefault();
+  const val = id => (document.getElementById(id)?.value || "").trim();
+  const org_name = val("esg-org-name");
+  const partner_type = val("esg-partner-type") || "BSF_FARM";
+  const contact_name = val("esg-contact-name");
+  const phone = val("esg-phone");
+  const capacity_kg_per_day = Number(val("esg-capacity") || 100);
+  const address = val("esg-address");
+  const pricing_note = val("esg-pricing-note");
+
+  if (!org_name || !phone) return;
+  if (window.db && typeof window.db.registerEsgPartner === "function") {
+    window.db.registerEsgPartner({
+      org_name,
+      partner_type,
+      contact_name,
+      phone,
+      capacity_kg_per_day,
+      address,
+      pricing_note
+    });
+  }
+  renderEsgCircularSection();
+  closeEsgPartnerModal();
+  document.getElementById("esg-partner-form")?.reset();
+  alert("🎉 Đăng ký Đối tác Kinh tế Tuần hoàn (ESG) thành công! Khi Hub AgriConnect có nông sản dập/quá chín, hệ thống sẽ tự động báo đơn vị của bạn đến thu gom.");
+};
+
+window.openTosLegalModal = function () {
+  document.getElementById("tos-legal-modal")?.classList.remove("hidden");
+};
+
+window.closeTosLegalModal = function () {
+  document.getElementById("tos-legal-modal")?.classList.add("hidden");
 };
