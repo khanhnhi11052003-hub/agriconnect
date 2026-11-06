@@ -31,32 +31,57 @@ window.getSiteUrl = function () {
   return ""; // Mở file trực tiếp trên máy -> không có địa chỉ web
 };
 
-// Dữ liệu mẫu cho chế độ DEMO (⚠️ giá & thông tin là MẪU, cần cập nhật)
+// Dữ liệu mẫu cho chế độ DEMO (Đầy đủ đặc sản đất đỏ Bình Phước)
 const DEMO_PRODUCTS = [
   {
-    id: "p1", name: "Sầu Riêng Ri6 Bình Phước (Cơm Vàng Hạt Lép)", category: "TraiCay",
-    description: "Sầu riêng hái đủ độ già tại vườn Bình Phước, cơm vàng, béo. Đổi trả nếu sượng theo chính sách của nhóm.",
+    id: "p1", name: "Sầu Riêng Ri6 Đất Đỏ Bình Phước (Cơm Vàng Hạt Lép)", category: "TraiCay",
+    description: "Sầu riêng già chín rụng tự nhiên từ Phước Long - Bình Phước. Múi vàng ươm, dẻo béo ngậy, hạt lép ngọt đậm đà, bao ăn 1 đổi 1 nếu sượng.",
     unit: "kg", weight_kg: 1, price_original: 80000, price_sale: 125000, image_url: "images/hero-fruits.jpg", is_available: true
   },
   {
-    id: "p2", name: "Măng Cụt Bình Phước Chín Cây", category: "TraiCay",
-    description: "Măng cụt hái lựa tại vườn, giòn ngọt, đóng thùng lót giấy chống dập.",
+    id: "p2", name: "Măng Cụt Cổ Thụ Bình Phước Chín Cây", category: "TraiCay",
+    description: "Măng cụt vườn cổ thụ hái chín cành, vỏ mỏng rám phấn tự nhiên, múi trắng tinh khiết, giòn ngọt thanh mát, không mủ sượng.",
     unit: "kg", weight_kg: 1, price_original: 45000, price_sale: 75000, image_url: "images/mangosteen-basket.jpg", is_available: true
   },
   {
-    id: "p3", name: "Sầu Riêng Ri6 Nguyên Quả Tuyển Chọn", category: "TraiCay",
-    description: "Trái tuyển 2.0 - 2.8kg, tính tiền theo cân thực tế khi đóng thùng.",
-    unit: "kg", weight_kg: 1, price_original: 85000, price_sale: 130000, image_url: "images/durian-warehouse.jpg", is_available: true
+    id: "p3", name: "Chôm Chôm Nhãn Bình Phước (Giòn Ngọt Tróc Hạt)", category: "TraiCay",
+    description: "Chôm chôm nhãn râu vàng ửng đỏ, cơm dày ráo nước, tróc hạt hoàn toàn, vị ngọt đậm thơm lừng giòn sần sật.",
+    unit: "kg", weight_kg: 1, price_original: 28000, price_sale: 45000, image_url: "images/chomchom.jpg", is_available: true
   },
   {
-    id: "p4", name: "Combo 1: Bạn Trẻ Giảng Đường", category: "Combo",
-    description: "2kg Măng cụt tươi Bình Phước, phù hợp nhóm bạn cùng phòng.",
-    unit: "combo", weight_kg: 2, price_original: 90000, price_sale: 145000, image_url: "images/mangosteen-harvest.jpg", is_available: true
+    id: "p4", name: "Nhãn Xuồng Cơm Vàng Bình Phước (Dày Cùi Mọng Nước)", category: "TraiCay",
+    description: "Trái to tròn vỏ vàng da bò, cơm dày ráo ngọt lịm mang hương thơm đặc trưng của vùng đất đỏ bazan màu mỡ.",
+    unit: "kg", weight_kg: 1, price_original: 40000, price_sale: 65000, image_url: "images/nhan.jpg", is_available: true
   },
   {
-    id: "p5", name: "Combo 2: Thầy Cô & Gia Đình", category: "Combo",
-    description: "1 trái Sầu riêng Ri6 (2.2 - 2.5kg) + 2kg Măng cụt, đóng thùng carton dán tem QR.",
+    id: "p5", name: "Bòn Bon Đất Đỏ Bình Phước (Chùm Mọng Ngọt Thanh)", category: "TraiCay",
+    description: "Bòn bon chùm quả căng mọng sai trĩu cành, múi trong veo ngậm nước, vị ngọt thanh mát xen lẫn vị chua nhẹ tự nhiên.",
+    unit: "kg", weight_kg: 1, price_original: 35000, price_sale: 55000, image_url: "images/bonbon.jpg", is_available: true
+  },
+  {
+    id: "p6", name: "Dâu Da Đất Vàng Bình Phước (Chua Ngọt Dịu Mát)", category: "TraiCay",
+    description: "Dâu da đất truyền thống trái tròn vàng óng mọc từ thân cây cổ thụ, múi mọng nước vị chua ngọt hài hòa ăn hoài không ngán.",
+    unit: "kg", weight_kg: 1, price_original: 20000, price_sale: 35000, image_url: "images/dauda.jpg", is_available: true
+  },
+  {
+    id: "p7", name: "Bơ Sáp Dẻo Bình Phước Tuyển Chọn (Béo Quánh Vàng Ươm)", category: "TraiCay",
+    description: "Bơ sáp đất đỏ trái dài vỏ mỏng hạt nhỏ, cơm dẻo quánh vàng ươm béo ngậy tự nhiên, giàu dinh dưỡng và vitamin lành tính.",
+    unit: "kg", weight_kg: 1, price_original: 30000, price_sale: 50000, image_url: "images/bo-sap.jpg", is_available: true
+  },
+  {
+    id: "p8", name: "Combo 1: Bạn Trẻ Giảng Đường (Măng Cụt + Chôm Chôm + Dâu Da)", category: "Combo",
+    description: "Set 3kg gồm 1kg Măng cụt + 1kg Chôm chôm nhãn + 1kg Dâu da đất. Tiết kiệm, đủ vị chua ngọt thanh mát cho nhóm bạn sinh viên.",
+    unit: "combo", weight_kg: 3, price_original: 93000, price_sale: 145000, image_url: "images/mangosteen-harvest.jpg", is_available: true
+  },
+  {
+    id: "p9", name: "Combo 2: Thầy Cô & Gia Đình (1 Trái Sầu Riêng + 2kg Măng Cụt)", category: "Combo",
+    description: "1 quả Sầu riêng Ri6 (2.2 - 2.5kg) + 2kg Măng cụt cổ thụ chín cây, đóng thùng carton dán tem QR sang trọng, bao ăn tận bàn.",
     unit: "combo", weight_kg: 4.5, price_original: 260000, price_sale: 395000, image_url: "images/durian-pile.jpg", is_available: true
+  },
+  {
+    id: "p10", name: "Combo 3: Đại Tiệc Vườn Nhà (Sầu Riêng + Măng Cụt + Chôm Chôm + Nhãn)", category: "Combo",
+    description: "Thưởng thức trọn vẹn 4 đặc sản nổi tiếng nhất: 1 quả Sầu riêng (~2kg) + 1kg Măng cụt + 1kg Chôm chôm nhãn + 1kg Nhãn xuồng cơm vàng.",
+    unit: "combo", weight_kg: 5, price_original: 320000, price_sale: 485000, image_url: "images/hero-fruits.jpg", is_available: true
   }
 ];
 

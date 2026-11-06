@@ -116,29 +116,29 @@ async function loadProducts() {
     const price = formatVND(p.price_sale);
 
     const card = document.createElement("div");
-    card.className = "bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-md card-hover flex flex-col";
+    card.className = "bg-white rounded-3xl overflow-hidden border border-[#dce9cb] shadow-md card-hover flex flex-col";
     card.innerHTML = `
-      <div class="relative h-60 overflow-hidden bg-slate-100 group">
-        <img src="${img}" alt="${name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-        <span class="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-amber-500" : "bg-emerald-600"} text-white shadow-md">
-          ${isCombo ? "Combo" : "Trái cây vườn"}
+      <div class="relative h-60 overflow-hidden bg-[#f5f9ee] group">
+        <img src="${img}" alt="${name}" loading="lazy" class="w-full h-full object-cover fruit-pop transition-transform duration-500 group-hover:scale-105">
+        <span class="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-[#d97706]" : "bg-[#5a8d29]"} text-white shadow-md">
+          ${isCombo ? "Combo Tiết Kiệm" : "Trái cây vườn"}
         </span>
         <span class="absolute bottom-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-lg bg-black/60 text-white backdrop-blur-md">
-          <i class="fa-solid fa-location-dot text-emerald-400 mr-1"></i>Bình Phước
+          <i class="fa-solid fa-location-dot text-[#a0dc5c] mr-1"></i>Bình Phước
         </span>
       </div>
       <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          <h3 class="font-bold text-lg text-slate-900">${name}</h3>
-          <p class="text-xs text-slate-500 mt-2 leading-relaxed">${desc}</p>
+          <h3 class="font-bold text-lg text-[#243912]">${name}</h3>
+          <p class="text-xs text-[#597044] mt-2 leading-relaxed">${desc}</p>
         </div>
-        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <div class="pt-4 border-t border-[#edf4e3] flex items-center justify-between">
           <div>
-            <span class="text-xs text-slate-400 block">Giá đặt trước:</span>
-            <span class="text-xl font-black text-emerald-700">${price}</span>
-            <span class="text-xs text-slate-400"> / ${unit}</span>
+            <span class="text-xs text-[#6e8558] block">Giá đặt trước:</span>
+            <span class="text-xl font-black text-[#466e20]">${price}</span>
+            <span class="text-xs text-[#6e8558]"> / ${unit}</span>
           </div>
-          <button type="button" data-add="${pid}" class="btn-add bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-emerald-200 transition-all flex items-center gap-1.5 active:scale-95">
+          <button type="button" data-add="${pid}" class="btn-add bg-[#f1f7e9] hover:bg-[#5a8d29] text-[#466e20] hover:text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-[#d2e7b8] transition-all flex items-center gap-1.5 active:scale-95 shadow-sm">
             <i class="fa-solid fa-cart-plus"></i> Chọn mua
           </button>
         </div>
@@ -148,19 +148,19 @@ async function loadProducts() {
 
     if (cartSelectorsEl) {
       const row = document.createElement("div");
-      row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/70";
+      row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#dce9cb]";
       row.innerHTML = `
         <div class="flex items-center gap-3 min-w-0">
-          <img src="${img}" alt="" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">
+          <img src="${img}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#d2e7b8] shrink-0">
           <div class="min-w-0">
-            <h4 class="font-bold text-sm text-slate-800 truncate">${name}</h4>
-            <p class="text-xs text-emerald-700 font-semibold">${price} / ${unit}</p>
+            <h4 class="font-bold text-sm text-[#243912] truncate">${name}</h4>
+            <p class="text-xs text-[#5a8d29] font-bold">${price} / ${unit}</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button type="button" data-dec="${pid}" aria-label="Giảm" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-100">-</button>
-          <span data-qty="${pid}" class="w-8 text-center font-bold text-sm text-slate-800">0</span>
-          <button type="button" data-inc="${pid}" aria-label="Tăng" class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold hover:bg-emerald-700">+</button>
+          <button type="button" data-dec="${pid}" aria-label="Giảm" class="w-8 h-8 rounded-lg bg-[#f5f9ee] border border-[#d2e7b8] text-[#345517] font-bold hover:bg-[#e7f2da]">-</button>
+          <span data-qty="${pid}" class="w-8 text-center font-bold text-sm text-[#243912]">0</span>
+          <button type="button" data-inc="${pid}" aria-label="Tăng" class="w-8 h-8 rounded-lg bg-[#5a8d29] text-white font-bold hover:bg-[#466e20]">+</button>
         </div>
       `;
       cartSelectorsEl.appendChild(row);
