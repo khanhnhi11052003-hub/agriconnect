@@ -19,7 +19,7 @@ window.APP_CONFIG = {
 
   // Địa chỉ website chính thức (sau khi deploy). Ví dụ: "https://agriconnect.vercel.app"
   // Để trống: tự lấy địa chỉ hiện tại (khi mở file trực tiếp trên máy, mã QR trên tem sẽ không dùng được).
-  SITE_URL: "",
+  SITE_URL: "https://agriconnect-yagt.vercel.app",
 
   // ---------------- VietQR (CẬP NHẬT SAU) ----------------
   // Mã ngân hàng: MB, VCB, TCB, ACB, VPB, TPB, BIDV, ICB (VietinBank)...
