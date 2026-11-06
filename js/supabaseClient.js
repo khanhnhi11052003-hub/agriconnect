@@ -36,7 +36,7 @@ const DEMO_PRODUCTS = [
   {
     id: "p1", name: "Sầu Riêng Ri6 Bình Phước (Cơm Vàng Hạt Lép)", category: "TraiCay",
     description: "Sầu riêng hái đủ độ già tại vườn Bình Phước, cơm vàng, béo. Đổi trả nếu sượng theo chính sách của nhóm.",
-    unit: "kg", weight_kg: 1, price_original: 80000, price_sale: 125000, image_url: "images/durian-open.jpg", is_available: true
+    unit: "kg", weight_kg: 1, price_original: 80000, price_sale: 125000, image_url: "images/hero-fruits.jpg", is_available: true
   },
   {
     id: "p2", name: "Măng Cụt Bình Phước Chín Cây", category: "TraiCay",
@@ -131,7 +131,7 @@ class AgriDB {
   }
 
   initDemoData() {
-    if (!localStorage.getItem(LS.products)) localStorage.setItem(LS.products, JSON.stringify(DEMO_PRODUCTS));
+    localStorage.setItem(LS.products, JSON.stringify(DEMO_PRODUCTS));
     if (!localStorage.getItem(LS.orders)) localStorage.setItem(LS.orders, JSON.stringify(DEMO_ORDERS));
     if (!localStorage.getItem(LS.batch)) {
       localStorage.setItem(LS.batch, JSON.stringify({
