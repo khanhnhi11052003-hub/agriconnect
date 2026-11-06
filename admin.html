@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Trị Đơn Hàng & Logistics - AgriConnect Bình Phước</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- ================= TOP ADMIN NAVBAR ================= -->
+  <header class="bg-slate-900 text-white sticky top-0 z-40 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 group">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white text-sm shadow">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <span class="font-extrabold text-base tracking-tight text-white">Agri<span class="text-emerald-400">Connect</span></span>
+        </a>
+        <span class="text-[10px] uppercase font-bold tracking-wider bg-slate-800 text-emerald-400 px-2 py-0.5 rounded border border-slate-700">
+          Admin Portal & Logistics
+        </span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-globe"></i>
+          <span>Xem Trang Khách Hàng</span>
+        </a>
+        <a href="trace.html" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-qrcode"></i>
+          <span>Quét Tem QR</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN ADMIN DASHBOARD ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Title & Logistics Model Banner -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+      <div class="space-y-1">
+        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900">
+          Điều Phối Đơn Hàng & Báo Cáo Tài Chính
+        </h1>
+        <p class="text-xs text-slate-500">
+          Mô hình: Tuyến chính xe khách QL13 (Bình Phước ➔ TP.HCM) & Chặng cuối giao đa điểm Ahamove / Lalamove
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="exportMultiDropRoute()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-route"></i>
+          <span>Xuất Lộ Trình Shipper</span>
+        </button>
+        <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-file-excel"></i>
+          <span>Xuất File Excel</span>
+        </button>
+        <button onclick="printQRLabels()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i>
+          <span>In Nhãn Thùng Hàng</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Financial Metrics (Unit Economics for Pitching / Research) -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Tổng Doanh Thu</span>
+        <div id="metric-revenue" class="text-xl sm:text-2xl font-black text-slate-900">0 đ</div>
+        <p id="metric-order-count" class="text-[11px] text-slate-500 mt-1">0 đơn đặt trước</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Trả Nhà Vườn (Giá Vốn)</span>
+        <div id="metric-farm-pay" class="text-xl sm:text-2xl font-black text-amber-600">0 đ</div>
+        <p class="text-[11px] text-slate-500 mt-1">Thu mua tại vườn Bình Phước</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Chi Phí Vận Chuyển</span>
+        <div id="metric-logistics-cost" class="text-xl sm:text-2xl font-black text-blue-600">0 đ</div>
+        <p class="text-[11px] text-slate-500 mt-1">Xe khách QL13 + Shipper đa điểm</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Lợi Nhuận Ròng</span>
+        <div id="metric-net-profit" class="text-xl sm:text-2xl font-black text-emerald-700">0 đ</div>
+        <p id="metric-margin" class="text-[11px] font-bold text-emerald-600 mt-1">Biên lợi nhuận: 0%</p>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Tổng Số Kg Đã Gom</span>
+        <div id="metric-total-kg" class="text-xl sm:text-2xl font-black text-purple-700">0 kg</div>
+        <p class="text-[11px] text-slate-500 mt-1">Chuyến hàng xe khách tuần</p>
+      </div>
+
+    </div>
+
+    <!-- Orders Table Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      
+      <!-- Filter Bar -->
+      <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 bg-slate-50/60">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-emerald-600"></i>
+          <h2 class="text-sm font-bold text-slate-900">Danh Sách Đơn Đặt Trước Nông Sản</h2>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-slate-500 font-medium">Đối tượng:</span>
+            <select id="filter-role" onchange="renderOrdersTable()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-700 text-xs">
+              <option value="ALL">Tất cả đối tượng</option>
+              <option value="GiangVien">Thầy Cô</option>
+              <option value="SinhVien">Sinh Viên</option>
+              <option value="CanBo">Cán Bộ</option>
+              <option value="Khac">Khách Ngoài</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-slate-500 font-medium">Thanh toán:</span>
+            <select id="filter-status" onchange="renderOrdersTable()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-700 text-xs">
+              <option value="ALL">Tất cả trạng thái</option>
+              <option value="PAID">Đã Thanh Toán</option>
+              <option value="UNPAID">Chưa Thanh Toán / COD</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+            <tr>
+              <th class="py-3 px-4">Mã Đơn</th>
+              <th class="py-3 px-4">Khách Hàng</th>
+              <th class="py-3 px-4">Đối Tượng</th>
+              <th class="py-3 px-4">Hình Thức & Địa Chỉ</th>
+              <th class="py-3 px-4">Sản Phẩm</th>
+              <th class="py-3 px-4">Tổng Tiền</th>
+              <th class="py-3 px-4">Thanh Toán</th>
+              <th class="py-3 px-4 text-center">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <!-- Dynamically populated via js/admin.js -->
+          </tbody>
+        </table>
+
+        <div id="empty-state" class="hidden p-12 text-center text-slate-400 space-y-2">
+          <i class="fa-solid fa-inbox text-4xl"></i>
+          <p class="text-sm font-semibold">Chưa có đơn hàng nào khớp với điều kiện lọc.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Print Area for Shipping Labels (Hidden by default, shown when printing) -->
+    <div id="qr-print-area" class="hidden p-6">
+      <div id="qr-labels-container" class="space-y-6"></div>
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-slate-400 text-xs">
+    Bảng quản trị hệ thống AgriConnect • Vận hành & Lập trình trên Local • Đồng bộ Supabase & Vercel
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
