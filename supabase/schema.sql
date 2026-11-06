@@ -402,7 +402,6 @@ SELECT 'Đợt Gom Hàng #01: Sầu Riêng Ri6 & Măng Cụt Bình Phước', 60
 WHERE NOT EXISTS (SELECT 1 FROM batches);
 
 -- ---------------------------------------------------------------
--- 8. THÊM EMAIL QUẢN TRỊ (BẮT BUỘC - sửa email rồi chạy dòng này)
---    Sau đó vào Authentication -> Users -> Add user để tạo tài khoản với đúng email này.
+-- 8. THÊM EMAIL QUẢN TRỊ (BẮT BUỘC)
 -- ---------------------------------------------------------------
--- INSERT INTO admin_users (email) VALUES ('email-quan-tri-cua-ban@gmail.com') ON CONFLICT DO NOTHING;
+INSERT INTO admin_users (email) VALUES ('khanhnhi11052003@gmail.com') ON CONFLICT DO NOTHING;
