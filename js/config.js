@@ -30,11 +30,21 @@ window.APP_CONFIG = {
     TEMPLATE: "compact2"
   },
 
-  // ---------------- Phí giao hàng ----------------
-  // ⚠️ HOME_DELIVERY_FEE phải trùng với số 20000 trong hàm compute_order_totals() của schema.sql
+  // ---------------- Phí giao hàng & Ưu đãi ra mắt ----------------
+  // Khách chi trả phí giao tận nhà (chuẩn chi phí shipper thực tế hiện nay tại TP.HCM: 25.000 đ)
+  // Ưu đãi ra mắt: Đơn từ 250.000 đ được TẶNG 100% PHÍ SHIP TẬN NHÀ (FREESHIP)!
   SHIPPING: {
     CAMPUS_FEE: 0,
-    HOME_DELIVERY_FEE: 20000
+    HOME_DELIVERY_FEE: 25000,
+    FREESHIP_THRESHOLD: 250000
+  },
+
+  // ---------------- Khuyến mãi khi mới ra mắt ----------------
+  PROMOTION: {
+    LAUNCH_CODE: "AGRICONNECT",
+    DISCOUNT_AMOUNT: 10000,
+    GIFT_NOTE: "Tặng kèm 0.5kg Dâu da đất hoặc Chôm chôm nhãn cho 50 đơn hàng đầu tiên!",
+    WARRANTY_NOTE: "Bao ăn 1 đổi 1 tận nơi nếu sượng, hư hỏng 100% miễn phí"
   },
 
   // ---------------- Giả định tài chính (dùng cho bảng tính ở trang Admin) ----------------

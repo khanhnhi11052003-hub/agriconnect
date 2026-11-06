@@ -1,10 +1,15 @@
 /**
  * LOGIC TRANG KHÁCH HÀNG - AGRICONNECT BÌNH PHƯỚC
+ * - Chọn số lượng trực tiếp tại hình ảnh nông sản
+ * - Đồng bộ giỏ hàng nổi Sticky Bottom Bar & danh sách tóm tắt
+ * - Khách chi trả cước 25.000 đ chặng cuối giao tận nhà
+ * - Ưu đãi khai trương: Freeship đơn từ 250.000 đ & Giảm 10.000 đ với mã AGRICONNECT
  */
 
 let currentProducts = [];
 let cart = {}; // { productId: quantity }
 let selectedDeliveryType = "HOME"; // "HOME" | "CAMPUS"
+let appliedDiscount = 10000; // Mặc định mã AGRICONNECT giảm 10.000 đ
 
 document.addEventListener("DOMContentLoaded", async () => {
   initCountdownTimer();
@@ -51,7 +56,6 @@ async function loadBatchInfo() {
 }
 
 // ================= ĐẾM NGƯỢC & NGÀY GIAO =================
-// Hạn chót: 23:59:59 Thứ Năm. Đặt từ Thứ 6 -> Chủ Nhật sẽ vào đợt tuần sau.
 function getNextThursdayDeadline(now = new Date()) {
   const day = now.getDay(); // 0 CN ... 6 T7
   const diff = (4 - day + 7) % 7;
@@ -127,12 +131,24 @@ function renderProductGrid() {
     const unit = escapeHTML(p.unit);
     const pid = escapeHTML(p.id);
     const price = formatVND(p.price_sale);
+    const qty = cart[p.id] || 0;
 
     const highlightsHtml = Array.isArray(p.highlights) && p.highlights.length > 0
       ? `<div class="flex flex-wrap gap-1.5 mt-2.5">
           ${p.highlights.map(h => `<span class="inline-flex items-center gap-1 text-[11px] font-bold bg-[#e6f9d7] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099] shadow-2xs"><i class="fa-solid fa-circle-check text-[#3ba117] text-[10px]"></i>${escapeHTML(h)}</span>`).join("")}
         </div>`
       : "";
+
+    // Nút chọn mua hoặc bộ tăng giảm số lượng ngay tại ảnh sản phẩm
+    const actionBtnHtml = qty > 0
+      ? `<div class="flex items-center gap-1.5 bg-[#f0fae8] p-1 rounded-2xl border-2 border-[#3ba117] shadow-xs">
+          <button type="button" data-dec="${pid}" aria-label="Giảm số lượng" class="w-8 h-8 rounded-xl bg-white text-[#256314] font-black hover:bg-[#e1f9cf] flex items-center justify-center border border-[#c8edab] shadow-2xs active:scale-95 text-base transition-transform">-</button>
+          <span class="w-7 text-center font-black text-sm text-[#0f240d]">${qty}</span>
+          <button type="button" data-inc="${pid}" aria-label="Tăng số lượng" class="w-8 h-8 rounded-xl bg-[#3ba117] text-white font-black hover:bg-[#256314] flex items-center justify-center shadow-xs active:scale-95 text-base transition-transform">+</button>
+        </div>`
+      : `<button type="button" data-add="${pid}" class="btn-add bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e8213] hover:to-[#4aa720] text-white font-extrabold text-xs px-3.5 sm:px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 active:scale-95 shadow-md shadow-[#44a821]/20 whitespace-nowrap">
+          <i class="fa-solid fa-cart-plus"></i> Chọn Mua
+        </button>`;
 
     const card = document.createElement("div");
     card.className = "bg-white rounded-3xl overflow-hidden border border-[#d2f0b6] shadow-md card-hover flex flex-col";
@@ -142,25 +158,26 @@ function renderProductGrid() {
         <span class="absolute top-3 left-3 text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-amber-500" : "bg-[#3ba117]"} text-white shadow-md">
           ${isCombo ? "Combo Tiết Kiệm" : "Trái cây vườn"}
         </span>
+        ${qty > 0 ? `<span class="absolute top-3 right-3 text-[11px] font-black px-2.5 py-1 rounded-full bg-[#1c560e] text-[#fef08a] shadow-md border border-[#fef08a]/40 animate-pulse">✓ Đã chọn ${qty} ${unit}</span>` : ""}
         <span class="absolute bottom-3 right-3 text-xs font-bold px-2.5 py-1 rounded-lg bg-black/65 text-white backdrop-blur-md">
           <i class="fa-solid fa-location-dot text-[#7be038] mr-1"></i>Bình Phước
         </span>
       </div>
-      <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+      <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
         <div>
           <h3 class="font-black text-lg text-[#0f240d] leading-snug">${name}</h3>
           ${highlightsHtml}
-          <p class="text-xs text-[#4d6b33] mt-3 leading-relaxed">${desc}</p>
+          <p class="text-xs text-[#4d6b33] mt-2.5 leading-relaxed">${desc}</p>
         </div>
-        <div class="pt-4 border-t border-[#edf7e4] flex items-center justify-between">
+        <div class="pt-3.5 border-t border-[#edf7e4] flex items-center justify-between gap-2">
           <div>
             <span class="text-xs text-[#5f7e45] font-medium block">Giá đặt trước:</span>
             <span class="text-xl font-black text-[#22720d]">${price}</span>
             <span class="text-xs text-[#5f7e45]"> / ${unit}</span>
           </div>
-          <button type="button" data-add="${pid}" class="btn-add bg-[#f0fae8] hover:bg-gradient-to-r hover:from-[#389e18] hover:to-[#59c228] text-[#256314] hover:text-white font-extrabold text-xs px-4 py-2.5 rounded-xl border border-[#c8edab] transition-all flex items-center gap-1.5 active:scale-95 shadow-sm">
-            <i class="fa-solid fa-cart-plus"></i> Chọn mua
-          </button>
+          <div class="shrink-0">
+            ${actionBtnHtml}
+          </div>
         </div>
       </div>
     `;
@@ -171,69 +188,146 @@ function renderProductGrid() {
 async function loadProducts() {
   currentProducts = await window.db.getProducts();
 
-  const cartSelectorsEl = document.getElementById("cart-item-selectors");
-  if (cartSelectorsEl) cartSelectorsEl.innerHTML = "";
-
   if (currentProducts.length === 0) {
     showPageError("Hiện chưa có sản phẩm mở bán trong đợt này.");
     return;
   }
 
   renderProductGrid();
-
-  if (cartSelectorsEl) {
-    currentProducts.forEach(p => {
-      const name = escapeHTML(p.name);
-      const img = escapeHTML(p.image_url);
-      const unit = escapeHTML(p.unit);
-      const pid = escapeHTML(p.id);
-      const price = formatVND(p.price_sale);
-
-      const row = document.createElement("div");
-      row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#d2f0b6] shadow-2xs";
-      row.innerHTML = `
-        <div class="flex items-center gap-3 min-w-0">
-          <img src="${img}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#c8edab] shrink-0">
-          <div class="min-w-0">
-            <h4 class="font-black text-sm text-[#0f240d] truncate">${name}</h4>
-            <p class="text-xs text-[#2e8213] font-bold">${price} / ${unit}</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button type="button" data-dec="${pid}" aria-label="Giảm" class="w-8 h-8 rounded-lg bg-[#f0fae8] border border-[#c8edab] text-[#256314] font-black hover:bg-[#e1f9cf]">-</button>
-          <span data-qty="${pid}" class="w-8 text-center font-black text-sm text-[#0f240d]">0</span>
-          <button type="button" data-inc="${pid}" aria-label="Tăng" class="w-8 h-8 rounded-lg bg-[#3ba117] text-white font-black hover:bg-[#2d7d12] shadow-sm">+</button>
-        </div>
-      `;
-      cartSelectorsEl.appendChild(row);
-    });
-  }
-
-  updateCartUI();
+  renderSelectedCartItems();
+  updateStickyCartBar();
 }
 
 // ================= GIỎ HÀNG =================
 function changeQty(productId, delta) {
-  const updated = Math.min(50, Math.max(0, (cart[productId] || 0) + delta));
-  if (updated === 0) delete cart[productId];
-  else cart[productId] = updated;
+  const current = cart[productId] || 0;
+  const updated = Math.min(50, Math.max(0, current + delta));
+  if (updated === 0) {
+    delete cart[productId];
+  } else {
+    cart[productId] = updated;
+  }
   updateCartUI();
 }
 
 function updateCartUI() {
-  document.querySelectorAll("[data-qty]").forEach(el => {
-    el.innerText = cart[el.getAttribute("data-qty")] || 0;
-  });
+  // 1. Cập nhật số lượng trên các thẻ sản phẩm trong mục Trái Cây Vườn
+  renderProductGrid();
+
+  // 2. Cập nhật danh sách các món đã chọn trong Pre-order Form
+  renderSelectedCartItems();
+
+  // 3. Cập nhật thanh giỏ hàng nổi Sticky Cart Bar
+  updateStickyCartBar();
+
+  // 4. Tính toán lại tổng tiền, phí ship và ưu đãi
   updateOrderSummary();
 }
+
+// Render danh sách sản phẩm khách đã bấm chọn vào Form đặt hàng
+function renderSelectedCartItems() {
+  const container = document.getElementById("cart-selected-items");
+  if (!container) return;
+
+  const selectedEntries = Object.entries(cart);
+  if (selectedEntries.length === 0) {
+    container.innerHTML = `
+      <div class="p-6 text-center rounded-2xl bg-[#f7fdf3] border border-dashed border-[#c8edab] space-y-2">
+        <i class="fa-solid fa-basket-shopping text-3xl text-[#7bb85b]"></i>
+        <p class="text-sm font-bold text-[#0f240d]">Bạn chưa chọn loại trái cây nào</p>
+        <p class="text-xs text-[#4d6b33]">Vui lòng bấm nút <strong>"+ Chọn Mua"</strong> ngay tại các hình ảnh nông sản ở phía trên trước khi điền thông tin.</p>
+        <a href="#products" class="inline-flex items-center gap-1.5 text-xs font-black text-[#256314] bg-[#e1f9cf] px-4 py-2 rounded-xl hover:bg-[#d2f0b6] transition-colors mt-2">
+          <i class="fa-solid fa-arrow-up"></i> Lên chọn nông sản yêu thích
+        </a>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = "";
+  selectedEntries.forEach(([id, qty]) => {
+    const p = currentProducts.find(x => String(x.id) === String(id));
+    if (!p) return;
+
+    const lineTotal = Number(p.price_sale) * qty;
+    const row = document.createElement("div");
+    row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#d2f0b6] shadow-2xs gap-3";
+    row.innerHTML = `
+      <div class="flex items-center gap-3 min-w-0">
+        <img src="${escapeHTML(p.image_url)}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#c8edab] shrink-0">
+        <div class="min-w-0">
+          <h4 class="font-black text-sm text-[#0f240d] truncate">${escapeHTML(p.name)}</h4>
+          <p class="text-xs text-[#2e8213] font-bold">${formatVND(p.price_sale)} / ${escapeHTML(p.unit)}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div class="flex items-center gap-1.5 bg-[#f0fae8] p-1 rounded-xl border border-[#c8edab]">
+          <button type="button" data-dec="${p.id}" aria-label="Giảm" class="w-7 h-7 rounded-lg bg-white text-[#256314] font-black hover:bg-[#e1f9cf] flex items-center justify-center border border-[#c8edab] shadow-2xs active:scale-95">-</button>
+          <span class="w-6 text-center font-black text-xs text-[#0f240d]">${qty}</span>
+          <button type="button" data-inc="${p.id}" aria-label="Tăng" class="w-7 h-7 rounded-lg bg-[#3ba117] text-white font-black hover:bg-[#256314] flex items-center justify-center shadow-xs active:scale-95">+</button>
+        </div>
+        <div class="text-right min-w-[70px] sm:min-w-[90px]">
+          <span class="font-black text-xs sm:text-sm text-[#22720d] block">${formatVND(lineTotal)}</span>
+          <span class="text-[10px] text-slate-400 block">${qty} ${escapeHTML(p.unit)}</span>
+        </div>
+        <button type="button" data-remove="${p.id}" title="Xóa món này" class="p-1.5 text-slate-400 hover:text-rose-600 transition-colors">
+          <i class="fa-solid fa-trash-can text-xs"></i>
+        </button>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+// Cập nhật thanh giỏ hàng nổi Sticky Bottom Bar
+function updateStickyCartBar() {
+  const bar = document.getElementById("sticky-cart-bar");
+  if (!bar) return;
+
+  const priced = priceCart();
+  const totalCount = priced.items.reduce((sum, item) => sum + item.qty, 0);
+
+  if (totalCount > 0) {
+    bar.classList.remove("translate-y-32", "opacity-0", "pointer-events-none");
+    bar.classList.add("translate-y-0", "opacity-100", "pointer-events-auto");
+
+    const countEl = document.getElementById("sticky-cart-count");
+    const totalEl = document.getElementById("sticky-cart-total");
+    const promoEl = document.getElementById("sticky-cart-promo");
+
+    if (countEl) countEl.innerText = `${totalCount} món (${priced.total_kg.toFixed(1)} kg)`;
+    if (totalEl) totalEl.innerText = formatVND(priced.subtotal);
+    if (promoEl) {
+      if (priced.subtotal >= 250000) {
+        promoEl.innerHTML = `<span class="text-[#fef08a] font-bold">🎉 Bạn được MIỄN PHÍ SHIP 100% tận nhà!</span>`;
+      } else {
+        const needed = 250000 - priced.subtotal;
+        promoEl.innerText = `Chọn thêm ${formatVND(needed)} để được FREESHIP!`;
+      }
+    }
+  } else {
+    bar.classList.add("translate-y-32", "opacity-0", "pointer-events-none");
+    bar.classList.remove("translate-y-0", "opacity-100", "pointer-events-auto");
+  }
+}
+
+window.focusCheckoutForm = function () {
+  const form = document.getElementById("preorder");
+  if (form) {
+    form.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      document.getElementById("cust-name")?.focus();
+    }, 400);
+  }
+};
 
 // ================= HÌNH THỨC GIAO HÀNG =================
 window.setDeliveryType = function (type) {
   selectedDeliveryType = type;
   const btnHome = document.getElementById("btn-delivery-home");
   const btnCampus = document.getElementById("btn-delivery-campus");
-  const active = ["bg-emerald-600", "text-white", "shadow-md", "border-emerald-600"];
-  const inactive = ["bg-white", "text-slate-700", "border-slate-200"];
+  const active = ["bg-[#5a8d29]", "text-white", "shadow-md", "border-[#5a8d29]"];
+  const inactive = ["bg-white", "text-slate-700", "border-[#d2e7b8]"];
 
   const [on, off] = type === "HOME" ? [btnHome, btnCampus] : [btnCampus, btnHome];
   on?.classList.add(...active); on?.classList.remove(...inactive);
@@ -244,11 +338,37 @@ window.setDeliveryType = function (type) {
   updateOrderSummary();
 };
 
+// ================= ÁP DỤNG MÃ GIẢM GIÁ RA MẮT =================
+window.applyPromoCode = function () {
+  const input = document.getElementById("promo-code-input");
+  const msgEl = document.getElementById("promo-code-msg");
+  const code = (input?.value || "").trim().toUpperCase();
+
+  if (!msgEl) return;
+  msgEl.classList.remove("hidden");
+
+  if (code === "AGRICONNECT") {
+    appliedDiscount = 10000;
+    msgEl.className = "text-xs font-bold text-[#256314] block mt-1";
+    msgEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-[#3ba117]"></i> Áp dụng thành công mã <strong>AGRICONNECT</strong>: Giảm ngay 10.000 đ cho đơn hàng khai trương!`;
+  } else if (!code) {
+    appliedDiscount = 0;
+    msgEl.classList.add("hidden");
+  } else {
+    appliedDiscount = 0;
+    msgEl.className = "text-xs font-bold text-rose-600 block mt-1";
+    msgEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Mã ưu đãi "${escapeHTML(code)}" không hợp lệ hoặc đã hết lượt áp dụng.`;
+  }
+
+  updateOrderSummary();
+};
+
 // ================= TÍNH TIỀN =================
 function priceCart() {
   const items = [];
   let subtotal = 0;
   let totalKg = 0;
+
   Object.entries(cart).forEach(([id, qty]) => {
     const p = currentProducts.find(x => String(x.id) === String(id));
     if (!p || qty <= 0) return;
@@ -257,17 +377,81 @@ function priceCart() {
     subtotal += line;
     totalKg += Number(p.weight_kg || 1) * qty;
   });
-  const shippingFee = items.length && selectedDeliveryType === "HOME"
-    ? Number(window.APP_CONFIG.SHIPPING?.HOME_DELIVERY_FEE ?? 20000) : 0;
-  return { items, subtotal, shipping_fee: shippingFee, total_amount: subtotal + shippingFee, total_kg: totalKg };
+
+  const homeFee = Number(window.APP_CONFIG?.SHIPPING?.HOME_DELIVERY_FEE ?? 25000);
+  const freeshipThreshold = Number(window.APP_CONFIG?.SHIPPING?.FREESHIP_THRESHOLD ?? 250000);
+
+  // Phí ship: Campus Hub = 0đ; Giao tận nhà: 25.000 đ (nếu >= 250k thì FREESHIP 0đ)
+  let shippingFee = 0;
+  if (items.length > 0 && selectedDeliveryType === "HOME") {
+    shippingFee = subtotal >= freeshipThreshold ? 0 : homeFee;
+  }
+
+  // Giảm giá ưu đãi khai trương
+  const discount = (appliedDiscount > 0 && subtotal > 0) ? Math.min(appliedDiscount, subtotal) : 0;
+  const totalAmount = Math.max(0, subtotal + shippingFee - discount);
+
+  return {
+    items,
+    subtotal,
+    shipping_fee: shippingFee,
+    discount,
+    total_amount: totalAmount,
+    total_kg: totalKg,
+    is_freeship: (selectedDeliveryType === "HOME" && subtotal >= freeshipThreshold && items.length > 0)
+  };
 }
 
 function updateOrderSummary() {
   const priced = priceCart();
   const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+
   setText("summary-subtotal", formatVND(priced.subtotal));
-  setText("summary-shipping", priced.shipping_fee > 0 ? formatVND(priced.shipping_fee) : "Miễn phí");
+
+  // Hiển thị phí ship
+  const shipEl = document.getElementById("summary-shipping");
+  if (shipEl) {
+    if (selectedDeliveryType === "CAMPUS") {
+      shipEl.innerText = "Miễn phí (Tại trường)";
+    } else if (priced.is_freeship) {
+      shipEl.innerText = "Miễn phí 0 đ (Tặng Freeship ≥250k)";
+    } else {
+      shipEl.innerText = "25.000 đ (Khách chi trả)";
+    }
+  }
+
+  // Hiển thị dòng giảm giá
+  const rowDiscount = document.getElementById("row-discount");
+  if (rowDiscount) {
+    if (priced.discount > 0) {
+      rowDiscount.classList.remove("hidden");
+      setText("summary-discount", `-${formatVND(priced.discount)}`);
+    } else {
+      rowDiscount.classList.add("hidden");
+    }
+  }
+
+  // Khối lượng & Tổng thanh toán
+  setText("summary-kg-badge", `${priced.total_kg.toFixed(1)} kg nông sản chín cây`);
   setText("summary-total", formatVND(priced.total_amount));
+
+  // Cập nhật badge Freeship trên form
+  const freeshipBadge = document.getElementById("freeship-badge");
+  if (freeshipBadge) {
+    freeshipBadge.classList.toggle("hidden", !priced.is_freeship);
+  }
+
+  // Cập nhật nhãn phí trên nút Home Delivery
+  const labelHome = document.getElementById("label-shipping-home");
+  if (labelHome) {
+    if (priced.is_freeship) {
+      labelHome.innerText = "FREESHIP 0 đ";
+      labelHome.className = "text-xs bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-md font-extrabold";
+    } else {
+      labelHome.innerText = "+25.000 đ (Khách trả)";
+      labelHome.className = "text-xs bg-black/20 text-white px-2 py-0.5 rounded-md font-extrabold";
+    }
+  }
 }
 
 function buildVietQRUrl(amount, memo) {
@@ -276,7 +460,6 @@ function buildVietQRUrl(amount, memo) {
     + `?amount=${Math.round(amount)}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(bank.ACCOUNT_NAME)}`;
 }
 
-// Mã đơn khó đoán: AC-YYMMDD-XXXXXX (6 ký tự ngẫu nhiên, bỏ các ký tự dễ nhầm 0/O, 1/I)
 function generateOrderCode() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const bytes = new Uint8Array(6);
@@ -295,18 +478,33 @@ function normalizePhone(raw) {
 function setupEventListeners() {
   document.getElementById("preorder-form")?.addEventListener("submit", handleOrderSubmit);
 
-  // Ủy quyền sự kiện cho các nút +/- và "Chọn mua"
+  // Tự động kiểm tra mã ưu đãi nếu đã có sẵn trong input
+  const promoInput = document.getElementById("promo-code-input");
+  if (promoInput && promoInput.value.trim().toUpperCase() === "AGRICONNECT") {
+    const msgEl = document.getElementById("promo-code-msg");
+    if (msgEl) {
+      msgEl.className = "text-xs font-bold text-[#256314] block mt-1";
+      msgEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-[#3ba117]"></i> Đã áp dụng mã <strong>AGRICONNECT</strong>: Giảm ngay 10.000 đ!`;
+    }
+  }
+
+  // Ủy quyền sự kiện cho các nút Chọn mua, Tăng, Giảm và Xóa món
   document.addEventListener("click", e => {
     const add = e.target.closest("[data-add]");
     const inc = e.target.closest("[data-inc]");
     const dec = e.target.closest("[data-dec]");
+    const remove = e.target.closest("[data-remove]");
+
     if (add) {
       changeQty(add.getAttribute("data-add"), 1);
-      document.getElementById("preorder")?.scrollIntoView({ behavior: "smooth" });
     } else if (inc) {
       changeQty(inc.getAttribute("data-inc"), 1);
     } else if (dec) {
       changeQty(dec.getAttribute("data-dec"), -1);
+    } else if (remove) {
+      const pid = remove.getAttribute("data-remove");
+      delete cart[pid];
+      updateCartUI();
     }
   });
 }
@@ -356,7 +554,7 @@ async function handleOrderSubmit(e) {
   }
 
   const priced = priceCart();
-  if (priced.items.length === 0) return showFormError("Vui lòng chọn ít nhất 1 sản phẩm.");
+  if (priced.items.length === 0) return showFormError("Vui lòng chọn ít nhất 1 sản phẩm trước khi gửi đơn hàng.");
   if (!consent) return showFormError("Vui lòng tick đồng ý cho nhóm sử dụng thông tin để giao hàng.");
 
   const orderInput = {
@@ -385,7 +583,6 @@ async function handleOrderSubmit(e) {
     setDeliveryType(selectedDeliveryType);
     loadBatchInfo().catch(() => {});
   } catch (err) {
-    // Không xóa giỏ hàng để khách thử lại
     showFormError("Chưa gửi được đơn: " + err.message);
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = btnHTML; }

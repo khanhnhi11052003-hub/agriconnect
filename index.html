@@ -70,54 +70,55 @@
   </div>
 
   <!-- ================= NAVBAR ================= -->
-  <header class="sticky top-0 z-50 glass-nav">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
+  <header class="sticky top-0 z-50 glass-nav bg-white/95 backdrop-blur-md border-b border-[#d2f0b6]">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4 flex-nowrap">
       
       <!-- Brand Logo -->
-      <a href="index.html" class="flex items-center gap-3 shrink-0 group">
-        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#389e18] to-[#63d428] flex items-center justify-center text-white shadow-md shadow-[#44a821]/30 group-hover:scale-105 transition-transform shrink-0">
-          <i class="fa-solid fa-seedling text-lg sm:text-xl"></i>
+      <a href="index.html" class="flex items-center gap-2 sm:gap-3 shrink-0 group">
+        <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#389e18] to-[#63d428] flex items-center justify-center text-white shadow-md shadow-[#44a821]/30 group-hover:scale-105 transition-transform shrink-0">
+          <i class="fa-solid fa-seedling text-base sm:text-xl"></i>
         </div>
         <div>
-          <div class="flex items-center gap-1.5 leading-none">
-            <span class="text-xl sm:text-2xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-[#3ba117]">Connect</span></span>
-            <span class="text-[9px] uppercase tracking-wider font-extrabold bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">BÌNH PHƯỚC</span>
+          <div class="flex items-center gap-1 sm:gap-1.5 leading-none">
+            <span class="text-lg sm:text-2xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-[#3ba117]">Connect</span></span>
+            <span class="text-[8px] sm:text-[9px] uppercase tracking-wider font-extrabold bg-[#e1f9cf] text-[#256314] px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">BÌNH PHƯỚC</span>
           </div>
           <p class="text-[11px] text-[#4b6b32] font-semibold hidden sm:block mt-0.5">Nông sản sạch tận vườn • Giá gốc tận cành</p>
         </div>
       </a>
 
-      <!-- Desktop Navigation (Không bao giờ bị rớt dòng chữ) -->
-      <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1.5 text-xs xl:text-sm font-bold text-[#1f3813]">
+      <!-- Desktop Navigation (Chỉ hiển thị từ màn hình XL trở lên để tuyệt đối không rớt dòng) -->
+      <nav class="hidden xl:flex items-center gap-1 text-xs xl:text-sm font-bold text-[#1f3813] whitespace-nowrap flex-nowrap">
         <a href="#campaign" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Đợt Gom Hàng</a>
         <a href="#products" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Trái Cây Vườn</a>
         <a href="#logistics" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Vận Hành 24h</a>
         <a href="#transparency" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Nguồn Gốc Vườn</a>
         <a href="trace.html" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-qrcode text-[#3ba117]"></i> <span>Tra Cứu Đơn</span>
+          <i class="fa-solid fa-qrcode text-[#3ba117]"></i> <span>Tra Cứu</span>
         </a>
         <a href="contact.html" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap flex items-center gap-1.5">
           <i class="fa-solid fa-phone text-[#3ba117]"></i> <span>Liên Hệ</span>
         </a>
       </nav>
 
-      <!-- Right Actions -->
-      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-2xl shadow-md shadow-[#44a821]/30 transition-all transform active:scale-95 flex items-center gap-2 whitespace-nowrap">
-          <i class="fa-solid fa-basket-shopping"></i>
-          <span>Đặt Trước Ngay</span>
+      <!-- Right Actions (Thiết kế co giãn chuẩn chỉnh cho mọi màn hình mobile, không tràn viền) -->
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-xs sm:text-sm px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl shadow-md shadow-[#44a821]/25 transition-all transform active:scale-95 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0">
+          <i class="fa-solid fa-basket-shopping text-xs sm:text-sm"></i>
+          <span class="hidden sm:inline">Đặt Trước Ngay</span>
+          <span class="sm:hidden">Đặt Hàng</span>
         </a>
-        <a href="admin.html" title="Trang quản trị nhóm" class="p-2.5 text-slate-500 hover:text-[#256314] hover:bg-[#eaf8dd] rounded-2xl transition-colors border border-transparent hover:border-[#c8edab]">
+        <a href="admin.html" title="Trang quản trị nhóm" class="hidden sm:flex p-2.5 text-slate-500 hover:text-[#256314] hover:bg-[#eaf8dd] rounded-2xl transition-colors border border-transparent hover:border-[#c8edab]">
           <i class="fa-solid fa-sliders text-base"></i>
         </a>
-        <button onclick="toggleMobileNav()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl lg:hidden transition-colors">
-          <i class="fa-solid fa-bars text-lg"></i>
+        <button onclick="toggleMobileNav()" aria-label="Mở Menu" class="xl:hidden p-2 text-[#256314] bg-[#f0fae8] hover:bg-[#e1f9cf] border border-[#c8edab] rounded-xl flex items-center justify-center transition-colors shrink-0">
+          <i class="fa-solid fa-bars text-base"></i>
         </button>
       </div>
     </div>
 
     <!-- Mobile Navigation Dropdown (Bố cục các thanh ngang hiện đại, sang trọng) -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-[#d2f0b6] bg-[#f7fdf3] px-4 py-4 space-y-2 shadow-2xl">
+    <div id="mobile-menu" class="hidden xl:hidden border-t border-[#d2f0b6] bg-[#f7fdf3] px-4 py-4 space-y-2 shadow-2xl">
       
       <a href="#campaign" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
         <div class="flex items-center gap-3">
@@ -941,39 +942,58 @@
       
       <div class="text-center max-w-2xl mx-auto space-y-3 mb-10">
         <span class="inline-flex items-center gap-1.5 text-xs uppercase font-extrabold tracking-wider text-[#256314] bg-[#e1f9cf] px-4 py-1.5 rounded-full border border-[#b8ee99] shadow-2xs">
-          <i class="fa-solid fa-basket-shopping text-[#3ba117]"></i> Đặt Nông Sản Tuần Này
+          <i class="fa-solid fa-basket-shopping text-[#3ba117]"></i> Đặt Nông Sản Đợt Tuần Này
         </span>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0f240d] tracking-tight leading-snug">
-          Đăng Ký Đặt Hàng Trực Tuyến
+          Xác Nhận Đơn Hàng & Điền Địa Chỉ
         </h2>
         <p class="text-sm text-[#4d6b33] max-w-xl mx-auto leading-relaxed">
-          Điền thông tin và chọn nông sản yêu thích, hệ thống tự động tính giá và tạo mã VietQR thanh toán nhanh hoặc nhận hàng COD.
+          Kiểm tra các món đã chọn, áp dụng ưu đãi ra mắt và điền địa chỉ để nhà vườn Bình Phước đóng thùng vận chuyển vào Thứ Bảy.
         </p>
       </div>
 
-      <div class="bg-white rounded-3xl border border-[#dce9cb] shadow-xl overflow-hidden p-6 sm:p-10">
+      <div class="bg-white rounded-3xl border border-[#dce9cb] shadow-xl overflow-hidden p-5 sm:p-10">
         <form id="preorder-form" class="space-y-8">
           
-          <!-- Section 1: Customer Info -->
+          <!-- Section 1: Giỏ Hàng Đã Chọn Ngay Tại Hình Ảnh -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-[#edf4e3] pb-3">
+              <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">1</span>
+                Nông Sản Bạn Đã Chọn
+              </h3>
+              <a href="#products" class="text-xs font-bold text-[#256314] hover:text-[#194c0b] hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Chọn thêm trái cây</span>
+              </a>
+            </div>
+
+            <!-- Danh sách các món đã chọn (Render bởi JS) -->
+            <div id="cart-selected-items" class="space-y-3">
+              <!-- Rendered via updateCartUI() -->
+            </div>
+          </div>
+
+          <!-- Section 2: Thông Tin Người Nhận -->
           <div class="space-y-4">
             <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2 border-b border-[#edf4e3] pb-3">
-              <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">1</span>
+              <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">2</span>
               Thông Tin Người Nhận
             </h3>
 
             <div class="grid sm:grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs font-bold text-[#344824] mb-1.5">Họ và tên <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-[#344824] mb-1.5">Họ và tên người nhận <span class="text-rose-500">*</span></label>
                 <input type="text" id="cust-name" required placeholder="Ví dụ: Nguyễn Văn A" class="w-full text-sm px-4 py-2.5 rounded-xl border border-[#d2e7b8] focus:outline-none focus:ring-2 focus:ring-[#6ba336]">
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-[#344824] mb-1.5">Số điện thoại <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-[#344824] mb-1.5">Số điện thoại nhận hàng <span class="text-rose-500">*</span></label>
                 <input type="tel" id="cust-phone" required inputmode="tel" maxlength="15" autocomplete="tel" placeholder="Ví dụ: 0912345678" class="w-full text-sm px-4 py-2.5 rounded-xl border border-[#d2e7b8] focus:outline-none focus:ring-2 focus:ring-[#6ba336]">
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-[#344824] mb-1.5">Bạn là <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-[#344824] mb-1.5">Bạn là khách hàng <span class="text-rose-500">*</span></label>
                 <select id="cust-role" class="w-full text-sm px-4 py-2.5 rounded-xl border border-[#d2e7b8] focus:outline-none focus:ring-2 focus:ring-[#6ba336] bg-white">
                   <option value="SinhVien">Bạn Sinh Viên</option>
                   <option value="GiangVien">Thầy Cô Giảng Viên</option>
@@ -984,58 +1004,77 @@
             </div>
           </div>
 
-          <!-- Section 2: Delivery Option (Hybrid Logistics: Home vs Campus) -->
+          <!-- Section 3: Delivery Option (Khách Chi Trả Cước Shipper Hoặc Nhận Tại Trường) -->
           <div class="space-y-4">
-            <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2 border-b border-[#edf4e3] pb-3">
-              <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">2</span>
-              Hình Thức Nhận Hàng (Sáng Thứ Bảy)
-            </h3>
+            <div class="flex items-center justify-between border-b border-[#edf4e3] pb-3 flex-wrap gap-2">
+              <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">3</span>
+                Hình Thức Nhận Hàng & Cước Phí
+              </h3>
+              <span id="freeship-badge" class="hidden text-xs font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-3 py-1 rounded-full border border-[#bbf099]">
+                🎉 Đơn Từ 250k: TẶNG FREESHIP TẬN NHÀ
+              </span>
+            </div>
+
+            <!-- Lưu ý cước vận chuyển thực tế -->
+            <div class="p-3.5 rounded-2xl bg-[#f2fbdf] border border-[#c8edab] text-xs text-[#256314] flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-info text-sm mt-0.5 shrink-0 text-[#3ba117]"></i>
+              <div class="leading-relaxed">
+                <strong>Minh bạch chi phí vận chuyển:</strong> Tuyến xe khách chính QL13 do AgriConnect gom tải tối ưu. Chặng cuối shipper công nghệ (Ahamove/Lalamove) giao tận cửa nhà có cước tiêu chuẩn <strong>25.000 đ</strong> do khách chi trả. <em>(Đặc biệt: Đơn từ 250.000 đ được AgriConnect hỗ trợ 100% phí ship!).</em>
+              </div>
+            </div>
 
             <div class="grid sm:grid-cols-2 gap-4">
               <button type="button" id="btn-delivery-home" onclick="setDeliveryType('HOME')" class="p-4 rounded-2xl border-2 text-left transition-all bg-[#5a8d29] text-white shadow-md border-[#5a8d29] flex items-start gap-3">
                 <i class="fa-solid fa-truck-fast text-2xl mt-0.5"></i>
                 <div>
-                  <div class="font-bold text-sm">Giao Tận Cửa Nhà / Phòng Trọ</div>
-                  <div class="text-xs opacity-90 mt-1">Shipper Ahamove / Lalamove giao đa điểm vào sáng Thứ Bảy (Phí ship hỗ trợ: 20.000 đ)</div>
+                  <div class="font-bold text-sm flex items-center justify-between gap-2">
+                    <span>Giao Tận Cửa Nhà / Phòng Trọ</span>
+                    <span id="label-shipping-home" class="text-xs bg-black/20 px-2 py-0.5 rounded-md font-extrabold">+25.000 đ</span>
+                  </div>
+                  <div class="text-xs opacity-90 mt-1">Shipper công nghệ giao tận nhà sáng Thứ Bảy (Khách chi trả hoặc FREESHIP từ 250k)</div>
                 </div>
               </button>
 
               <button type="button" id="btn-delivery-campus" onclick="setDeliveryType('CAMPUS')" class="p-4 rounded-2xl border-2 text-left transition-all bg-white text-slate-700 border-[#d2e7b8] hover:border-[#5a8d29] flex items-start gap-3">
                 <i class="fa-solid fa-building-columns text-2xl mt-0.5 text-[#5a8d29]"></i>
                 <div>
-                  <div class="font-bold text-sm">Nhận Tại Sảnh Trường / Khoa</div>
-                  <div class="text-xs text-slate-500 mt-1">Giao tập trung tại cơ sở trường đại học sáng Thứ Bảy (Miễn phí vận chuyển 0 đ)</div>
+                  <div class="font-bold text-sm flex items-center justify-between gap-2">
+                    <span>Nhận Tại Sảnh Trường / Khoa</span>
+                    <span class="text-xs bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-md font-extrabold">Miễn phí 0 đ</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1">Giao tập trung tại sảnh cơ sở trường đại học sáng Thứ Bảy (Không tốn cước shipper)</div>
                 </div>
               </button>
             </div>
 
             <!-- Home Delivery Fields -->
-            <div id="delivery-home-fields" class="space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <p class="text-xs font-bold text-slate-700 flex items-center gap-1.5 text-emerald-800">
-                <i class="fa-solid fa-location-dot"></i> Điền địa chỉ nhận hàng để dán lên nhãn kiện hàng (Shipping Label):
+            <div id="delivery-home-fields" class="space-y-3 p-4 rounded-2xl bg-[#f7fdf3] border border-[#d2f0b6]">
+              <p class="text-xs font-bold text-[#1f4f10] flex items-center gap-1.5">
+                <i class="fa-solid fa-location-dot text-[#3ba117]"></i> Địa chỉ nhận hàng (In trực tiếp trên nhãn tem dán thùng):
               </p>
               <div class="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Số nhà <span class="text-rose-500">*</span></label>
-                  <input type="text" id="home-house" placeholder="Ví dụ: 123/45" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <input type="text" id="home-house" placeholder="Ví dụ: 123/45" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Tên đường <span class="text-rose-500">*</span></label>
-                  <input type="text" id="home-street" placeholder="Ví dụ: Đường Nguyễn Trãi" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <input type="text" id="home-street" placeholder="Ví dụ: Đường Nguyễn Trãi" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
               </div>
               <div class="grid sm:grid-cols-3 gap-3">
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Phường / Xã <span class="text-rose-500">*</span></label>
-                  <input type="text" id="home-ward" placeholder="Ví dụ: Phường Bến Thành" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <input type="text" id="home-ward" placeholder="Ví dụ: Phường Bến Thành" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Quận / Huyện <span class="text-rose-500">*</span></label>
-                  <input type="text" id="home-district" placeholder="Ví dụ: Quận 1" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <input type="text" id="home-district" placeholder="Ví dụ: Quận 1" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Tỉnh / Thành phố <span class="text-rose-500">*</span></label>
-                  <select id="home-city" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <select id="home-city" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                     <option value="TP.HCM" selected>TP. Hồ Chí Minh</option>
                     <option value="Bình Dương">Bình Dương</option>
                   </select>
@@ -1044,101 +1083,142 @@
             </div>
 
             <!-- Campus Delivery Fields -->
-            <div id="delivery-campus-fields" class="hidden space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <div id="delivery-campus-fields" class="hidden space-y-3 p-4 rounded-2xl bg-[#f7fdf3] border border-[#d2f0b6]">
               <div class="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Khoa / Phòng ban / Lớp <span class="text-rose-500">*</span></label>
-                  <input type="text" id="campus-dept" placeholder="Ví dụ: Khoa Kinh Tế, Lớp 23DKT" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <input type="text" id="campus-dept" placeholder="Ví dụ: Khoa Kinh Tế, Lớp 23DKT" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-600 mb-1">Điểm nhận cụ thể <span class="text-rose-500">*</span></label>
-                  <input type="text" id="campus-address" placeholder="Ví dụ: Bàn làm việc Phòng 302 Nhà A hoặc KTX Khu B" class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  <input type="text" id="campus-address" placeholder="Ví dụ: Bàn làm việc Phòng 302 Nhà A hoặc KTX Khu B" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
               </div>
             </div>
 
           </div>
 
-          <!-- Section 3: Select Products -->
+          <!-- Section 4: Ưu Đãi & Khuyến Mãi Khi Mới Ra Mắt -->
           <div class="space-y-4">
-            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs flex items-center justify-center font-bold">3</span>
-              Chọn Số Lượng Trái Cây Đặt Hàng
+            <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2 border-b border-[#edf4e3] pb-3">
+              <span class="w-6 h-6 rounded-lg bg-[#fef08a] text-[#713f12] text-xs flex items-center justify-center font-black">★</span>
+              Ưu Đãi & Khuyến Mãi Khai Trương
             </h3>
 
-            <div id="cart-item-selectors" class="space-y-3">
-              <!-- Rendered via JS loadProducts() -->
+            <!-- Promotional Highlights Box -->
+            <div class="grid sm:grid-cols-3 gap-3">
+              <div class="p-3.5 rounded-2xl bg-[#fefce8] border border-[#fef08a] space-y-1">
+                <span class="text-xs font-black text-[#854d0e] flex items-center gap-1.5">
+                  <i class="fa-solid fa-truck-ramp-box text-[#ca8a04]"></i> Freeship Từ 250k
+                </span>
+                <p class="text-[11px] text-[#713f12]">Miễn 100% cước giao tận nhà khi đạt 250.000 đ (Tự động trừ 25k).</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-[#f0fdf4] border border-[#bbf7d0] space-y-1">
+                <span class="text-xs font-black text-[#166534] flex items-center gap-1.5">
+                  <i class="fa-solid fa-gift text-[#16a34a]"></i> Quà Tặng Miệt Vườn
+                </span>
+                <p class="text-[11px] text-[#14532d]">Tặng kèm 0.5kg Dâu da đất hoặc Chôm chôm cho 50 đơn mở bán đầu tiên!</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-[#fdf4ff] border border-[#f5d0fe] space-y-1">
+                <span class="text-xs font-black text-[#86198f] flex items-center gap-1.5">
+                  <i class="fa-solid fa-shield-heart text-[#c026d3]"></i> Bảo Hiểm 1 Đổi 1
+                </span>
+                <p class="text-[11px] text-[#701a75]">Bao ăn tận bàn, đổi bù trái mới hoặc hoàn tiền nếu sượng không phụ phí.</p>
+              </div>
             </div>
+
+            <!-- Promo Code Input -->
+            <div class="p-4 rounded-2xl bg-white border border-[#d2f0b6] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+              <div class="w-full sm:w-auto">
+                <p class="text-xs font-extrabold text-[#0f240d]">Mã giảm giá khai trương:</p>
+                <p class="text-[11px] text-[#4d6b33]">Nhập mã <strong class="text-[#256314] bg-[#e1f9cf] px-1.5 py-0.5 rounded font-mono">AGRICONNECT</strong> để giảm ngay 10.000 đ</p>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <input type="text" id="promo-code-input" placeholder="Nhập mã ưu đãi..." value="AGRICONNECT" class="text-xs px-3.5 py-2 rounded-xl border border-[#c8edab] focus:outline-none focus:ring-1 focus:ring-[#3ba117] font-mono uppercase w-full sm:w-36">
+                <button type="button" onclick="applyPromoCode()" class="bg-[#3ba117] hover:bg-[#2e8213] text-white text-xs font-extrabold px-4 py-2 rounded-xl transition-all shadow-sm shrink-0 active:scale-95">
+                  Áp Dụng
+                </button>
+              </div>
+            </div>
+            <div id="promo-code-msg" class="text-xs font-bold text-[#256314] hidden"></div>
           </div>
 
-          <!-- Section 4: Payment Method & Notes -->
+          <!-- Section 5: Phương Thức Thanh Toán -->
           <div class="space-y-4">
-            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs flex items-center justify-center font-bold">4</span>
+            <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2 border-b border-[#edf4e3] pb-3">
+              <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">4</span>
               Phương Thức Thanh Toán
             </h3>
 
             <div class="grid sm:grid-cols-2 gap-4">
-              <label class="flex items-start gap-3 p-4 rounded-2xl border border-slate-200 hover:border-emerald-400 cursor-pointer transition-colors bg-slate-50/50">
-                <input type="radio" name="payment_method" value="VIETQR" checked class="mt-1 text-emerald-600 focus:ring-emerald-500">
+              <label class="flex items-start gap-3 p-4 rounded-2xl border-2 border-[#b8ee99] bg-[#f9fdf6] cursor-pointer transition-all">
+                <input type="radio" name="payment_method" value="VIETQR" checked class="mt-1 text-[#3ba117] focus:ring-[#3ba117]">
                 <div>
-                  <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-                    <i class="fa-solid fa-qrcode text-emerald-600"></i> Quét Mã VietQR (Khuyên Dùng)
+                  <div class="font-bold text-sm text-[#0f240d] flex items-center gap-1.5">
+                    <i class="fa-solid fa-qrcode text-[#3ba117]"></i> Quét Mã VietQR (Khuyên Dùng)
                   </div>
-                  <div class="text-xs text-slate-500 mt-0.5">Tự động sinh mã QR đúng số tiền & mã đơn hàng NAPAS 247</div>
+                  <div class="text-xs text-[#4d6b33] mt-0.5">Tự động sinh mã VietQR Vietcombank đúng số tiền & mã đơn NAPAS 247</div>
                 </div>
               </label>
 
-              <label class="flex items-start gap-3 p-4 rounded-2xl border border-slate-200 hover:border-emerald-400 cursor-pointer transition-colors bg-slate-50/50">
-                <input type="radio" name="payment_method" value="COD" class="mt-1 text-emerald-600 focus:ring-emerald-500">
+              <label class="flex items-start gap-3 p-4 rounded-2xl border border-[#d2f0b6] hover:border-[#3ba117] cursor-pointer transition-all bg-white">
+                <input type="radio" name="payment_method" value="COD" class="mt-1 text-[#3ba117] focus:ring-[#3ba117]">
                 <div>
-                  <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                  <div class="font-bold text-sm text-[#0f240d] flex items-center gap-1.5">
                     <i class="fa-solid fa-money-bill-wave text-amber-600"></i> Thanh Toán Khi Nhận (COD)
                   </div>
-                  <div class="text-xs text-slate-500 mt-0.5">Thanh toán tiền mặt cho shipper khi nhận kiện hàng</div>
+                  <div class="text-xs text-[#4d6b33] mt-0.5">Thanh toán tiền mặt cho tài xế shipper khi nhận kiện hàng</div>
                 </div>
               </label>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1.5">Ghi chú cho shipper (Không bắt buộc)</label>
-              <textarea id="cust-notes" rows="2" placeholder="Ví dụ: Gọi trước khi giao 15 phút, gửi bảo vệ nếu vắng mặt..." class="w-full text-xs px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+              <label class="block text-xs font-bold text-[#344824] mb-1.5">Ghi chú giao hàng (Không bắt buộc)</label>
+              <textarea id="cust-notes" rows="2" placeholder="Ví dụ: Gọi trước 15 phút, gửi phòng bảo vệ nếu vắng mặt..." class="w-full text-xs px-4 py-2.5 rounded-xl border border-[#d2e7b8] focus:outline-none focus:ring-2 focus:ring-[#6ba336]"></textarea>
             </div>
           </div>
 
-          <!-- Section 5: Order Summary & Submit -->
-          <div class="pt-6 border-t border-slate-200 space-y-4">
-            <div class="bg-slate-50 rounded-2xl p-4 sm:p-6 space-y-2 text-sm">
-              <div class="flex justify-between text-slate-600">
+          <!-- Section 6: Tổng Kết Chi Tiết & Nút Đặt Hàng -->
+          <div class="pt-6 border-t border-[#edf4e3] space-y-4">
+            <div class="bg-[#f7fdf3] rounded-2xl p-4 sm:p-6 space-y-2.5 text-sm border border-[#d2f0b6]">
+              <div class="flex justify-between text-[#4d6b33]">
                 <span>Tiền hàng nông sản:</span>
-                <span id="summary-subtotal" class="font-bold text-slate-800">0 đ</span>
+                <span id="summary-subtotal" class="font-bold text-[#0f240d]">0 đ</span>
               </div>
-              <div class="flex justify-between text-slate-600">
-                <span>Cước vận chuyển:</span>
-                <span id="summary-shipping" class="font-bold text-emerald-700">20.000 đ</span>
+              <div class="flex justify-between text-[#4d6b33]">
+                <span>Phí vận chuyển giao tận nơi:</span>
+                <span id="summary-shipping" class="font-bold text-[#256314]">25.000 đ</span>
               </div>
-              <div class="flex justify-between text-base font-extrabold text-slate-900 pt-2 border-t border-slate-200">
-                <span>Tổng cộng cần thanh toán:</span>
-                <span id="summary-total" class="text-xl font-black text-brand-700">0 đ</span>
+              <div id="row-discount" class="flex justify-between text-[#256314] font-bold">
+                <span>Ưu đãi khai trương (Mã giảm giá):</span>
+                <span id="summary-discount">-10.000 đ</span>
+              </div>
+              <div class="flex justify-between text-base font-extrabold text-[#0f240d] pt-3 border-t border-[#d2f0b6]">
+                <div>
+                  <span>Tổng thanh toán thực tế:</span>
+                  <span id="summary-kg-badge" class="block text-[11px] font-normal text-[#5f7e45]">0 kg nông sản chín cây</span>
+                </div>
+                <span id="summary-total" class="text-2xl font-black text-[#22720d]">0 đ</span>
               </div>
             </div>
 
-            <label class="flex items-start gap-2.5 text-xs text-slate-600 cursor-pointer">
-              <input type="checkbox" id="cust-consent" class="mt-0.5 w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+            <label class="flex items-start gap-2.5 text-xs text-[#4d6b33] cursor-pointer">
+              <input type="checkbox" id="cust-consent" checked class="mt-0.5 w-4 h-4 text-[#3ba117] rounded focus:ring-[#3ba117]">
               <span>
-                Tôi đồng ý cho nhóm AgriConnect sử dụng họ tên, số điện thoại và địa chỉ ở trên <strong>chỉ để xác nhận và giao đơn hàng</strong>
-                (bao gồm chia sẻ cho shipper và nhà xe vận chuyển). Thông tin không dùng cho mục đích khác.
+                Tôi đồng ý cho nhóm AgriConnect sử dụng họ tên, số điện thoại và địa chỉ ở trên <strong>chỉ để xác nhận và giao kiện hàng</strong> (bao gồm chia sẻ cho shipper công nghệ và nhà xe).
               </span>
             </label>
 
             <div id="form-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold" role="alert"></div>
 
-            <button type="submit" id="btn-submit-order" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-base py-4 rounded-2xl shadow-xl shadow-brand-600/30 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+            <button type="submit" id="btn-submit-order" class="w-full bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e8213] hover:to-[#4aa720] text-white font-extrabold text-base py-4 rounded-2xl shadow-xl shadow-[#44a821]/30 transition-all transform active:scale-95 flex items-center justify-center gap-2">
               <i class="fa-solid fa-check-circle"></i>
               <span>Xác Nhận Đặt Trước Nông Sản Bình Phước</span>
             </button>
-            <p class="text-[11px] text-center text-slate-400">
-              🔒 Bằng cách đặt trước, bạn giúp bảo vệ nông dân không bị thương lái ép giá và hỗ trợ đề tài nghiên cứu kinh tế!
+            <p class="text-[11px] text-center text-[#5f7e45]">
+              🔒 Bằng cách đặt trước, bạn giúp bảo vệ nông dân không bị ép giá và cam kết trái chín cây 100% không ngâm ủ hóa chất!
             </p>
           </div>
 
@@ -1147,6 +1227,27 @@
 
     </div>
   </section>
+
+  <!-- ================= FLOATING STICKY CART BAR (Thanh giỏ hàng nổi thông minh) ================= -->
+  <aside id="sticky-cart-bar" class="fixed bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-3xl mx-auto z-40 bg-[#0f240d]/95 backdrop-blur-md text-white rounded-2xl p-3 sm:p-4 shadow-2xl border border-[#44a821]/50 flex items-center justify-between gap-3 transform transition-all duration-300 translate-y-32 opacity-0 pointer-events-none">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-[#389e18] to-[#63d428] flex items-center justify-center text-white text-base sm:text-lg shrink-0 shadow-md">
+        <i class="fa-solid fa-basket-shopping"></i>
+      </div>
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <span id="sticky-cart-count" class="font-black text-xs sm:text-sm text-[#fef08a]">0 món</span>
+          <span class="text-xs text-white/60 hidden sm:inline">• Tạm tính:</span>
+          <span id="sticky-cart-total" class="font-black text-sm sm:text-base text-white">0 đ</span>
+        </div>
+        <p id="sticky-cart-promo" class="text-[10px] sm:text-[11px] text-[#bbf099] font-medium truncate">Chọn trái cây để nhận ưu đãi Freeship!</p>
+      </div>
+    </div>
+    <a href="#preorder" onclick="focusCheckoutForm()" class="bg-gradient-to-r from-[#fef08a] to-[#7be038] hover:from-[#fde047] hover:to-[#6fd32f] text-[#0f240d] font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2.5 rounded-xl shadow-md transition-all active:scale-95 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+      <span>Điền Địa Chỉ & Đặt Hàng</span>
+      <i class="fa-solid fa-arrow-right text-xs"></i>
+    </a>
+  </aside>
 
   <!-- ================= FOOTER ================= -->
   <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">

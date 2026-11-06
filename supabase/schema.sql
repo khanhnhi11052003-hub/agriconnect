@@ -206,7 +206,13 @@ BEGIN
 
   NEW.items          := new_items;
   NEW.total_kg       := kg;
-  NEW.shipping_fee   := CASE WHEN NEW.delivery_type = 'HOME' THEN 20000 ELSE 0 END;
+  -- Phí vận chuyển: Giao tận nhà khách chi trả 25.000 đ (chuẩn cước shipper thực tế TP.HCM)
+  -- Ưu đãi ra mắt: Đơn từ 250.000 đ được TẶNG 100% PHÍ SHIP TẬN NHÀ (Freeship)
+  NEW.shipping_fee   := CASE 
+    WHEN NEW.delivery_type = 'HOME' THEN 
+      CASE WHEN subtotal >= 250000 THEN 0 ELSE 25000 END
+    ELSE 0 
+  END;
   NEW.total_amount   := subtotal + NEW.shipping_fee;
   NEW.payment_status := 'UNPAID';      -- Khách không thể tự đánh dấu "đã thanh toán"
   NEW.order_status   := 'CONFIRMED';
