@@ -57,49 +57,57 @@
 <body class="bg-[#f7fdf3] text-[#243912] antialiased selection:bg-[#3ba117] selection:text-white">
 
   <!-- ================= TOP NOTIFICATION BAR ================= -->
-  <div class="bg-gradient-to-r from-[#1c560e] via-[#2d8114] to-[#1c560e] text-white text-center py-2.5 px-4 text-xs font-semibold flex items-center justify-center gap-2 border-b border-[#52c423]/40 shadow-sm">
-    <span class="bg-[#fef08a] text-[#713f12] text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">Đợt Gom Hàng Tuần</span>
-    <span>Sầu riêng Ri6 già rụng tự nhiên & Măng cụt cổ thụ Bình Phước hái chín cây - Chốt đơn 23h59 Thứ Năm!</span>
+  <div class="bg-gradient-to-r from-[#22720d] via-[#3ba117] to-[#22720d] text-white py-2 px-4 text-xs font-semibold border-b border-[#52c423]/30 shadow-xs relative overflow-hidden">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+      <div class="inline-flex items-center gap-1.5 bg-[#fef08a] text-[#713f12] text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-xs shrink-0 tracking-wider">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping"></span>
+        Đợt Gom Hàng Tuần
+      </div>
+      <p class="text-xs text-white drop-shadow-xs font-medium text-center">
+        Sầu riêng Ri6 già rụng tự nhiên & Măng cụt cổ thụ Bình Phước hái chín cây <span class="text-[#fef08a] font-bold">•</span> Chốt đơn <strong class="text-[#fef08a] font-extrabold underline decoration-wavy underline-offset-2">23h59 Thứ Năm!</strong>
+      </p>
+    </div>
   </div>
 
   <!-- ================= NAVBAR ================= -->
   <header class="sticky top-0 z-50 glass-nav">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
       
       <!-- Brand Logo -->
       <a href="index.html" class="flex items-center gap-3 shrink-0 group">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#389e18] to-[#63d428] flex items-center justify-center text-white shadow-md shadow-[#44a821]/30 group-hover:scale-105 transition-transform shrink-0">
-          <i class="fa-solid fa-seedling text-lg"></i>
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#389e18] to-[#63d428] flex items-center justify-center text-white shadow-md shadow-[#44a821]/30 group-hover:scale-105 transition-transform shrink-0">
+          <i class="fa-solid fa-seedling text-lg sm:text-xl"></i>
         </div>
         <div>
           <div class="flex items-center gap-1.5 leading-none">
-            <span class="text-xl font-black tracking-tight text-slate-900">Agri<span class="text-[#3ba117]">Connect</span></span>
-            <span class="text-[9px] uppercase tracking-wider font-extrabold bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99]">Bình Phước</span>
+            <span class="text-xl sm:text-2xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-[#3ba117]">Connect</span></span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">BÌNH PHƯỚC</span>
           </div>
-          <p class="text-[11px] text-[#4b6b32] font-semibold hidden sm:block mt-0.5">Nền tảng kết nối nông sản - người tiêu dùng</p>
+          <p class="text-[11px] text-[#4b6b32] font-semibold hidden sm:block mt-0.5">Nông sản sạch tận vườn • Giá gốc tận cành</p>
         </div>
       </a>
 
-      <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-sm font-semibold text-slate-600">
-        <a href="#campaign" class="px-3 py-2 rounded-xl hover:text-[#3ba117] hover:bg-[#eaf9df]/60 transition-all">Đợt Gom Hàng</a>
-        <a href="#products" class="px-3 py-2 rounded-xl hover:text-[#3ba117] hover:bg-[#eaf9df]/60 transition-all">Trái Cây Vườn</a>
-        <a href="#logistics" class="px-3 py-2 rounded-xl hover:text-[#3ba117] hover:bg-[#eaf9df]/60 transition-all">Mô Hình Vận Hành</a>
-        <a href="#transparency" class="px-3 py-2 rounded-xl hover:text-[#3ba117] hover:bg-[#eaf9df]/60 transition-all">Minh Bạch Nguồn Gốc</a>
-        <a href="trace.html" class="px-3 py-2 rounded-xl hover:text-[#3ba117] hover:bg-[#eaf9df]/60 transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-qrcode text-[#3ba117]"></i> Quét Mã Tem
+      <!-- Desktop Navigation (Không bao giờ bị rớt dòng chữ) -->
+      <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1.5 text-xs xl:text-sm font-bold text-[#1f3813]">
+        <a href="#campaign" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Đợt Gom Hàng</a>
+        <a href="#products" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Trái Cây Vườn</a>
+        <a href="#logistics" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Vận Hành 24h</a>
+        <a href="#transparency" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Nguồn Gốc Vườn</a>
+        <a href="trace.html" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap flex items-center gap-1.5">
+          <i class="fa-solid fa-qrcode text-[#3ba117]"></i> <span>Tra Cứu Đơn</span>
         </a>
-        <a href="contact.html" class="px-3 py-2 rounded-xl hover:text-[#3ba117] hover:bg-[#eaf9df]/60 transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-phone text-[#3ba117]"></i> Liên Hệ
+        <a href="contact.html" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap flex items-center gap-1.5">
+          <i class="fa-solid fa-phone text-[#3ba117]"></i> <span>Liên Hệ</span>
         </a>
       </nav>
 
+      <!-- Right Actions -->
       <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md shadow-[#44a821]/30 transition-all transform active:scale-95 flex items-center gap-2 whitespace-nowrap">
-          <i class="fa-solid fa-cart-shopping"></i>
+        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-2xl shadow-md shadow-[#44a821]/30 transition-all transform active:scale-95 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-basket-shopping"></i>
           <span>Đặt Trước Ngay</span>
         </a>
-        <a href="admin.html" title="Trang quản trị nhóm" class="p-2.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors">
+        <a href="admin.html" title="Trang quản trị nhóm" class="p-2.5 text-slate-500 hover:text-[#256314] hover:bg-[#eaf8dd] rounded-2xl transition-colors border border-transparent hover:border-[#c8edab]">
           <i class="fa-solid fa-sliders text-base"></i>
         </a>
         <button onclick="toggleMobileNav()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl lg:hidden transition-colors">
@@ -109,10 +117,22 @@
     </div>
 
     <!-- Mobile Navigation Dropdown -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-5 space-y-2 shadow-xl">
-      <a href="#campaign" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm">Đợt Gom Hàng Tuần</a>
-      <a href="#products" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm">Trái Cây Vườn</a>
-      <a href="#logistics" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm">Mô Hình Vận Hành</a>
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-[#dbeef0] bg-white/98 backdrop-blur-md px-4 pt-3 pb-5 space-y-1.5 shadow-xl">
+      <a href="#campaign" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Đợt Gom Hàng Tuần</a>
+      <a href="#products" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Trái Cây Vườn & Combo</a>
+      <a href="#logistics" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Quy Trình Vận Hành 24h</a>
+      <a href="#transparency" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Minh Bạch Nguồn Gốc</a>
+      <a href="trace.html" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-qrcode text-[#3ba117]"></i> Tra Cứu Kiện Hàng
+      </a>
+      <a href="contact.html" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-phone text-[#3ba117]"></i> Liên Hệ Hỗ Trợ
+      </a>
+      <a href="admin.html" class="block px-3.5 py-2 rounded-xl bg-[#f2fbdf] text-[#256314] font-bold text-sm flex items-center gap-2 border border-[#c8edab]">
+        <i class="fa-solid fa-sliders text-[#3ba117]"></i> Trang Quản Trị Nhóm
+      </a>
+    </div>
+  </header>
       <a href="#transparency" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm">Minh Bạch Nguồn Gốc</a>
       <a href="trace.html" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm flex items-center gap-2">
         <i class="fa-solid fa-qrcode text-[#3ba117]"></i> Quét Mã Tem Thùng

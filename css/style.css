@@ -49,11 +49,13 @@ h1, h2, h3, h4 {
   font-family: var(--font-serif);
 }
 
-/* Glassmorphism Navigation xanh lá mạ */
+/* Glassmorphism Navigation xanh tươi sáng */
 .glass-nav {
-  background: rgba(248, 250, 244, 0.94);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(215, 232, 197, 0.85);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(200, 237, 171, 0.7);
+  box-shadow: 0 4px 20px -6px rgba(46, 125, 20, 0.08);
 }
 
 /* Badge & Highlights xanh lá mạ non */
