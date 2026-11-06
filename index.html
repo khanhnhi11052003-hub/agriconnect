@@ -116,33 +116,79 @@
       </div>
     </div>
 
-    <!-- Mobile Navigation Dropdown -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-[#dbeef0] bg-white/98 backdrop-blur-md px-4 pt-3 pb-5 space-y-1.5 shadow-xl">
-      <a href="#campaign" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Đợt Gom Hàng Tuần</a>
-      <a href="#products" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Trái Cây Vườn & Combo</a>
-      <a href="#logistics" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Quy Trình Vận Hành 24h</a>
-      <a href="#transparency" onclick="toggleMobileNav()" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm">Minh Bạch Nguồn Gốc</a>
-      <a href="trace.html" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm flex items-center gap-2">
-        <i class="fa-solid fa-qrcode text-[#3ba117]"></i> Tra Cứu Kiện Hàng
+    <!-- Mobile Navigation Dropdown (Bố cục các thanh ngang hiện đại, sang trọng) -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-[#d2f0b6] bg-[#f7fdf3] px-4 py-4 space-y-2 shadow-2xl">
+      
+      <a href="#campaign" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-bullhorn text-[#3ba117]"></i>
+          </div>
+          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Đợt Gom Hàng Tuần</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
-      <a href="contact.html" class="block px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[#f2fbdf] hover:text-[#256314] font-bold text-sm flex items-center gap-2">
-        <i class="fa-solid fa-phone text-[#3ba117]"></i> Liên Hệ Hỗ Trợ
+
+      <a href="#products" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-apple-whole text-[#3ba117]"></i>
+          </div>
+          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Trái Cây Vườn & Combo Tiết Kiệm</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
-      <a href="admin.html" class="block px-3.5 py-2 rounded-xl bg-[#f2fbdf] text-[#256314] font-bold text-sm flex items-center gap-2 border border-[#c8edab]">
-        <i class="fa-solid fa-sliders text-[#3ba117]"></i> Trang Quản Trị Nhóm
+
+      <a href="#logistics" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-truck-fast text-[#3ba117]"></i>
+          </div>
+          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Quy Trình Vận Hành 24 Giờ</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
-    </div>
-  </header>
-      <a href="#transparency" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm">Minh Bạch Nguồn Gốc</a>
-      <a href="trace.html" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm flex items-center gap-2">
-        <i class="fa-solid fa-qrcode text-[#3ba117]"></i> Quét Mã Tem Thùng
+
+      <a href="#transparency" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-shield-halved text-[#3ba117]"></i>
+          </div>
+          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Minh Bạch Nguồn Gốc & Vườn Thực Tế</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
-      <a href="contact.html" class="block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-sm flex items-center gap-2">
-        <i class="fa-solid fa-phone text-[#3ba117]"></i> Liên Hệ
+
+      <a href="trace.html" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-qrcode text-[#3ba117]"></i>
+          </div>
+          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Tra Cứu Mã Tem Thùng Hàng</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
-      <a href="admin.html" class="block px-3 py-2 rounded-xl bg-slate-100 text-slate-800 font-semibold text-sm flex items-center gap-2">
-        <i class="fa-solid fa-sliders text-[#3ba117]"></i> Quản Trị Nhóm & Lộ Trình Ship
+
+      <a href="contact.html" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-phone text-[#3ba117]"></i>
+          </div>
+          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Liên Hệ Hỗ Trợ 24/7</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
+
+      <a href="admin.html" class="flex items-center justify-between p-3 rounded-2xl bg-[#eaf8dd] border border-[#bceba0] hover:bg-[#ddf5cd] transition-all shadow-xs group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#389e18] to-[#59c228] text-white flex items-center justify-center text-sm shadow-sm">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <span class="font-black text-xs sm:text-sm text-[#194c0b]">Trang Quản Trị Nhóm & Lộ Trình</span>
+        </div>
+        <i class="fa-solid fa-arrow-right text-xs text-[#3ba117] group-hover:translate-x-0.5 transition-transform"></i>
+      </a>
+
     </div>
   </header>
 
