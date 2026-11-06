@@ -70,7 +70,9 @@ async function loadBatchInfo() {
   if (!batch) return;
 
   const titleEl = document.getElementById("batch-title");
-  if (titleEl && batch.batch_name) titleEl.innerText = batch.batch_name;
+  if (titleEl && batch.batch_name) {
+    titleEl.innerText = batch.batch_name.replace(/Bình Phước/gi, "Các Vùng Miền");
+  }
 
   // Để tạo hiệu ứng FOMO thực tế cho chuyến xe lạnh 60kg
   const rawKg = Number(batch.current_kg || 0);
@@ -87,8 +89,8 @@ async function loadBatchInfo() {
   if (progressNote) {
     const remain = Math.max(0, targetKg - currentKg).toFixed(1);
     progressNote.innerText = pct >= 100
-      ? "🎉 Đã gom đủ tải chuyến Xe Lạnh từ Bình Phước về TP.HCM! Đặt thêm để nhận ưu đãi Freeship."
-      : `🔥 Cần gom đủ ${targetKg.toFixed(0)}kg trái cây để xuất phát chuyến Xe Lạnh từ Bình Phước về TP.HCM. Hiện đã có ${currentKg.toFixed(1)}kg (còn thiếu ${remain}kg). Bạn mua thêm 5kg để chốt xe sớm nhé?`;
+      ? "🎉 Đã gom đủ tải chuyến Xe Lạnh từ vùng nguyên liệu về TP.HCM! Đặt thêm để nhận ưu đãi Freeship."
+      : `🔥 Cần gom đủ ${targetKg.toFixed(0)}kg đặc sản vùng miền để xuất phát chuyến Xe Lạnh về TP.HCM. Hiện đã có ${currentKg.toFixed(1)}kg (còn thiếu ${remain}kg). Bạn mua thêm 5kg để chốt xe sớm nhé?`;
   }
 }
 

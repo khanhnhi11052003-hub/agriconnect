@@ -64,8 +64,8 @@ window.APP_CONFIG = {
 
   // ---------------- Chiến dịch & liên hệ ----------------
   CAMPAIGN: {
-    NAME: "AgriConnect Bình Phước - Mùa 1",
-    BATCH_NAME: "Đợt Gom Hàng #01: Sầu Riêng Ri6 & Măng Cụt Bình Phước",
+    NAME: "AgriConnect - Đặc Sản Các Vùng Miền",
+    BATCH_NAME: "Đợt Gom Hàng #01: Đặc Sản Trái Cây Chín Cây Các Vùng Miền",
     HOTLINE: "0784 203 424",
     ZALO: "https://zalo.me/0784203424",
     DEADLINE_TEXT: "23h59 Thứ Năm hàng tuần",

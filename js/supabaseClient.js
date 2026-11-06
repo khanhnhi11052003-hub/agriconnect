@@ -39,20 +39,20 @@ const DEFAULT_PRODUCT_VARIANTS = [
   { code: "GRADE_3", label: "Loại 3 (Dạt size / Sinh tố, Làm mứt -30%)", shortLabel: "Loại 3 (-30%)", multiplier: 0.70, badge: "Tiết kiệm 30%", desc: "Trái nhỏ cuối cành, cực hời để tách múi cấp đông, dầm sinh tố, làm bánh" }
 ];
 
-// Nhật ký canh tác (Traceability Timeline) mặc định cho từng nông sản Bình Phước
+// Nhật ký canh tác (Traceability Timeline) mặc định cho đặc sản các vùng miền
 const DEFAULT_TRACEABILITY_TIMELINE = [
   {
     stage: "Chặng 1: Thụ phấn & Tỉa trái non",
     date: "15/07/2026",
-    title: "Tuyển giữ trái khỏe trên cành đại thụ",
-    desc: "Hộ Bác Năm tỉa bỏ 60% bông yếu, chỉ giữ lại những trái đầu cành nhận đủ nắng gió đất đỏ bazan Phước Long.",
+    title: "Tuyển giữ trái khỏe tại vùng chuyên canh",
+    desc: "Nhà vườn tỉa bỏ 60% bông yếu, chỉ giữ lại những trái đầu cành nhận đủ nắng gió tự nhiên tại vùng nguyên liệu.",
     badge: "Nhật ký vườn #01",
     image: "images/durian-warehouse.jpg"
   },
   {
     stage: "Chặng 2: Bón phân vi sinh & Hữu cơ",
     date: "20/09/2026",
-    title: "100% Phân hữu cơ ủ hoai & Tưới nước suối ngầm",
+    title: "100% Phân hữu cơ ủ hoai & Tưới nước tự nhiên",
     desc: "Tuyệt đối không dùng thuốc kích chín hay hóa chất bảo quản. Bổ sung kali hữu cơ giúp cơm dẻo vàng và ngọt đậm hậu.",
     badge: "Kiểm định VietGAP",
     image: "images/mangosteen-harvest.jpg"
@@ -61,7 +61,7 @@ const DEFAULT_TRACEABILITY_TIMELINE = [
     stage: "Chặng 3: Đo độ đường (Brix) & Gõ trái",
     date: "Thứ Năm hàng tuần",
     title: "Kiểm tra độ già 8.5 - 9 tuổi trước khi cắt",
-    desc: "Từng trái được bác nông dân gõ kiểm tra độ rỗng và đo độ ngọt đạt chuẩn mới đánh dấu dây đỏ chuẩn bị thu hoạch.",
+    desc: "Từng trái được bác nông dân kiểm tra độ già và đo độ ngọt đạt chuẩn mới đánh dấu dây đỏ chuẩn bị thu hoạch.",
     badge: "Đạt chuẩn Brix > 28%",
     image: "images/durian-pile.jpg"
   },
@@ -69,7 +69,7 @@ const DEFAULT_TRACEABILITY_TIMELINE = [
     stage: "Chặng 4: Hái sáng sớm & Đóng thùng Lạnh QR",
     date: "05:30 Sáng Thứ Sáu",
     title: "Cắt cuống, dán tem QR & Vận chuyển Cold-Chain",
-    desc: "Thu hái lúc sương sớm để giữ độ tươi tối đa, đóng thùng thoáng khí dán mã truy xuất và chuyển thẳng về TP.HCM trong 24h.",
+    desc: "Thu hái lúc sương sớm để giữ độ tươi tối đa, đóng thùng thoáng khí dán mã truy xuất vùng trồng và chuyển thẳng về TP.HCM trong 24h.",
     badge: "Cold-Chain < 24h",
     image: "images/hero-fruits.jpg"
   }
@@ -77,12 +77,14 @@ const DEFAULT_TRACEABILITY_TIMELINE = [
 
 function enrichProductMeta(p, idx = 0) {
   const isCombo = p.category === "Combo";
+  const cleanDesc = String(p.description || "").replace(/từ vùng đất đỏ bazan Phước Long/gi, "từ vùng chuyên canh Đông Nam Bộ & Miền Tây").replace(/Bình Phước/gi, "vùng chuyên canh");
   return {
     ...p,
+    description: cleanDesc || p.description,
     is_fresh: p.is_fresh !== undefined ? p.is_fresh : true,
     is_dry: p.is_dry !== undefined ? p.is_dry : false,
     delivery_radius: p.delivery_radius || 20,
-    certification_badge: p.certification_badge || (idx % 2 === 0 ? "VietGAP • Hữu Cơ" : "VietGAP • Chín Cây 100%"),
+    certification_badge: p.certification_badge || (idx % 2 === 0 ? "VietGAP • Đặc Sản Vùng Miền" : "VietGAP • Chín Cây 100%"),
     verified: true,
     harvest_date: p.harvest_date || "Hái 05:30 sáng Thứ Sáu • Giao Thứ Bảy",
     expiration_policy: p.expiration_policy || "Bảo hành 1 đổi 1 hoặc hoàn tiền 100% trong 12h qua Ví Escrow",
@@ -94,56 +96,56 @@ function enrichProductMeta(p, idx = 0) {
   };
 }
 
-// Dữ liệu mẫu chuẩn (Đầy đủ 13 đặc sản đất đỏ Bình Phước & Các Combo tiết kiệm theo giá thị trường hiện nay)
+// Dữ liệu mẫu chuẩn (Đầy đủ 13 đặc sản các vùng miền Việt Nam & Các Combo tiết kiệm theo giá thị trường hiện nay)
 const DEMO_PRODUCTS = [
   {
-    id: "p1", name: "Sầu Riêng Ri6 Ruột Vàng", category: "TraiCay",
+    id: "p1", name: "Sầu Riêng Ri6 Ruột Vàng (Đông Nam Bộ & Miền Tây)", category: "TraiCay",
     highlights: ["Múi vàng rực, dẻo quánh béo ngậy", "Hái già rụng tự nhiên, ngọt đậm sâu", "Bao ăn 1 đổi 1 tận tay nếu sượng"],
-    description: "Những quả sầu riêng Ri6 tuyển lựa khắt khe từ vùng đất đỏ bazan Phước Long trù phú. Cây nuôi trái già đủ độ, thu hái sáng sớm Thứ Sáu. Múi vàng rực rỡ, cơm dẻo quánh, khô ráo không nhão nước, vị ngọt bùi béo ngậy tan chảy trên đầu lưỡi. (Giá thị trường TP.HCM: 95.000 - 125.000 đ/kg).",
+    description: "Những quả sầu riêng Ri6 tuyển lựa khắt khe từ các nhà vườn trù phú Đông Nam Bộ & Tiền Giang. Cây nuôi trái già đủ độ, thu hái sáng sớm Thứ Sáu. Múi vàng rực rỡ, cơm dẻo quánh, khô ráo không nhão nước, vị ngọt bùi béo ngậy tan chảy. (Giá thị trường TP.HCM: 95.000 - 125.000 đ/kg).",
     unit: "kg", weight_kg: 1, price_original: 68000, price_sale: 98000, image_url: "images/hero-fruits.jpg", is_available: true,
     certification_badge: "VietGAP • Bao Ăn 1 Đổi 1"
   },
   {
-    id: "p2", name: "Măng Cụt Cổ Thụ", category: "TraiCay",
+    id: "p2", name: "Măng Cụt Cổ Thụ (Lái Thiêu & Đông Nam Bộ)", category: "TraiCay",
     highlights: ["Vườn cổ thụ 25 năm không hóa chất", "Múi trắng tinh khiết, hạt lép giòn sần sật", "Vị chua ngọt thanh tao giải nhiệt tuyệt đỉnh"],
-    description: "Măng cụt thu hoạch từ những gốc đại thụ Bình Phước, nuôi dưỡng bằng nước ngầm tinh khiết. Đang vào giai đoạn nghịch vụ/cuối vụ khan hiếm, nhà vườn tỉ mỉ hái từng trái chín cành vỏ tím mỏng mịn, múi trắng nõn như hoa tuyết mọng nước. (Giá thị trường TP.HCM: 90.000 - 140.000 đ/kg).",
+    description: "Măng cụt thu hoạch từ những gốc đại thụ lâu năm vùng Đông Nam Bộ & Lái Thiêu, nuôi dưỡng bằng mạch nước ngầm tự nhiên. Nhà vườn tỉ mỉ hái từng trái chín cành vỏ tím mỏng mịn, múi trắng nõn như hoa tuyết mọng nước. (Giá thị trường TP.HCM: 90.000 - 140.000 đ/kg).",
     unit: "kg", weight_kg: 1, price_original: 65000, price_sale: 95000, image_url: "images/mangosteen-basket.jpg", is_available: true,
     certification_badge: "Hữu Cơ Cổ Thụ 25 Năm"
   },
   {
-    id: "p3", name: "Chôm Chôm Nhãn Giòn Ngọt", category: "TraiCay",
+    id: "p3", name: "Chôm Chôm Nhãn Giòn Ngọt (Chợ Lách - Bến Tre)", category: "TraiCay",
     highlights: ["Trái nhỏ râu vàng đỏ, tróc hạt 100%", "Cùi dày ráo nước, giòn rụm ngọt lịm", "Hái sớm tươi rói, không dập nát"],
-    description: "Đặc sản chôm chôm nhãn 'nhỏ mà có võ' của miệt vườn Bình Phước. Hàng trái vụ quả nhỏ xinh râu xoăn vàng ửng đỏ, cùi dày trắng trong ráo nước và tróc hạt sạch sẽ 100%. Vị ngọt đậm đà thơm mát như hương nhãn lồng. (Giá thị trường TP.HCM: 50.000 - 75.000 đ/kg).",
+    description: "Đặc sản chôm chôm nhãn trứ danh miệt vườn Chợ Lách (Bến Tre) & Vĩnh Long. Quả nhỏ xinh râu xoăn vàng ửng đỏ, cùi dày trắng trong ráo nước và tróc hạt sạch sẽ 100%. Vị ngọt đậm đà thơm mát như hương nhãn lồng. (Giá thị trường TP.HCM: 50.000 - 75.000 đ/kg).",
     unit: "kg", weight_kg: 1, price_original: 32000, price_sale: 52000, image_url: "images/chomchom.jpg", is_available: true,
-    certification_badge: "VietGAP • Hái Tươi 24h"
+    certification_badge: "VietGAP • Đặc Sản Miền Tây"
   },
   {
-    id: "p4", name: "Nhãn Xuồng Cơm Vàng", category: "TraiCay",
+    id: "p4", name: "Nhãn Xuồng Cơm Vàng (Vũng Tàu & Đồng Tháp)", category: "TraiCay",
     highlights: ["Trái to tròn da bò, căng bóng", "Cùi vàng dày cộm, giòn ngọt ứa nước", "Hương thơm nồng nàn sang trọng"],
-    description: "Từng chùm nhãn xuồng trĩu quả màu vàng da bò căng mọng. Bóc lớp vỏ mỏng là phần cùi nhãn dày cộm vàng ươm, giòn dai sần sật ngập tràn nước ngọt lịm. Vị ngọt sắc kèm hương thơm nồng nàn đặc trưng của đất đỏ phù sa.",
+    description: "Từng chùm nhãn xuồng cơm vàng trĩu quả từ vùng chuyên canh Bà Rịa - Vũng Tàu & Đồng Tháp. Bóc lớp vỏ mỏng là phần cùi nhãn dày cộm vàng ươm, giòn dai sần sật ngập tràn nước ngọt lịm kèm hương thơm đặc trưng.",
     unit: "kg", weight_kg: 1, price_original: 35000, price_sale: 55000, image_url: "images/nhan.jpg", is_available: true,
     certification_badge: "VietGAP • Cơm Vàng Tự Nhiên"
   },
   {
-    id: "p5", name: "Bòn Bon Đất Đỏ", category: "TraiCay",
+    id: "p5", name: "Bòn Bon Chùm Ngọt Thanh (Quảng Nam & Đông Nam Bộ)", category: "TraiCay",
     highlights: ["Chùm sai trĩu quả, vỏ mỏng dính", "Múi trong veo mọng nước, ngọt thanh mát", "Không dính mủ tay, giải nhiệt ngày hè"],
-    description: "Thức quà quê tinh tế được cắt cẩn thận từng chùm trên thân cây cổ thụ cuối vụ. Vỏ màu vàng ngà mềm mịn, khi bóp nhẹ lộ ra 5 múi bòn bon trong veo lấp lánh như ngọc. Vị ngọt thanh khiết xen chút chua dịu nhẹ tan êm ái. (Giá thị trường TP.HCM: 65.000 - 85.000 đ/kg).",
+    description: "Thức quà quê tinh tế được cắt cẩn thận từng chùm trên thân cây cổ thụ. Vỏ màu vàng ngà mềm mịn, khi bóp nhẹ lộ ra 5 múi bòn bon trong veo lấp lánh như ngọc, vị ngọt thanh khiết xen chút chua dịu nhẹ. (Giá thị trường TP.HCM: 65.000 - 85.000 đ/kg).",
     unit: "kg", weight_kg: 1, price_original: 42000, price_sale: 68000, image_url: "images/bonbon.jpg", is_available: true,
     certification_badge: "Canh Tác Thuận Tự Nhiên"
   },
   {
-    id: "p6", name: "Dâu Da Đất Vàng", category: "TraiCay",
+    id: "p6", name: "Dâu Da Đất Vàng Miệt Vườn", category: "TraiCay",
     highlights: ["Trái vàng óng ả mọc kín thân cây", "Vị chua ngọt hài hòa, mọng nước", "Món quà vặt dân dã cực kỳ gây nghiện"],
-    description: "Đặc sản dân dã đậm chất rừng vườn Đông Nam Bộ. Đã qua cao điểm hè, nhà vườn gom hái từng đợt cây già. Múi dâu ngậm nước mọng óng ả, vị chua ngọt kích thích vị giác, xua tan ngay cảm giác uể oải. (Giá thị trường TP.HCM: 35.000 - 55.000 đ/kg).",
+    description: "Đặc sản dân dã đậm chất rừng vườn sinh thái. Múi dâu ngậm nước mọng óng ả, vị chua ngọt kích thích vị giác, xua tan ngay cảm giác uể oải. (Giá thị trường TP.HCM: 35.000 - 55.000 đ/kg).",
     unit: "kg", weight_kg: 1, price_original: 22000, price_sale: 38000, image_url: "images/dauda.jpg", is_available: true,
-    certification_badge: "Hữu Cơ Rừng Vườn"
+    certification_badge: "Hữu Cơ Sinh Thái"
   },
   {
-    id: "p7", name: "Bơ Sáp Dẻo Loại 1", category: "TraiCay",
+    id: "p7", name: "Bơ Sáp Dẻo Loại 1 (Tây Nguyên - Đắk Lắk & Lâm Đồng)", category: "TraiCay",
     highlights: ["Cơm dẻo quánh như bơ sữa, không xơ", "Vỏ mỏng hạt nhỏ, cơm vàng đậm tự nhiên", "Giàu dưỡng chất, ăn tươi hoặc dầm sinh tố"],
-    description: "Bơ sáp loại 1 trái dài chắc nịch, da xanh bóng láng. Khi chín tới, phần cơm bơ vàng ươm dẻo quánh như kem tươi, hạt nhỏ xíu tróc vỏ dễ dàng. Vị béo bùi ngậy đượm đà, thích hợp ăn trực tiếp hoặc làm sinh tố. (Giá thị trường TP.HCM: 30.000 - 50.000 đ/kg).",
+    description: "Bơ sáp tuyển chọn từ vùng cao nguyên đất đỏ Đắk Lắk & Lâm Đồng, trái dài chắc nịch, da xanh bóng láng. Khi chín tới, phần cơm bơ vàng ươm dẻo quánh như kem tươi, hạt nhỏ, vị béo bùi ngậy đượm đà. (Giá thị trường TP.HCM: 30.000 - 50.000 đ/kg).",
     unit: "kg", weight_kg: 1, price_original: 22000, price_sale: 38000, image_url: "images/bo-sap.jpg", is_available: true,
-    certification_badge: "VietGAP • Bơ Già Không Thuốc"
+    certification_badge: "VietGAP • Đặc Sản Tây Nguyên"
   },
   {
     id: "p8", name: "Combo 1: Bạn Trẻ Giảng Đường (Măng Cụt + Chôm Chôm + Dâu Da)", category: "Combo",
