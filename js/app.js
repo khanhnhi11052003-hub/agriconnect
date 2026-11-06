@@ -6,6 +6,19 @@
  * - Ưu đãi khai trương: Freeship đơn từ 250.000 đ & Giảm 10.000 đ với mã AGRICONNECT
  */
 
+window.escapeHTML = window.escapeHTML || function (value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+};
+
+window.formatVND = window.formatVND || function (n) {
+  return Number(n || 0).toLocaleString("vi-VN") + " đ";
+};
+
 let currentProducts = [];
 let cart = {}; // { productId: quantity }
 let selectedDeliveryType = "HOME"; // "HOME" | "CAMPUS"
