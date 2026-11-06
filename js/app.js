@@ -91,22 +91,35 @@ function initCountdownTimer() {
 }
 
 // ================= SẢN PHẨM =================
-async function loadProducts() {
-  currentProducts = await window.db.getProducts();
+let selectedCategory = "ALL";
 
+window.filterCategory = function (cat) {
+  selectedCategory = cat;
+  document.querySelectorAll(".cat-tab").forEach(tab => {
+    tab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#345318] border border-[#d2e7b8] hover:bg-[#f1f7e9]";
+  });
+  const activeTab = document.getElementById(`tab-cat-${cat}`);
+  if (activeTab) {
+    activeTab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#5a8d29] text-white shadow-sm";
+  }
+  renderProductGrid();
+};
+
+function renderProductGrid() {
   const productListEl = document.getElementById("product-list");
-  const cartSelectorsEl = document.getElementById("cart-item-selectors");
   if (!productListEl) return;
-
   productListEl.innerHTML = "";
-  if (cartSelectorsEl) cartSelectorsEl.innerHTML = "";
 
-  if (currentProducts.length === 0) {
-    showPageError("Hiện chưa có sản phẩm mở bán trong đợt này.");
+  const items = selectedCategory === "ALL"
+    ? currentProducts
+    : currentProducts.filter(p => p.category === selectedCategory);
+
+  if (items.length === 0) {
+    productListEl.innerHTML = `<div class="col-span-full p-8 text-center rounded-3xl bg-[#f5f9ee] border border-[#d2e7b8] text-[#4d7b22] text-sm">Hiện chưa có sản phẩm trong danh mục này.</div>`;
     return;
   }
 
-  currentProducts.forEach(p => {
+  items.forEach(p => {
     const isCombo = p.category === "Combo";
     const name = escapeHTML(p.name);
     const desc = escapeHTML(p.description);
@@ -115,10 +128,16 @@ async function loadProducts() {
     const pid = escapeHTML(p.id);
     const price = formatVND(p.price_sale);
 
+    const highlightsHtml = Array.isArray(p.highlights) && p.highlights.length > 0
+      ? `<div class="flex flex-wrap gap-1.5 mt-2.5">
+          ${p.highlights.map(h => `<span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-[#eaf4dc] text-[#345517] px-2.5 py-0.5 rounded-full border border-[#d2e7b8]"><i class="fa-solid fa-check text-[#5a8d29] text-[9px]"></i>${escapeHTML(h)}</span>`).join("")}
+        </div>`
+      : "";
+
     const card = document.createElement("div");
     card.className = "bg-white rounded-3xl overflow-hidden border border-[#dce9cb] shadow-md card-hover flex flex-col";
     card.innerHTML = `
-      <div class="relative h-60 overflow-hidden bg-[#f5f9ee] group">
+      <div class="relative h-64 overflow-hidden bg-[#f5f9ee] group">
         <img src="${img}" alt="${name}" loading="lazy" class="w-full h-full object-cover fruit-pop transition-transform duration-500 group-hover:scale-105">
         <span class="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-[#d97706]" : "bg-[#5a8d29]"} text-white shadow-md">
           ${isCombo ? "Combo Tiết Kiệm" : "Trái cây vườn"}
@@ -129,8 +148,9 @@ async function loadProducts() {
       </div>
       <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          <h3 class="font-bold text-lg text-[#243912]">${name}</h3>
-          <p class="text-xs text-[#597044] mt-2 leading-relaxed">${desc}</p>
+          <h3 class="font-bold text-lg text-[#243912] leading-snug">${name}</h3>
+          ${highlightsHtml}
+          <p class="text-xs text-[#597044] mt-3 leading-relaxed">${desc}</p>
         </div>
         <div class="pt-4 border-t border-[#edf4e3] flex items-center justify-between">
           <div>
@@ -145,8 +165,30 @@ async function loadProducts() {
       </div>
     `;
     productListEl.appendChild(card);
+  });
+}
 
-    if (cartSelectorsEl) {
+async function loadProducts() {
+  currentProducts = await window.db.getProducts();
+
+  const cartSelectorsEl = document.getElementById("cart-item-selectors");
+  if (cartSelectorsEl) cartSelectorsEl.innerHTML = "";
+
+  if (currentProducts.length === 0) {
+    showPageError("Hiện chưa có sản phẩm mở bán trong đợt này.");
+    return;
+  }
+
+  renderProductGrid();
+
+  if (cartSelectorsEl) {
+    currentProducts.forEach(p => {
+      const name = escapeHTML(p.name);
+      const img = escapeHTML(p.image_url);
+      const unit = escapeHTML(p.unit);
+      const pid = escapeHTML(p.id);
+      const price = formatVND(p.price_sale);
+
       const row = document.createElement("div");
       row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#dce9cb]";
       row.innerHTML = `
@@ -164,8 +206,8 @@ async function loadProducts() {
         </div>
       `;
       cartSelectorsEl.appendChild(row);
-    }
-  });
+    });
+  }
 
   updateCartUI();
 }

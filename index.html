@@ -294,19 +294,32 @@
   </section>
 
   <!-- ================= PRODUCTS SECTION ================= -->
-  <section id="products" class="py-16 sm:py-20 bg-slate-50">
+  <section id="products" class="py-16 sm:py-20 bg-[#f8faf4]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <div class="text-center max-w-2xl mx-auto space-y-3 mb-12">
-        <span class="text-xs uppercase font-extrabold tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
-          Danh mục trái cây vườn
+      <div class="text-center max-w-2xl mx-auto space-y-3 mb-10">
+        <span class="text-xs uppercase font-extrabold tracking-wider text-[#466e20] bg-[#e7f2da] px-3.5 py-1 rounded-full border border-[#cfe5b7]">
+          Danh mục trái cây vườn & Combo tiết kiệm
         </span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-[#243912] tracking-tight">
           Nông Sản Bình Phước Chín Già Tự Nhiên
         </h2>
-        <p class="text-sm text-slate-500">
-          Thu hái tuyển chọn từng trái, không hóa chất ngâm ủ, cam kết béo ngậy ngọt lành 1 đổi 1 nếu sượng.
+        <p class="text-sm text-[#597044]">
+          Thu hái tuyển chọn từng trái, không hóa chất ngâm ủ, cam kết béo ngậy ngọt lành 1 đổi 1 tận nơi nếu sượng.
         </p>
+
+        <!-- Category Filter Tabs -->
+        <div class="flex items-center justify-center gap-2 pt-4">
+          <button type="button" onclick="filterCategory('ALL')" id="tab-cat-ALL" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#5a8d29] text-white shadow-sm">
+            Tất Cả Sản Phẩm
+          </button>
+          <button type="button" onclick="filterCategory('TraiCay')" id="tab-cat-TraiCay" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#345318] border border-[#d2e7b8] hover:bg-[#f1f7e9]">
+            Trái Cây Vườn Tươi
+          </button>
+          <button type="button" onclick="filterCategory('Combo')" id="tab-cat-Combo" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#345318] border border-[#d2e7b8] hover:bg-[#f1f7e9]">
+            Combo Đa Vị Tiết Kiệm
+          </button>
+        </div>
       </div>
 
       <!-- Product Cards Container (Dynamic via JS) -->
