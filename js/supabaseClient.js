@@ -112,10 +112,6 @@ const DEMO_PRODUCTS = [
     unit: "combo", weight_kg: 5.5, price_original: 329000, price_sale: 425000, image_url: "images/hero-fruits.jpg", is_available: true
   }
 ];
-    description: "Gói trọn tấm lòng gửi gắm đến đối tác và thầy cô kính yêu: 1 quả Sầu riêng Ri6 VIP tuyển trái chuẩn đẹp (2.5 - 2.8kg) + 2kg Măng cụt cổ thụ cuống xanh + 1kg Bơ sáp dẻo đặc sản. Đóng thùng quai xách chỉn chu, tem mã QR truy xuất từng gốc cây nhà vườn.",
-    unit: "combo", weight_kg: 5.5, price_original: 265000, price_sale: 369000, image_url: "images/hero-fruits.jpg", is_available: true
-  }
-];
 
 const DEMO_ORDERS = [
   {
@@ -217,26 +213,53 @@ class AgriDB {
   // ================= SẢN PHẨM =================
   async getProducts() {
     if (this.isCloud) {
-      const { data, error } = await this.client
-        .from("products").select("*").eq("is_available", true).order("created_at", { ascending: true });
-      if (error) throw new Error(this._friendlyError(error));
-      return data || [];
+      try {
+        const { data, error } = await this.client
+          .from("products").select("*").eq("is_available", true).order("created_at", { ascending: true });
+        if (!error && data && data.length > 0) return data;
+      } catch (err) {
+        console.warn("[AgriConnect] Không tải được từ Supabase, dùng dữ liệu dự phòng:", err);
+      }
     }
-    return this._read(LS.products).filter(p => p.is_available !== false);
+    const local = this._read(LS.products);
+    if (local && local.length > 0) return local.filter(p => p.is_available !== false);
+    return DEMO_PRODUCTS;
   }
 
   // Admin: lấy tất cả sản phẩm (kể cả ngừng bán) để tính giá vốn
   async getAllProducts() {
     if (this.isCloud) {
-      const { data, error } = await this.client.from("products").select("*");
-      if (error) throw new Error(this._friendlyError(error));
-      return data || [];
+      try {
+        const { data, error } = await this.client.from("products").select("*");
+        if (!error && data && data.length > 0) return data;
+      } catch (err) {
+        console.warn("[AgriConnect] Lỗi lấy sản phẩm admin:", err);
+      }
     }
     return this._read(LS.products);
   }
 
   // ================= ĐỢT GOM HÀNG =================
   async getCurrentBatch() {
+    if (this.isCloud) {
+      try {
+        const { data, error } = await this.client
+          .from("batches").select("*").eq("status", "OPEN")
+          .order("created_at", { ascending: false }).limit(1).maybeSingle();
+        if (!error && data) return data;
+      } catch (err) {
+        console.warn("[AgriConnect] Lỗi lấy đợt gom từ Supabase:", err);
+      }
+    }
+    const batch = JSON.parse(localStorage.getItem(LS.batch) || "null");
+    if (batch && batch.batch_name) return batch;
+    return {
+      batch_name: (window.APP_CONFIG?.CAMPAIGN?.BATCH_NAME) || "Đợt Gom Hàng #01: Sầu Riêng Ri6 & Măng Cụt Bình Phước",
+      target_kg: 60,
+      current_kg: 0,
+      status: "OPEN"
+    };
+  }
     if (this.isCloud) {
       const { data, error } = await this.client
         .from("batches").select("*").eq("status", "OPEN")

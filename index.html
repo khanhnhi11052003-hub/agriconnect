@@ -90,7 +90,9 @@
       <!-- Desktop Navigation (Chỉ hiển thị từ màn hình XL trở lên để tuyệt đối không rớt dòng) -->
       <nav class="hidden xl:flex items-center gap-1 text-xs xl:text-sm font-bold text-[#1f3813] whitespace-nowrap flex-nowrap">
         <a href="#campaign" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Đợt Gom Hàng</a>
-        <a href="#products" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Trái Cây Vườn</a>
+        <a href="#products" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap flex items-center gap-1.5 font-black text-[#256314] bg-[#e1f9cf]/60">
+          <i class="fa-solid fa-basket-shopping text-[#3ba117]"></i> <span>Menu Đặt Hàng</span>
+        </a>
         <a href="#logistics" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Vận Hành 24h</a>
         <a href="#transparency" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap">Nguồn Gốc Vườn</a>
         <a href="trace.html" class="px-3 py-2 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all whitespace-nowrap flex items-center gap-1.5">
@@ -130,12 +132,15 @@
         <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
 
-      <a href="#products" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#f4fceb] transition-all shadow-2xs group">
+      <a href="#products" onclick="toggleMobileNav()" class="flex items-center justify-between p-3 rounded-2xl bg-[#f0fae8] border border-[#a3e670] hover:border-[#3ba117] transition-all shadow-2xs group">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
-            <i class="fa-solid fa-apple-whole text-[#3ba117]"></i>
+          <div class="w-8 h-8 rounded-xl bg-[#3ba117] text-white flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-basket-shopping"></i>
           </div>
-          <span class="font-extrabold text-xs sm:text-sm text-[#0f240d]">Trái Cây Vườn & Combo Tiết Kiệm</span>
+          <div>
+            <span class="font-black text-xs sm:text-sm text-[#0f240d] block">Menu Đặt Hàng Nông Sản</span>
+            <span class="text-[10px] text-[#2e8213] font-semibold">Trái cây vườn chín tự nhiên & Combo</span>
+          </div>
         </div>
         <i class="fa-solid fa-chevron-right text-xs text-[#7bb85b] group-hover:translate-x-0.5 transition-transform"></i>
       </a>
@@ -955,20 +960,20 @@
       <div class="bg-white rounded-3xl border border-[#dce9cb] shadow-xl overflow-hidden p-5 sm:p-10">
         <form id="preorder-form" class="space-y-8">
           
-          <!-- Section 1: Giỏ Hàng Đã Chọn Ngay Tại Hình Ảnh -->
+          <!-- Section 1: Menu Đặt Hàng & Nông Sản Đã Chọn -->
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-[#edf4e3] pb-3">
               <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2">
-                <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">1</span>
-                Nông Sản Bạn Đã Chọn
+                <span class="w-6 h-6 rounded-lg bg-[#3ba117] text-white text-xs flex items-center justify-center font-bold">1</span>
+                Menu Đặt Hàng & Nông Sản Đã Chọn
               </h3>
               <a href="#products" class="text-xs font-bold text-[#256314] hover:text-[#194c0b] hover:underline flex items-center gap-1">
-                <i class="fa-solid fa-plus-circle"></i>
-                <span>Chọn thêm trái cây</span>
+                <i class="fa-solid fa-images"></i>
+                <span>Xem ảnh lớn phía trên</span>
               </a>
             </div>
 
-            <!-- Danh sách các món đã chọn (Render bởi JS) -->
+            <!-- Danh sách các món đã chọn & Menu chọn nhanh (Render bởi JS) -->
             <div id="cart-selected-items" class="space-y-3">
               <!-- Rendered via updateCartUI() -->
             </div>

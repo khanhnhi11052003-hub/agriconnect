@@ -1,6 +1,6 @@
 /**
  * LOGIC TRANG KHÁCH HÀNG - AGRICONNECT BÌNH PHƯỚC
- * - Chọn số lượng trực tiếp tại hình ảnh nông sản
+ * - Menu đặt hàng đầy đủ & chọn số lượng trực tiếp tại hình ảnh nông sản
  * - Đồng bộ giỏ hàng nổi Sticky Bottom Bar & danh sách tóm tắt
  * - Khách chi trả cước 25.000 đ chặng cuối giao tận nhà
  * - Ưu đãi khai trương: Freeship đơn từ 250.000 đ & Giảm 10.000 đ với mã AGRICONNECT
@@ -11,27 +11,43 @@ let cart = {}; // { productId: quantity }
 let selectedDeliveryType = "HOME"; // "HOME" | "CAMPUS"
 let appliedDiscount = 10000; // Mặc định mã AGRICONNECT giảm 10.000 đ
 
-document.addEventListener("DOMContentLoaded", async () => {
+// Đảm bảo khởi chạy dù script nạp ở bất kỳ thời điểm nào
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
+
+async function initApp() {
   initCountdownTimer();
   setupEventListeners();
+
   try {
     await loadBatchInfo();
+  } catch (err) {
+    console.warn("Lỗi tải thông tin đợt gom:", err);
+  }
+
+  try {
     await loadProducts();
   } catch (err) {
+    console.error("Lỗi tải sản phẩm:", err);
     showPageError("Không tải được dữ liệu sản phẩm: " + err.message);
   }
+
   updateOrderSummary();
-});
+}
 
 function showPageError(message) {
   const el = document.getElementById("product-list");
   if (el) {
-    el.innerHTML = `<div class="col-span-full p-6 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm">${escapeHTML(message)}</div>`;
+    el.innerHTML = `<div class="col-span-full p-6 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-semibold">${escapeHTML(message)}</div>`;
   }
 }
 
 // ================= ĐỢT GOM HÀNG =================
 async function loadBatchInfo() {
+  if (!window.db || typeof window.db.getCurrentBatch !== "function") return;
   const batch = await window.db.getCurrentBatch();
   if (!batch) return;
 
@@ -186,9 +202,11 @@ function renderProductGrid() {
 }
 
 async function loadProducts() {
-  currentProducts = await window.db.getProducts();
+  if (window.db && typeof window.db.getProducts === "function") {
+    currentProducts = await window.db.getProducts();
+  }
 
-  if (currentProducts.length === 0) {
+  if (!currentProducts || currentProducts.length === 0) {
     showPageError("Hiện chưa có sản phẩm mở bán trong đợt này.");
     return;
   }
@@ -210,11 +228,16 @@ function changeQty(productId, delta) {
   updateCartUI();
 }
 
+window.clearCart = function () {
+  cart = {};
+  updateCartUI();
+};
+
 function updateCartUI() {
-  // 1. Cập nhật số lượng trên các thẻ sản phẩm trong mục Trái Cây Vườn
+  // 1. Cập nhật số lượng trên các thẻ ảnh sản phẩm trong mục Trái Cây Vườn
   renderProductGrid();
 
-  // 2. Cập nhật danh sách các món đã chọn trong Pre-order Form
+  // 2. Cập nhật thực đơn đặt hàng (Menu) trong Pre-order Form
   renderSelectedCartItems();
 
   // 3. Cập nhật thanh giỏ hàng nổi Sticky Cart Bar
@@ -224,59 +247,117 @@ function updateCartUI() {
   updateOrderSummary();
 }
 
-// Render danh sách sản phẩm khách đã bấm chọn vào Form đặt hàng
+// Render Menu Đặt Hàng & Sản phẩm đã chọn ngay trong Form đặt hàng
 function renderSelectedCartItems() {
   const container = document.getElementById("cart-selected-items");
   if (!container) return;
 
-  const selectedEntries = Object.entries(cart);
-  if (selectedEntries.length === 0) {
-    container.innerHTML = `
-      <div class="p-6 text-center rounded-2xl bg-[#f7fdf3] border border-dashed border-[#c8edab] space-y-2">
-        <i class="fa-solid fa-basket-shopping text-3xl text-[#7bb85b]"></i>
-        <p class="text-sm font-bold text-[#0f240d]">Bạn chưa chọn loại trái cây nào</p>
-        <p class="text-xs text-[#4d6b33]">Vui lòng bấm nút <strong>"+ Chọn Mua"</strong> ngay tại các hình ảnh nông sản ở phía trên trước khi điền thông tin.</p>
-        <a href="#products" class="inline-flex items-center gap-1.5 text-xs font-black text-[#256314] bg-[#e1f9cf] px-4 py-2 rounded-xl hover:bg-[#d2f0b6] transition-colors mt-2">
-          <i class="fa-solid fa-arrow-up"></i> Lên chọn nông sản yêu thích
-        </a>
-      </div>
-    `;
-    return;
-  }
+  const selectedEntries = Object.entries(cart).filter(([_, qty]) => qty > 0);
+  let html = "";
 
-  container.innerHTML = "";
-  selectedEntries.forEach(([id, qty]) => {
-    const p = currentProducts.find(x => String(x.id) === String(id));
-    if (!p) return;
-
-    const lineTotal = Number(p.price_sale) * qty;
-    const row = document.createElement("div");
-    row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#d2f0b6] shadow-2xs gap-3";
-    row.innerHTML = `
-      <div class="flex items-center gap-3 min-w-0">
-        <img src="${escapeHTML(p.image_url)}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#c8edab] shrink-0">
-        <div class="min-w-0">
-          <h4 class="font-black text-sm text-[#0f240d] truncate">${escapeHTML(p.name)}</h4>
-          <p class="text-xs text-[#2e8213] font-bold">${formatVND(p.price_sale)} / ${escapeHTML(p.unit)}</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-        <div class="flex items-center gap-1.5 bg-[#f0fae8] p-1 rounded-xl border border-[#c8edab]">
-          <button type="button" data-dec="${p.id}" aria-label="Giảm" class="w-7 h-7 rounded-lg bg-white text-[#256314] font-black hover:bg-[#e1f9cf] flex items-center justify-center border border-[#c8edab] shadow-2xs active:scale-95">-</button>
-          <span class="w-6 text-center font-black text-xs text-[#0f240d]">${qty}</span>
-          <button type="button" data-inc="${p.id}" aria-label="Tăng" class="w-7 h-7 rounded-lg bg-[#3ba117] text-white font-black hover:bg-[#256314] flex items-center justify-center shadow-xs active:scale-95">+</button>
-        </div>
-        <div class="text-right min-w-[70px] sm:min-w-[90px]">
-          <span class="font-black text-xs sm:text-sm text-[#22720d] block">${formatVND(lineTotal)}</span>
-          <span class="text-[10px] text-slate-400 block">${qty} ${escapeHTML(p.unit)}</span>
-        </div>
-        <button type="button" data-remove="${p.id}" title="Xóa món này" class="p-1.5 text-slate-400 hover:text-rose-600 transition-colors">
-          <i class="fa-solid fa-trash-can text-xs"></i>
+  // 1. Nếu đã chọn món: Hiển thị tóm tắt các món đã chọn nổi bật ở trên
+  if (selectedEntries.length > 0) {
+    const totalSelectedQty = selectedEntries.reduce((sum, [_, q]) => sum + q, 0);
+    html += `
+      <div class="p-3 sm:p-3.5 rounded-2xl bg-[#f0fae8] border border-[#bbf099] flex items-center justify-between gap-2 shadow-2xs">
+        <span class="text-xs sm:text-sm font-black text-[#1c560e] flex items-center gap-2">
+          <i class="fa-solid fa-basket-shopping text-[#3ba117] text-base"></i>
+          <span>Bạn đã chọn <span class="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg">${totalSelectedQty} món</span></span>
+        </span>
+        <button type="button" onclick="clearCart()" class="text-xs font-bold text-rose-600 hover:text-rose-800 hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-rotate-left text-[10px]"></i> Đặt lại
         </button>
       </div>
+      <div class="space-y-2.5">
     `;
-    container.appendChild(row);
+
+    selectedEntries.forEach(([id, qty]) => {
+      const p = currentProducts.find(x => String(x.id) === String(id));
+      if (!p) return;
+      const lineTotal = Number(p.price_sale) * qty;
+
+      html += `
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-white border-2 border-[#b8ee99] shadow-xs gap-3">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <img src="${escapeHTML(p.image_url)}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#c8edab] shrink-0">
+            <div class="min-w-0">
+              <h4 class="font-black text-xs sm:text-sm text-[#0f240d] truncate">${escapeHTML(p.name)}</h4>
+              <p class="text-[11px] sm:text-xs text-[#2e8213] font-bold">${formatVND(p.price_sale)} / ${escapeHTML(p.unit)}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div class="flex items-center gap-1 bg-[#f0fae8] p-1 rounded-xl border border-[#c8edab]">
+              <button type="button" data-dec="${p.id}" aria-label="Giảm" class="w-7 h-7 rounded-lg bg-white text-[#256314] font-black hover:bg-[#e1f9cf] flex items-center justify-center border border-[#c8edab] shadow-2xs active:scale-95 text-sm">-</button>
+              <span class="w-6 text-center font-black text-xs text-[#0f240d]">${qty}</span>
+              <button type="button" data-inc="${p.id}" aria-label="Tăng" class="w-7 h-7 rounded-lg bg-[#3ba117] text-white font-black hover:bg-[#256314] flex items-center justify-center shadow-xs active:scale-95 text-sm">+</button>
+            </div>
+            <div class="text-right min-w-[70px] sm:min-w-[85px]">
+              <span class="font-black text-xs sm:text-sm text-[#22720d] block">${formatVND(lineTotal)}</span>
+              <span class="text-[10px] text-slate-400 block">${qty} ${escapeHTML(p.unit)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  // 2. Menu Đặt Hàng Trực Tiếp (Danh Sách Toàn Bộ Nông Sản Kèm Nút Thêm/Bớt)
+  html += `
+    <div class="pt-2">
+      <div class="flex items-center justify-between mb-2.5">
+        <span class="text-xs sm:text-sm font-extrabold text-[#0f240d] flex items-center gap-1.5">
+          <i class="fa-solid fa-list-check text-[#3ba117]"></i>
+          <span>${selectedEntries.length > 0 ? "Chọn thêm các loại nông sản khác:" : "Bấm nút [+] hoặc 'Chọn Mua' để đặt món:"}</span>
+        </span>
+        <a href="#products" class="text-xs font-bold text-[#256314] hover:underline flex items-center gap-1">
+          <span>Xem ảnh lớn</span>
+          <i class="fa-solid fa-arrow-up text-[10px]"></i>
+        </a>
+      </div>
+      <div class="space-y-2 max-h-[380px] overflow-y-auto pr-1">
+  `;
+
+  currentProducts.forEach(p => {
+    const qty = cart[p.id] || 0;
+    const isCombo = p.category === "Combo";
+    const pid = escapeHTML(p.id);
+
+    html += `
+      <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl ${qty > 0 ? 'bg-[#f7fdf3] border-2 border-[#82d648]' : 'bg-white border border-[#d2f0b6]'} hover:border-[#3ba117] transition-all gap-2 shadow-2xs">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <img src="${escapeHTML(p.image_url)}" alt="" class="w-11 h-11 rounded-xl object-cover fruit-pop border border-[#d2f0b6] shrink-0">
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <h4 class="font-black text-xs sm:text-sm text-[#0f240d] truncate">${escapeHTML(p.name)}</h4>
+              <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md ${isCombo ? 'bg-amber-100 text-amber-800' : 'bg-[#e1f9cf] text-[#256314]'}">${isCombo ? 'Combo' : 'Trái cây'}</span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-[#2e8213] font-bold mt-0.5">${formatVND(p.price_sale)} <span class="text-[10px] text-slate-400 font-normal">/ ${escapeHTML(p.unit)}</span></p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          ${qty > 0 ? `
+            <div class="flex items-center gap-1 bg-[#f0fae8] p-1 rounded-xl border border-[#3ba117]">
+              <button type="button" data-dec="${pid}" class="w-7 h-7 rounded-lg bg-white text-[#256314] font-black hover:bg-[#e1f9cf] flex items-center justify-center border border-[#c8edab] shadow-2xs active:scale-95 text-xs">-</button>
+              <span class="w-6 text-center font-black text-xs text-[#0f240d]">${qty}</span>
+              <button type="button" data-inc="${pid}" class="w-7 h-7 rounded-lg bg-[#3ba117] text-white font-black hover:bg-[#256314] flex items-center justify-center shadow-xs active:scale-95 text-xs">+</button>
+            </div>
+          ` : `
+            <button type="button" data-add="${pid}" class="bg-[#f0fae8] hover:bg-[#3ba117] text-[#256314] hover:text-white font-extrabold text-xs px-3 sm:px-3.5 py-1.5 rounded-xl border border-[#c8edab] transition-all flex items-center gap-1 active:scale-95 shadow-2xs">
+              <i class="fa-solid fa-plus text-[10px]"></i> Chọn Mua
+            </button>
+          `}
+        </div>
+      </div>
+    `;
   });
+
+  html += `
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
 }
 
 // Cập nhật thanh giỏ hàng nổi Sticky Bottom Bar
