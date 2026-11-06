@@ -183,22 +183,24 @@ BEGIN
   END IF;
 
   FOR item IN SELECT * FROM jsonb_array_elements(NEW.items) LOOP
-    qty := (item ->> 'qty')::INT;
+    qty := coalesce(item ->> 'qty', item ->> 'quantity')::INT;
     IF qty IS NULL OR qty < 1 OR qty > 50 THEN
       RAISE EXCEPTION 'Số lượng sản phẩm không hợp lệ';
     END IF;
 
     SELECT id, name, unit, price_sale, weight_kg INTO p
     FROM products
-    WHERE id = (item ->> 'productId')::UUID AND is_available = TRUE;
+    WHERE id = coalesce(item ->> 'productId', item ->> 'product_id', item ->> 'id')::UUID AND is_available = TRUE;
 
     IF NOT FOUND THEN
       RAISE EXCEPTION 'Sản phẩm không tồn tại hoặc đã ngừng bán';
     END IF;
 
     new_items := new_items || jsonb_build_object(
-      'productId', p.id, 'name', p.name, 'unit', p.unit,
-      'qty', qty, 'price', p.price_sale, 'subtotal', p.price_sale * qty
+      'id', p.id, 'product_id', p.id, 'productId', p.id,
+      'name', p.name, 'unit', p.unit,
+      'qty', qty, 'quantity', qty,
+      'price', p.price_sale, 'subtotal', p.price_sale * qty
     );
     subtotal := subtotal + p.price_sale * qty;
     kg := kg + p.weight_kg * qty;

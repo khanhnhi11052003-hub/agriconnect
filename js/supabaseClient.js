@@ -281,7 +281,17 @@ class AgriDB {
         delivery_type: orderInput.delivery_type,
         department: orderInput.department,
         delivery_address: orderInput.delivery_address,
-        items: orderInput.items.map(i => ({ productId: i.productId, qty: i.qty })),
+        items: orderInput.items.map(i => ({
+          id: i.productId,
+          product_id: i.productId,
+          productId: i.productId,
+          name: i.name,
+          unit: i.unit,
+          price: i.price,
+          subtotal: i.subtotal,
+          qty: i.qty,
+          quantity: i.qty
+        })),
         payment_method: orderInput.payment_method,
         notes: orderInput.notes || null,
         consent_at: new Date().toISOString()
