@@ -40,6 +40,11 @@ body {
   scroll-behavior: smooth;
 }
 
+h1, h2, h3, h4 {
+  text-wrap: balance;
+  letter-spacing: -0.025em;
+}
+
 .font-serif {
   font-family: var(--font-serif);
 }
