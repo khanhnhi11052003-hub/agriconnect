@@ -21,12 +21,12 @@ window.APP_CONFIG = {
   // Để trống: tự lấy địa chỉ hiện tại (khi mở file trực tiếp trên máy, mã QR trên tem sẽ không dùng được).
   SITE_URL: "https://agriconnect-yagt.vercel.app",
 
-  // ---------------- VietQR (CẬP NHẬT SAU) ----------------
-  // Mã ngân hàng: MB, VCB, TCB, ACB, VPB, TPB, BIDV, ICB (VietinBank)...
+  // ---------------- VietQR ----------------
+  // Ngân hàng Vietcombank (VCB)
   BANK: {
-    BANK_ID: "MB",
-    ACCOUNT_NO: "0987654321",              // ⚠️ SỐ TÀI KHOẢN MẪU - cần thay
-    ACCOUNT_NAME: "NGUYEN PHAM KHANH NHI", // ⚠️ TÊN MẪU - viết hoa không dấu
+    BANK_ID: "VCB",
+    ACCOUNT_NO: "1020202919",
+    ACCOUNT_NAME: "NGUYEN PHAM KHANH NHI",
     TEMPLATE: "compact2"
   },
 
@@ -56,8 +56,8 @@ window.APP_CONFIG = {
   CAMPAIGN: {
     NAME: "AgriConnect Bình Phước - Mùa 1",
     BATCH_NAME: "Đợt Gom Hàng #01: Sầu Riêng Ri6 & Măng Cụt Bình Phước",
-    HOTLINE: "0987 654 321",          // ⚠️ SỐ MẪU - cần thay
-    ZALO: "https://zalo.me/0987654321",
+    HOTLINE: "0784 203 424",
+    ZALO: "https://zalo.me/0784203424",
     DEADLINE_TEXT: "23h59 Thứ Năm hàng tuần",
     TARGET_KG: 60.0,
 
