@@ -12,12 +12,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f5f9ee', 100: '#e7f2da', 200: '#cfe5b7', 300: '#b2d58e', 400: '#91c261', 500: '#73ab3b', 600: '#5a8d29', 700: '#466e20', 800: '#355319', 900: '#263d12' },
+            emerald: { 50: '#f5f9ee', 100: '#e7f2da', 200: '#cfe5b7', 300: '#b2d58e', 400: '#91c261', 500: '#73ab3b', 600: '#5a8d29', 700: '#466e20', 800: '#355319', 900: '#263d12' }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-[#f8faf4] text-[#344824] antialiased min-h-screen flex flex-col">
 
   <!-- ================= TOP HEADER ================= -->
-  <div class="bg-emerald-700 text-white text-center py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2">
-    <i class="fa-solid fa-circle-check"></i>
+  <div class="bg-[#3b621c] text-white text-center py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2 border-b border-[#528129]/30">
+    <i class="fa-solid fa-circle-check text-[#dff0ce]"></i>
     <span>Tem Chứng Thực Xuất Xứ Nông Sản Bình Phước Chính Hiệu</span>
   </div>
 

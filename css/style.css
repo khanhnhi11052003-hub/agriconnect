@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root {
-  /* Bảng màu Xanh Lá Dịu Mắt (Soft Sage / Organic Matcha) */
-  --primary: #4e7c59;
-  --primary-dark: #3b6244;
-  --primary-light: #eef4ef;
-  --primary-pastel: #e2ede4;
+  /* BẢNG MÀU XANH LÁ MẠ (Young Rice Sprout / Spring Meadow) */
+  --primary: #6ba336;           /* Xanh lá mạ tươi non */
+  --primary-dark: #4d7a22;      /* Xanh lá mạ đậm để hover */
+  --primary-light: #f3f8ec;     /* Nền pastel lá mạ */
+  --primary-pastel: #e4f0d5;    /* Viền / tag mạ non */
   
-  /* Màu Pastel bổ trợ */
-  --pastel-cream: #faf8f5;
-  --pastel-sage: #f2f6f2;
-  --pastel-warm: #fff9f0;
-  --pastel-border: #dde6de;
+  /* Màu Pastel bổ trợ tôn trái cây */
+  --pastel-cream: #fbfbf6;
+  --pastel-sprout: #f5f9ee;
+  --pastel-warm: #fffdf5;
+  --pastel-border: #d7e8c5;
 
-  --dark: #1b2e21;
-  --gray-bg: #f7f9f7;
-  --card-border: #e6ede6;
+  --dark: #223812;              /* Chữ tiêu đề xanh lá mạ sẫm */
+  --gray-bg: #f8faf4;           /* Nền trang dịu mắt */
+  --card-border: #e2edd5;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-serif: 'Playfair Display', serif;
 }
@@ -35,7 +35,7 @@ html, body {
 body {
   font-family: var(--font-sans);
   background-color: var(--gray-bg);
-  color: #38463c;
+  color: #384a29;
   line-height: 1.6;
   scroll-behavior: smooth;
 }
@@ -44,34 +44,34 @@ body {
   font-family: var(--font-serif);
 }
 
-/* Glassmorphism Navigation mềm dịu */
+/* Glassmorphism Navigation xanh lá mạ */
 .glass-nav {
-  background: rgba(250, 252, 250, 0.94);
+  background: rgba(248, 250, 244, 0.94);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(220, 232, 222, 0.8);
+  border-bottom: 1px solid rgba(215, 232, 197, 0.85);
 }
 
-/* Badge & Highlights phong cách Pastel */
+/* Badge & Highlights xanh lá mạ non */
 .badge-eco {
-  background: #e2ede4;
-  color: #2e5237;
-  font-weight: 600;
+  background: #e7f2da;
+  color: #38591a;
+  font-weight: 700;
   font-size: 0.75rem;
   padding: 4px 10px;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid #d1e2d4;
+  border: 1px solid #cce2b5;
 }
 
 /* Hiệu ứng làm NỔI BẬT màu sắc trái cây tự nhiên */
 .fruit-pop {
-  filter: contrast(1.05) saturate(1.14);
+  filter: contrast(1.05) saturate(1.15);
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
 }
 .fruit-pop:hover {
-  filter: contrast(1.07) saturate(1.18);
+  filter: contrast(1.07) saturate(1.20);
   transform: scale(1.04);
 }
 
@@ -83,8 +83,8 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 28px -10px rgba(78, 124, 89, 0.12);
-  border-color: #c9dbcb;
+  box-shadow: 0 14px 28px -10px rgba(107, 163, 54, 0.16);
+  border-color: #badba0;
 }
 
 /* Pulse animation dịu */
@@ -102,14 +102,14 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f0f4f0;
+  background: #f1f6ea;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c2d4c5;
+  background: #c3dbaa;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a3bea8;
+  background: #a5c783;
 }
 
 /* Print styling for Shipping Labels & QR code */
