@@ -1,14 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root {
-  --primary: #10b981;
-  --primary-dark: #047857;
-  --primary-light: #ecfdf5;
-  --accent: #f59e0b;
-  --accent-light: #fef3c7;
-  --dark: #0f172a;
-  --gray-bg: #f8fafc;
-  --card-border: #e2e8f0;
+  /* Bảng màu Xanh Lá Dịu Mắt (Soft Sage / Organic Matcha) */
+  --primary: #4e7c59;
+  --primary-dark: #3b6244;
+  --primary-light: #eef4ef;
+  --primary-pastel: #e2ede4;
+  
+  /* Màu Pastel bổ trợ */
+  --pastel-cream: #faf8f5;
+  --pastel-sage: #f2f6f2;
+  --pastel-warm: #fff9f0;
+  --pastel-border: #dde6de;
+
+  --dark: #1b2e21;
+  --gray-bg: #f7f9f7;
+  --card-border: #e6ede6;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-serif: 'Playfair Display', serif;
 }
@@ -28,7 +35,7 @@ html, body {
 body {
   font-family: var(--font-sans);
   background-color: var(--gray-bg);
-  color: #334155;
+  color: #38463c;
   line-height: 1.6;
   scroll-behavior: smooth;
 }
@@ -37,17 +44,17 @@ body {
   font-family: var(--font-serif);
 }
 
-/* Glassmorphism Navigation */
+/* Glassmorphism Navigation mềm dịu */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(250, 252, 250, 0.94);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(220, 232, 222, 0.8);
 }
 
-/* Badge & Highlights */
+/* Badge & Highlights phong cách Pastel */
 .badge-eco {
-  background: #d1fae5;
-  color: #065f46;
+  background: #e2ede4;
+  color: #2e5237;
   font-weight: 600;
   font-size: 0.75rem;
   padding: 4px 10px;
@@ -55,40 +62,54 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  border: 1px solid #d1e2d4;
 }
 
-/* Card hover animation */
+/* Hiệu ứng làm NỔI BẬT màu sắc trái cây tự nhiên */
+.fruit-pop {
+  filter: contrast(1.05) saturate(1.14);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+}
+.fruit-pop:hover {
+  filter: contrast(1.07) saturate(1.18);
+  transform: scale(1.04);
+}
+
+/* Card hover animation êm ái */
 .card-hover {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+  border: 1px solid var(--card-border);
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 30px -10px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 14px 28px -10px rgba(78, 124, 89, 0.12);
+  border-color: #c9dbcb;
 }
 
-/* Pulse animation for Live countdown */
+/* Pulse animation dịu */
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.02); }
+  50% { opacity: 0.9; transform: scale(1.015); }
 }
 
 .pulse-live {
-  animation: pulse-soft 2.5s infinite ease-in-out;
+  animation: pulse-soft 3s infinite ease-in-out;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar mềm mại */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f0f4f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c2d4c5;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a3bea8;
 }
 
 /* Print styling for Shipping Labels & QR code */
