@@ -26,12 +26,12 @@
           </div>
           <span class="font-extrabold text-base tracking-tight text-white">Agri<span class="text-emerald-400">Connect</span></span>
         </a>
-        <span class="text-[10px] uppercase font-bold tracking-wider bg-slate-800 text-emerald-400 px-2 py-0.5 rounded border border-slate-700">
-          Admin Portal & Logistics
+        <span id="mode-badge" class="text-[10px] uppercase font-bold tracking-wider bg-slate-800 text-emerald-400 px-2 py-0.5 rounded border border-slate-700">
+          Admin Portal
         </span>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-4">
         <a href="index.html" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
           <i class="fa-solid fa-globe"></i>
           <span>Xem Trang Khách Hàng</span>
@@ -40,13 +40,60 @@
           <i class="fa-solid fa-qrcode"></i>
           <span>Quét Tem QR</span>
         </a>
+        <button onclick="adminLogout()" class="text-xs text-rose-300 hover:text-rose-100 transition-colors flex items-center gap-1 bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Đăng Xuất</span>
+        </button>
       </div>
 
     </div>
   </header>
 
+  <!-- ================= MÀN HÌNH ĐĂNG NHẬP (NẾU CHƯA XÁC THỰC) ================= -->
+  <section id="login-screen" class="flex-1 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+      
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-sm">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 class="text-xl font-black text-slate-900">Đăng Nhập Quản Trị</h2>
+        <p class="text-xs text-slate-500">Cổng điều phối đơn hàng và lộ trình giao nông sản Bình Phước</p>
+      </div>
+
+      <form id="login-form" class="space-y-4">
+        
+        <!-- Cloud Fields (Supabase Auth) -->
+        <div id="login-cloud-fields" class="space-y-3 hidden">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Email Quản Trị</label>
+            <input type="email" id="login-email" placeholder="admin@agriconnect.vn" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Mật Khẩu</label>
+            <input type="password" id="login-password" placeholder="••••••••" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+
+        <!-- Demo Fields (Local PIN) -->
+        <div id="login-demo-fields" class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mã PIN Quản Trị (Chế độ Demo)</label>
+          <input type="password" id="login-pin" maxlength="10" placeholder="Mã PIN mặc định: 123456" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <p class="text-[10px] text-slate-400">💡 Đang chạy thử nghiệm máy Local. Mã PIN mặc định là: <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">123456</code></p>
+        </div>
+
+        <div id="login-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold"></div>
+
+        <button type="submit" id="login-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition-all">
+          <i class="fa-solid fa-arrow-right-to-bracket mr-1.5"></i> Mở Bảng Điều Khiển
+        </button>
+      </form>
+
+    </div>
+  </section>
+
   <!-- ================= MAIN ADMIN DASHBOARD ================= -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <main id="admin-dashboard" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     
     <!-- Title & Logistics Model Banner -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
@@ -60,9 +107,13 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <button onclick="reloadData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2.5 rounded-xl transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Làm Mới</span>
+        </button>
         <button onclick="exportMultiDropRoute()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
           <i class="fa-solid fa-route"></i>
-          <span>Xuất Lộ Trình Shipper</span>
+          <span>Gom Tuyến Shipper</span>
         </button>
         <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
           <i class="fa-solid fa-file-excel"></i>
@@ -79,7 +130,7 @@
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
       
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Tổng Doanh Thu</span>
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Doanh Thu Tiền Hàng</span>
         <div id="metric-revenue" class="text-xl sm:text-2xl font-black text-slate-900">0 đ</div>
         <p id="metric-order-count" class="text-[11px] text-slate-500 mt-1">0 đơn đặt trước</p>
       </div>
@@ -93,11 +144,11 @@
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Chi Phí Vận Chuyển</span>
         <div id="metric-logistics-cost" class="text-xl sm:text-2xl font-black text-blue-600">0 đ</div>
-        <p class="text-[11px] text-slate-500 mt-1">Xe khách QL13 + Shipper đa điểm</p>
+        <p id="metric-logistics-detail" class="text-[11px] text-slate-500 mt-1">Xe khách QL13 + Shipper đa điểm</p>
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Lợi Nhuận Ròng</span>
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Lợi Nhuận Ròng Dự Kiến</span>
         <div id="metric-net-profit" class="text-xl sm:text-2xl font-black text-emerald-700">0 đ</div>
         <p id="metric-margin" class="text-[11px] font-bold text-emerald-600 mt-1">Biên lợi nhuận: 0%</p>
       </div>
@@ -133,11 +184,12 @@
           </div>
 
           <div class="flex items-center gap-1.5 text-xs">
-            <span class="text-slate-500 font-medium">Thanh toán:</span>
+            <span class="text-slate-500 font-medium">Trạng thái:</span>
             <select id="filter-status" onchange="renderOrdersTable()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-700 text-xs">
               <option value="ALL">Tất cả trạng thái</option>
-              <option value="PAID">Đã Thanh Toán</option>
-              <option value="UNPAID">Chưa Thanh Toán / COD</option>
+              <option value="PAID">Đã Nhận Tiền</option>
+              <option value="UNPAID">Chưa Thu / COD</option>
+              <option value="CANCELLED">Đơn Đã Hủy</option>
             </select>
           </div>
         </div>
@@ -177,6 +229,35 @@
     </div>
 
   </main>
+
+  <!-- ================= ROUTE MODAL (GOM TUYẾN SHIPPER) ================= -->
+  <div id="route-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div>
+          <h3 class="font-black text-slate-900 text-base">Lộ Trình Giao Hàng Đa Điểm Shipper</h3>
+          <p id="route-summary" class="text-xs text-slate-500"></p>
+        </div>
+        <button onclick="closeRouteModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto">
+        <textarea id="route-text" rows="12" readonly class="w-full text-xs font-mono p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2 border-t">
+        <button onclick="copyRouteText()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5">
+          <i class="fa-solid fa-copy"></i>
+          <span>Sao Chép Vào Bộ Nhớ Tạm</span>
+        </button>
+        <button onclick="closeRouteModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2.5 rounded-xl">
+          Đóng Lại
+        </button>
+      </div>
+    </div>
+  </div>
 
   <footer class="bg-white border-t border-slate-200 py-4 text-center text-slate-400 text-xs">
     Bảng quản trị hệ thống AgriConnect • Vận hành & Lập trình trên Local • Đồng bộ Supabase & Vercel

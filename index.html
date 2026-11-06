@@ -222,12 +222,12 @@
             <div class="pt-2 space-y-2 max-w-md">
               <div class="flex justify-between text-xs font-semibold">
                 <span>Tiến độ gom tải xe khách:</span>
-                <span id="progress-text" class="text-amber-300 font-bold">42.0 / 60.0 kg (70%)</span>
+                <span id="progress-text" class="text-amber-300 font-bold">Đang tải...</span>
               </div>
               <div class="w-full bg-black/30 rounded-full h-3.5 p-0.5 overflow-hidden">
-                <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 70%"></div>
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
               </div>
-              <p class="text-[11px] text-emerald-200 italic">* Đã đạt ngưỡng tối thiểu để xe khách khởi hành sáng sớm Thứ Bảy!</p>
+              <p id="progress-note" class="text-[11px] text-emerald-200 italic"></p>
             </div>
           </div>
 
@@ -255,6 +255,7 @@
               </div>
             </div>
             <p class="text-[11px] text-white/80 mt-3">Hạn chót: <strong>23h59 Thứ Năm hàng tuần</strong></p>
+            <p class="text-[11px] text-amber-200 mt-1">Đặt hôm nay, dự kiến giao: <strong id="delivery-date-hint">...</strong></p>
           </div>
 
         </div>
@@ -432,7 +433,7 @@
         <div class="space-y-1 text-center md:text-left flex-1">
           <div class="flex items-center justify-center md:justify-start gap-2">
             <h4 class="font-bold text-slate-900 text-base">Nhà Vườn Đối Tác: Hộ Bác Năm (Bình Phước)</h4>
-            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Đã xác minh</span>
+            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Thông tin mẫu - cần cập nhật</span>
           </div>
           <p class="text-xs text-slate-500 leading-relaxed">
             Địa chỉ: Ấp Suối Ngô, Xã Tân Lập, Huyện Đồng Phú, Tỉnh Bình Phước • Vườn hơn 2 héc-ta chuyên canh sầu riêng Ri6 và măng cụt cổ thụ trên đất đỏ bazan. Canh tác an toàn sinh học, không xịt hóa chất ép chín.
@@ -480,7 +481,7 @@
 
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Số điện thoại <span class="text-rose-500">*</span></label>
-                <input type="tel" id="cust-phone" required placeholder="Ví dụ: 0912345678" class="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <input type="tel" id="cust-phone" required inputmode="tel" maxlength="15" autocomplete="tel" placeholder="Ví dụ: 0912345678" class="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
 
               <div>
@@ -634,6 +635,16 @@
               </div>
             </div>
 
+            <label class="flex items-start gap-2.5 text-xs text-slate-600 cursor-pointer">
+              <input type="checkbox" id="cust-consent" class="mt-0.5 w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+              <span>
+                Tôi đồng ý cho nhóm AgriConnect sử dụng họ tên, số điện thoại và địa chỉ ở trên <strong>chỉ để xác nhận và giao đơn hàng</strong>
+                (bao gồm chia sẻ cho shipper và nhà xe vận chuyển). Thông tin không dùng cho mục đích khác.
+              </span>
+            </label>
+
+            <div id="form-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold" role="alert"></div>
+
             <button type="submit" id="btn-submit-order" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-base py-4 rounded-2xl shadow-xl shadow-brand-600/30 transition-all transform active:scale-95 flex items-center justify-center gap-2">
               <i class="fa-solid fa-check-circle"></i>
               <span>Xác Nhận Đặt Trước Nông Sản Bình Phước</span>
@@ -720,8 +731,16 @@
         <p class="text-xs text-slate-500">Mã đơn của bạn là: <span id="modal-order-code" class="font-mono font-bold text-emerald-700 text-sm"></span></p>
       </div>
 
+      <p class="text-center text-xs text-slate-600">Dự kiến giao: <strong id="modal-delivery-date" class="text-emerald-700"></strong></p>
+
+      <!-- COD Note -->
+      <div id="modal-cod-note" class="hidden bg-amber-50 rounded-2xl p-4 border border-amber-200 text-center space-y-1">
+        <p class="text-sm font-bold text-amber-900">Thanh toán khi nhận hàng (COD)</p>
+        <p class="text-xs text-amber-800">Vui lòng chuẩn bị <strong id="modal-total-amount-cod"></strong> khi shipper giao. Nhóm sẽ gọi/nhắn Zalo xác nhận đơn.</p>
+      </div>
+
       <!-- VietQR Area -->
-      <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-center space-y-3">
+      <div id="modal-qr-block" class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-center space-y-3">
         <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block">
           Mã Thanh Toán VietQR Tự Động
         </span>

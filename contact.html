@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -108,24 +110,31 @@
           Gửi Tin Nhắn / Đăng Ký Làm Vườn Đối Tác
         </h2>
 
-        <form onsubmit="event.preventDefault(); alert('Cảm ơn bạn đã gửi liên hệ! Nhóm AgriConnect sẽ phản hồi sớm nhất.'); this.reset();" class="space-y-4">
+        <form id="contact-form" class="space-y-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên</label>
-            <input type="text" required placeholder="Họ và tên của bạn" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên <span class="text-rose-500">*</span></label>
+            <input type="text" id="contact-name" required placeholder="Họ và tên của bạn" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500">
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại</label>
-            <input type="tel" required placeholder="Số điện thoại liên lạc" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại <span class="text-rose-500">*</span></label>
+            <input type="tel" id="contact-phone" required placeholder="Số điện thoại liên lạc" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500">
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Nội dung tin nhắn / Góp ý</label>
-            <textarea rows="4" required placeholder="Nhập lời nhắn hoặc đề xuất hợp tác của bạn..." class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"></textarea>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Email (nếu có)</label>
+            <input type="email" id="contact-email" placeholder="email@example.com" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500">
           </div>
 
-          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md">
-            Gửi Tin Nhắn Đi
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nội dung tin nhắn / Góp ý <span class="text-rose-500">*</span></label>
+            <textarea id="contact-msg" rows="3" required placeholder="Nhập lời nhắn hoặc đề xuất hợp tác của bạn..." class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"></textarea>
+          </div>
+
+          <div id="contact-feedback" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+          <button type="submit" id="contact-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-paper-plane"></i> Gửi Tin Nhắn Đi
           </button>
         </form>
       </div>
@@ -138,5 +147,38 @@
     © 2026 AgriConnect - Dự án kết nối nông sản Bình Phước
   </footer>
 
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script>
+    document.getElementById("contact-form")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const name = document.getElementById("contact-name")?.value.trim();
+      const phone = document.getElementById("contact-phone")?.value.trim();
+      const email = document.getElementById("contact-email")?.value.trim();
+      const message = document.getElementById("contact-msg")?.value.trim();
+      const box = document.getElementById("contact-feedback");
+      const btn = document.getElementById("contact-btn");
+
+      if (btn) btn.disabled = true;
+      try {
+        await window.db.submitContact({ name, phone, email, subject: "Liên hệ website", message });
+        if (box) {
+          box.className = "p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800";
+          box.innerText = "Cảm ơn bạn! Tin nhắn đã được gửi thành công. Nhóm AgriConnect sẽ phản hồi sớm nhất.";
+          box.classList.remove("hidden");
+        }
+        document.getElementById("contact-form").reset();
+      } catch (err) {
+        if (box) {
+          box.className = "p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800";
+          box.innerText = "Không gửi được tin nhắn: " + err.message;
+          box.classList.remove("hidden");
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>

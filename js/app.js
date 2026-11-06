@@ -1,407 +1,385 @@
 /**
- * LOGIC GIAO DIỆN KHÁCH HÀNG - AGRICONNECT BÌNH PHƯỚC
+ * LOGIC TRANG KHÁCH HÀNG - AGRICONNECT BÌNH PHƯỚC
  */
 
 let currentProducts = [];
 let cart = {}; // { productId: quantity }
-let selectedDeliveryType = "HOME"; // "HOME" (Giao tận nhà) hoặc "CAMPUS" (Nhận tại trường)
+let selectedDeliveryType = "HOME"; // "HOME" | "CAMPUS"
 
 document.addEventListener("DOMContentLoaded", async () => {
   initCountdownTimer();
-  await loadBatchInfo();
-  await loadProducts();
   setupEventListeners();
+  try {
+    await loadBatchInfo();
+    await loadProducts();
+  } catch (err) {
+    showPageError("Không tải được dữ liệu sản phẩm: " + err.message);
+  }
   updateOrderSummary();
 });
 
-// ================= LOAD THÔNG TIN ĐỢT GOM HÀNG =================
-async function loadBatchInfo() {
-  const batch = await window.db.getCurrentBatch();
-  if (batch) {
-    const titleEl = document.getElementById("batch-title");
-    if (titleEl && batch.batch_name) titleEl.innerText = batch.batch_name;
-
-    const currentKg = parseFloat(batch.current_kg || 0);
-    const targetKg = parseFloat(batch.target_kg || 60);
-    const pct = Math.min(Math.round((currentKg / targetKg) * 100), 100);
-
-    const progressText = document.getElementById("progress-text");
-    const progressBar = document.getElementById("progress-bar");
-
-    if (progressText) progressText.innerText = `${currentKg} / ${targetKg} kg (${pct}%)`;
-    if (progressBar) progressBar.style.width = `${pct}%`;
+function showPageError(message) {
+  const el = document.getElementById("product-list");
+  if (el) {
+    el.innerHTML = `<div class="col-span-full p-6 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm">${escapeHTML(message)}</div>`;
   }
 }
 
-// ================= BỘ ĐẾM NGƯỢC THỜI HẠN GOM HÀNG =================
-function initCountdownTimer() {
-  // Đặt hạn chót là 23:59:59 Thứ Năm tuần này
-  function getNextThursdayDeadline() {
-    const now = new Date();
-    const day = now.getDay(); // 0: CN, 1: T2, 2: T3, 3: T4, 4: T5, 5: T6, 6: T7
-    let diff = (4 - day + 7) % 7;
-    if (diff === 0 && now.getHours() >= 23 && now.getMinutes() >= 59) {
-      diff = 7;
-    }
-    const deadline = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff, 23, 59, 59);
-    return deadline.getTime();
-  }
+// ================= ĐỢT GOM HÀNG =================
+async function loadBatchInfo() {
+  const batch = await window.db.getCurrentBatch();
+  if (!batch) return;
 
-  const deadline = getNextThursdayDeadline();
+  const titleEl = document.getElementById("batch-title");
+  if (titleEl && batch.batch_name) titleEl.innerText = batch.batch_name;
+
+  const currentKg = Number(batch.current_kg || 0);
+  const targetKg = Number(batch.target_kg || 60);
+  const pct = targetKg > 0 ? Math.min(Math.round((currentKg / targetKg) * 100), 100) : 0;
+
+  const progressText = document.getElementById("progress-text");
+  const progressBar = document.getElementById("progress-bar");
+  const progressNote = document.getElementById("progress-note");
+
+  if (progressText) progressText.innerText = `${currentKg.toFixed(1)} / ${targetKg.toFixed(1)} kg (${pct}%)`;
+  if (progressBar) progressBar.style.width = `${pct}%`;
+  if (progressNote) {
+    progressNote.innerText = pct >= 100
+      ? "* Đã đủ tải mục tiêu cho chuyến xe tuần này."
+      : `* Còn khoảng ${(targetKg - currentKg).toFixed(1)} kg nữa để đủ tải mục tiêu của chuyến xe.`;
+  }
+}
+
+// ================= ĐẾM NGƯỢC & NGÀY GIAO =================
+// Hạn chót: 23:59:59 Thứ Năm. Đặt từ Thứ 6 -> Chủ Nhật sẽ vào đợt tuần sau.
+function getNextThursdayDeadline(now = new Date()) {
+  const day = now.getDay(); // 0 CN ... 6 T7
+  const diff = (4 - day + 7) % 7;
+  const deadline = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff, 23, 59, 59);
+  if (deadline.getTime() < now.getTime()) deadline.setDate(deadline.getDate() + 7);
+  return deadline;
+}
+
+function getExpectedDeliveryDate(now = new Date()) {
+  const deadline = getNextThursdayDeadline(now);
+  const saturday = new Date(deadline);
+  saturday.setDate(deadline.getDate() + 2);
+  return saturday;
+}
+
+function formatDateVN(d) {
+  const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+  return `${days[d.getDay()]}, ${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`;
+}
+
+function initCountdownTimer() {
+  const pad = n => (n < 10 ? "0" + n : String(n));
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
 
   function updateTimer() {
-    const now = new Date().getTime();
-    const distance = deadline - now;
-
-    if (distance < 0) {
-      const daysEl = document.getElementById("timer-days");
-      if (daysEl) daysEl.innerText = "00";
-      return;
-    }
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    const pad = n => (n < 10 ? "0" + n : n);
-
-    if (document.getElementById("timer-days")) document.getElementById("timer-days").innerText = pad(days);
-    if (document.getElementById("timer-hours")) document.getElementById("timer-hours").innerText = pad(hours);
-    if (document.getElementById("timer-mins")) document.getElementById("timer-mins").innerText = pad(minutes);
-    if (document.getElementById("timer-secs")) document.getElementById("timer-secs").innerText = pad(seconds);
+    const now = new Date();
+    const distance = getNextThursdayDeadline(now).getTime() - now.getTime();
+    setText("timer-days", pad(Math.floor(distance / 86400000)));
+    setText("timer-hours", pad(Math.floor((distance % 86400000) / 3600000)));
+    setText("timer-mins", pad(Math.floor((distance % 3600000) / 60000)));
+    setText("timer-secs", pad(Math.floor((distance % 60000) / 1000)));
+    setText("delivery-date-hint", formatDateVN(getExpectedDeliveryDate(now)));
   }
 
   updateTimer();
   setInterval(updateTimer, 1000);
 }
 
-// ================= LOAD SẢN PHẨM =================
+// ================= SẢN PHẨM =================
 async function loadProducts() {
   currentProducts = await window.db.getProducts();
 
   const productListEl = document.getElementById("product-list");
   const cartSelectorsEl = document.getElementById("cart-item-selectors");
-
   if (!productListEl) return;
 
   productListEl.innerHTML = "";
   if (cartSelectorsEl) cartSelectorsEl.innerHTML = "";
 
-  currentProducts.forEach((p, idx) => {
-    // 1. Render Card Sản phẩm ở phần Showcase
+  if (currentProducts.length === 0) {
+    showPageError("Hiện chưa có sản phẩm mở bán trong đợt này.");
+    return;
+  }
+
+  currentProducts.forEach(p => {
     const isCombo = p.category === "Combo";
-    const badgeText = isCombo ? "Combo Tiết Kiệm" : "Nông sản sạch chín cây";
-    const formattedPrice = Number(p.price_sale).toLocaleString("vi-VN") + " đ";
+    const name = escapeHTML(p.name);
+    const desc = escapeHTML(p.description);
+    const img = escapeHTML(p.image_url);
+    const unit = escapeHTML(p.unit);
+    const pid = escapeHTML(p.id);
+    const price = formatVND(p.price_sale);
 
     const card = document.createElement("div");
     card.className = "bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-md card-hover flex flex-col";
     card.innerHTML = `
       <div class="relative h-60 overflow-hidden bg-slate-100 group">
-        <img src="${p.image_url}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-        <span class="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? 'bg-amber-500 text-white shadow-md' : 'bg-emerald-600 text-white shadow-md'}">
-          ${badgeText}
+        <img src="${img}" alt="${name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        <span class="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-amber-500" : "bg-emerald-600"} text-white shadow-md">
+          ${isCombo ? "Combo" : "Trái cây vườn"}
         </span>
         <span class="absolute bottom-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-lg bg-black/60 text-white backdrop-blur-md">
-          <i class="fa-solid fa-location-dot text-emerald-400 mr-1"></i>Vườn Bình Phước
+          <i class="fa-solid fa-location-dot text-emerald-400 mr-1"></i>Bình Phước
         </span>
       </div>
       <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          <h3 class="font-bold text-lg text-slate-900 group-hover:text-emerald-700 transition-colors">${p.name}</h3>
-          <p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">${p.description}</p>
+          <h3 class="font-bold text-lg text-slate-900">${name}</h3>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">${desc}</p>
         </div>
         <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
           <div>
-            <span class="text-xs text-slate-400 block">Giá Pre-order:</span>
-            <span class="text-xl font-black text-emerald-700">${formattedPrice}</span>
-            <span class="text-xs text-slate-400 font-normal"> / ${p.unit}</span>
+            <span class="text-xs text-slate-400 block">Giá đặt trước:</span>
+            <span class="text-xl font-black text-emerald-700">${price}</span>
+            <span class="text-xs text-slate-400"> / ${unit}</span>
           </div>
-          <button onclick="addToCart('${p.id}')" class="bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-emerald-200 transition-all flex items-center gap-1.5 active:scale-95 shadow-sm">
-            <i class="fa-solid fa-cart-plus"></i> Chọn Mua
+          <button type="button" data-add="${pid}" class="btn-add bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-emerald-200 transition-all flex items-center gap-1.5 active:scale-95">
+            <i class="fa-solid fa-cart-plus"></i> Chọn mua
           </button>
         </div>
       </div>
     `;
     productListEl.appendChild(card);
 
-    // 2. Render hàng chọn số lượng trong Form Đặt Hàng
     if (cartSelectorsEl) {
-      const itemRow = document.createElement("div");
-      itemRow.className = "flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/70 hover:border-emerald-300 transition-colors";
-      itemRow.innerHTML = `
-        <div class="flex items-center gap-3">
-          <img src="${p.image_url}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">
-          <div>
-            <h4 class="font-bold text-sm text-slate-800">${p.name}</h4>
-            <p class="text-xs text-emerald-700 font-semibold">${formattedPrice} / ${p.unit}</p>
+      const row = document.createElement("div");
+      row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/70";
+      row.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <img src="${img}" alt="" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">
+          <div class="min-w-0">
+            <h4 class="font-bold text-sm text-slate-800 truncate">${name}</h4>
+            <p class="text-xs text-emerald-700 font-semibold">${price} / ${unit}</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="changeQty('${p.id}', -1)" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-100 flex items-center justify-center transition-all">-</button>
-          <span id="qty-display-${p.id}" class="w-8 text-center font-bold text-sm text-slate-800">0</span>
-          <button type="button" onclick="changeQty('${p.id}', 1)" class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold hover:bg-emerald-700 flex items-center justify-center transition-all shadow-sm shadow-emerald-500/20">+</button>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" data-dec="${pid}" aria-label="Giảm" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-100">-</button>
+          <span data-qty="${pid}" class="w-8 text-center font-bold text-sm text-slate-800">0</span>
+          <button type="button" data-inc="${pid}" aria-label="Tăng" class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold hover:bg-emerald-700">+</button>
         </div>
       `;
-      cartSelectorsEl.appendChild(itemRow);
+      cartSelectorsEl.appendChild(row);
     }
   });
 
-  // Mặc định cho 1 sản phẩm đầu vào giỏ để khách dễ hình dung
-  if (currentProducts.length > 0 && Object.keys(cart).length === 0) {
-    cart[currentProducts[0].id] = 1;
-    updateCartUI();
-  }
+  updateCartUI();
 }
 
-// ================= THAY ĐỔI SỐ LƯỢNG GIỎ HÀNG =================
-window.changeQty = function (productId, delta) {
-  const current = cart[productId] || 0;
-  const updated = Math.max(0, current + delta);
-  if (updated === 0) {
-    delete cart[productId];
-  } else {
-    cart[productId] = updated;
-  }
+// ================= GIỎ HÀNG =================
+function changeQty(productId, delta) {
+  const updated = Math.min(50, Math.max(0, (cart[productId] || 0) + delta));
+  if (updated === 0) delete cart[productId];
+  else cart[productId] = updated;
   updateCartUI();
-};
-
-window.addToCart = function (productId) {
-  cart[productId] = (cart[productId] || 0) + 1;
-  updateCartUI();
-  // Scroll nhẹ tới form đặt hàng
-  document.getElementById("preorder")?.scrollIntoView({ behavior: "smooth" });
-};
+}
 
 function updateCartUI() {
-  currentProducts.forEach(p => {
-    const el = document.getElementById(`qty-display-${p.id}`);
-    if (el) el.innerText = cart[p.id] || 0;
+  document.querySelectorAll("[data-qty]").forEach(el => {
+    el.innerText = cart[el.getAttribute("data-qty")] || 0;
   });
   updateOrderSummary();
 }
 
-// ================= CHỌN HÌNH THỨC GIAO HÀNG =================
+// ================= HÌNH THỨC GIAO HÀNG =================
 window.setDeliveryType = function (type) {
   selectedDeliveryType = type;
-
   const btnHome = document.getElementById("btn-delivery-home");
   const btnCampus = document.getElementById("btn-delivery-campus");
-  const homeFields = document.getElementById("delivery-home-fields");
-  const campusFields = document.getElementById("delivery-campus-fields");
+  const active = ["bg-emerald-600", "text-white", "shadow-md", "border-emerald-600"];
+  const inactive = ["bg-white", "text-slate-700", "border-slate-200"];
 
-  if (type === "HOME") {
-    btnHome?.classList.add("bg-emerald-600", "text-white", "shadow-md");
-    btnHome?.classList.remove("bg-white", "text-slate-700");
+  const [on, off] = type === "HOME" ? [btnHome, btnCampus] : [btnCampus, btnHome];
+  on?.classList.add(...active); on?.classList.remove(...inactive);
+  off?.classList.remove(...active); off?.classList.add(...inactive);
 
-    btnCampus?.classList.remove("bg-emerald-600", "text-white", "shadow-md");
-    btnCampus?.classList.add("bg-white", "text-slate-700");
-
-    homeFields?.classList.remove("hidden");
-    campusFields?.classList.add("hidden");
-  } else {
-    btnCampus?.classList.add("bg-emerald-600", "text-white", "shadow-md");
-    btnCampus?.classList.remove("bg-white", "text-slate-700");
-
-    btnHome?.classList.remove("bg-emerald-600", "text-white", "shadow-md");
-    btnHome?.classList.add("bg-white", "text-slate-700");
-
-    campusFields?.classList.remove("hidden");
-    homeFields?.classList.add("hidden");
-  }
-
+  document.getElementById("delivery-home-fields")?.classList.toggle("hidden", type !== "HOME");
+  document.getElementById("delivery-campus-fields")?.classList.toggle("hidden", type !== "CAMPUS");
   updateOrderSummary();
 };
 
-// ================= CẬP NHẬT TỔNG TIỀN VÀ MÃ VIETQR =================
-function updateOrderSummary() {
+// ================= TÍNH TIỀN =================
+function priceCart() {
+  const items = [];
   let subtotal = 0;
-  let totalItemsCount = 0;
-
+  let totalKg = 0;
   Object.entries(cart).forEach(([id, qty]) => {
-    const p = currentProducts.find(item => item.id === id);
-    if (p && qty > 0) {
-      subtotal += p.price_sale * qty;
-      totalItemsCount += qty;
+    const p = currentProducts.find(x => String(x.id) === String(id));
+    if (!p || qty <= 0) return;
+    const line = Number(p.price_sale) * qty;
+    items.push({ productId: p.id, name: p.name, unit: p.unit, qty, price: Number(p.price_sale), subtotal: line });
+    subtotal += line;
+    totalKg += Number(p.weight_kg || 1) * qty;
+  });
+  const shippingFee = items.length && selectedDeliveryType === "HOME"
+    ? Number(window.APP_CONFIG.SHIPPING?.HOME_DELIVERY_FEE ?? 20000) : 0;
+  return { items, subtotal, shipping_fee: shippingFee, total_amount: subtotal + shippingFee, total_kg: totalKg };
+}
+
+function updateOrderSummary() {
+  const priced = priceCart();
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+  setText("summary-subtotal", formatVND(priced.subtotal));
+  setText("summary-shipping", priced.shipping_fee > 0 ? formatVND(priced.shipping_fee) : "Miễn phí");
+  setText("summary-total", formatVND(priced.total_amount));
+}
+
+function buildVietQRUrl(amount, memo) {
+  const bank = window.APP_CONFIG.BANK;
+  return `https://img.vietqr.io/image/${encodeURIComponent(bank.BANK_ID)}-${encodeURIComponent(bank.ACCOUNT_NO)}-${encodeURIComponent(bank.TEMPLATE || "compact2")}.png`
+    + `?amount=${Math.round(amount)}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(bank.ACCOUNT_NAME)}`;
+}
+
+// Mã đơn khó đoán: AC-YYMMDD-XXXXXX (6 ký tự ngẫu nhiên, bỏ các ký tự dễ nhầm 0/O, 1/I)
+function generateOrderCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  const rand = Array.from(bytes, b => alphabet[b % alphabet.length]).join("");
+  const d = new Date();
+  const ymd = String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+  return `AC-${ymd}-${rand}`;
+}
+
+function normalizePhone(raw) {
+  return String(raw || "").replace(/[\s.\-()]/g, "");
+}
+
+// ================= SỰ KIỆN =================
+function setupEventListeners() {
+  document.getElementById("preorder-form")?.addEventListener("submit", handleOrderSubmit);
+
+  // Ủy quyền sự kiện cho các nút +/- và "Chọn mua"
+  document.addEventListener("click", e => {
+    const add = e.target.closest("[data-add]");
+    const inc = e.target.closest("[data-inc]");
+    const dec = e.target.closest("[data-dec]");
+    if (add) {
+      changeQty(add.getAttribute("data-add"), 1);
+      document.getElementById("preorder")?.scrollIntoView({ behavior: "smooth" });
+    } else if (inc) {
+      changeQty(inc.getAttribute("data-inc"), 1);
+    } else if (dec) {
+      changeQty(dec.getAttribute("data-dec"), -1);
     }
   });
-
-  const shippingFee = selectedDeliveryType === "HOME" ? (window.APP_CONFIG.SHIPPING?.HOME_DELIVERY_FEE || 20000) : 0;
-  const grandTotal = subtotal > 0 ? (subtotal + shippingFee) : 0;
-
-  const subtotalEl = document.getElementById("summary-subtotal");
-  const shippingEl = document.getElementById("summary-shipping");
-  const totalEl = document.getElementById("summary-total");
-
-  if (subtotalEl) subtotalEl.innerText = Number(subtotal).toLocaleString("vi-VN") + " đ";
-  if (shippingEl) shippingEl.innerText = shippingFee > 0 ? Number(shippingFee).toLocaleString("vi-VN") + " đ" : "Miễn phí";
-  if (totalEl) totalEl.innerText = Number(grandTotal).toLocaleString("vi-VN") + " đ";
-
-  // Cập nhật preview VietQR động
-  updateVietQRPreview(grandTotal);
 }
 
-function updateVietQRPreview(amount) {
-  const qrPreview = document.getElementById("vietqr-image-preview");
-  if (!qrPreview) return;
-
-  if (amount <= 0) {
-    qrPreview.src = "";
-    qrPreview.alt = "Vui lòng chọn nông sản để tạo mã thanh toán";
-    return;
-  }
-
-  const bank = window.APP_CONFIG.BANK || { BANK_ID: "MB", ACCOUNT_NO: "0987654321", ACCOUNT_NAME: "NGUYEN PHAM KHANH NHI" };
-  const memo = "AC PREORDER";
-  const qrUrl = `https://img.vietqr.io/image/${bank.BANK_ID}-${bank.ACCOUNT_NO}-${bank.TEMPLATE || 'compact2'}.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(bank.ACCOUNT_NAME)}`;
-  qrPreview.src = qrUrl;
-}
-
-// ================= XỬ LÝ ĐẶT HÀNG FORM =================
-function setupEventListeners() {
-  const form = document.getElementById("preorder-form");
-  if (form) {
-    form.addEventListener("submit", handleOrderSubmit);
+function showFormError(message) {
+  const box = document.getElementById("form-error");
+  if (box) {
+    box.innerText = message;
+    box.classList.remove("hidden");
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+  } else {
+    alert(message);
   }
 }
 
 async function handleOrderSubmit(e) {
   e.preventDefault();
+  document.getElementById("form-error")?.classList.add("hidden");
 
-  const customerName = document.getElementById("cust-name")?.value.trim();
-  const customerPhone = document.getElementById("cust-phone")?.value.trim();
-  const customerRole = document.getElementById("cust-role")?.value;
+  const val = id => (document.getElementById(id)?.value || "").trim();
+  const customerName = val("cust-name");
+  const customerPhone = normalizePhone(val("cust-phone"));
+  const customerRole = val("cust-role") || "Khac";
   const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || "VIETQR";
-  const notes = document.getElementById("cust-notes")?.value.trim() || "";
+  const notes = val("cust-notes").slice(0, 500);
+  const consent = document.getElementById("cust-consent")?.checked;
 
-  // Địa chỉ nhận hàng tùy theo hình thức
+  if (customerName.length < 2) return showFormError("Vui lòng nhập họ tên người nhận.");
+  if (!/^(0|\+84)[0-9]{9,10}$/.test(customerPhone)) {
+    return showFormError("Số điện thoại chưa đúng định dạng (ví dụ: 0912345678).");
+  }
+
   let deliveryAddress = "";
   let department = "";
-
   if (selectedDeliveryType === "HOME") {
-    const houseNo = document.getElementById("home-house")?.value.trim() || "";
-    const street = document.getElementById("home-street")?.value.trim() || "";
-    const ward = document.getElementById("home-ward")?.value.trim() || "";
-    const district = document.getElementById("home-district")?.value.trim() || "";
-    const city = document.getElementById("home-city")?.value.trim() || "TP.HCM";
-
+    const houseNo = val("home-house"), street = val("home-street"), ward = val("home-ward"), district = val("home-district");
+    const city = val("home-city") || "TP.HCM";
     if (!houseNo || !street || !ward || !district) {
-      alert("Vui lòng điền đầy đủ Số nhà, Tên đường, Phường/Xã và Quận/Huyện để shipper công nghệ giao chính xác!");
-      return;
+      return showFormError("Vui lòng điền đủ Số nhà, Tên đường, Phường/Xã và Quận/Huyện để shipper giao đúng địa chỉ.");
     }
-    deliveryAddress = `${houseNo}, ${street}, Phường/Xã ${ward}, ${district}, ${city}`;
+    deliveryAddress = `${houseNo}, ${street}, ${ward}, ${district}, ${city}`;
     department = `Giao tận nhà (${district})`;
   } else {
-    department = document.getElementById("campus-dept")?.value.trim() || "";
-    deliveryAddress = document.getElementById("campus-address")?.value.trim() || "";
-    if (!department || !deliveryAddress) {
-      alert("Vui lòng nhập Khoa / Đơn vị và Điểm nhận cụ thể trong trường!");
-      return;
-    }
+    department = val("campus-dept");
+    deliveryAddress = val("campus-address");
+    if (!department || deliveryAddress.length < 5) return showFormError("Vui lòng nhập Khoa/Đơn vị và Điểm nhận cụ thể trong trường.");
   }
 
-  // Thu thập sản phẩm trong giỏ
-  const items = [];
-  let subtotal = 0;
-  Object.entries(cart).forEach(([id, qty]) => {
-    const p = currentProducts.find(item => item.id === id);
-    if (p && qty > 0) {
-      items.push({
-        productId: p.id,
-        name: p.name,
-        qty: qty,
-        unit: p.unit,
-        price: p.price_sale,
-        subtotal: p.price_sale * qty
-      });
-      subtotal += p.price_sale * qty;
-    }
-  });
+  const priced = priceCart();
+  if (priced.items.length === 0) return showFormError("Vui lòng chọn ít nhất 1 sản phẩm.");
+  if (!consent) return showFormError("Vui lòng tick đồng ý cho nhóm sử dụng thông tin để giao hàng.");
 
-  if (items.length === 0) {
-    alert("Vui lòng chọn ít nhất 1 sản phẩm sầu riêng hoặc măng cụt để đặt hàng!");
-    return;
-  }
-
-  const shippingFee = selectedDeliveryType === "HOME" ? (window.APP_CONFIG.SHIPPING?.HOME_DELIVERY_FEE || 20000) : 0;
-  const grandTotal = subtotal + shippingFee;
-
-  // Tạo mã đơn hàng duy nhất
-  const now = new Date();
-  const dateStr = now.toISOString().slice(2, 10).replace(/-/g, "");
-  const randomStr = Math.floor(100 + Math.random() * 900);
-  const orderCode = `AC-BP-${dateStr}-${randomStr}`;
-
-  const orderData = {
-    order_code: orderCode,
+  const orderInput = {
+    order_code: generateOrderCode(),
     customer_name: customerName,
     customer_phone: customerPhone,
     customer_role: customerRole,
     delivery_type: selectedDeliveryType,
-    department: department,
+    department,
     delivery_address: deliveryAddress,
-    items: items,
-    shipping_fee: shippingFee,
-    total_amount: grandTotal,
+    items: priced.items,
     payment_method: paymentMethod,
-    payment_status: paymentMethod === "VIETQR" ? "UNPAID" : "UNPAID",
-    order_status: "CONFIRMED",
-    notes: notes,
-    created_at: new Date().toISOString()
+    notes
   };
 
-  const btnSubmit = document.getElementById("btn-submit-order");
-  if (btnSubmit) {
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Đang xử lý đơn...`;
-  }
+  const btn = document.getElementById("btn-submit-order");
+  const btnHTML = btn ? btn.innerHTML : "";
+  if (btn) { btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Đang gửi đơn...`; }
 
   try {
-    await window.db.createOrder(orderData);
-    showSuccessModal(orderData);
-    // Reset giỏ hàng
+    const order = await window.db.createOrder(orderInput, priced);
+    showSuccessModal(order);
     cart = {};
     updateCartUI();
     document.getElementById("preorder-form")?.reset();
+    setDeliveryType(selectedDeliveryType);
+    loadBatchInfo().catch(() => {});
   } catch (err) {
-    alert("Có lỗi xảy ra khi tạo đơn hàng: " + err.message);
+    // Không xóa giỏ hàng để khách thử lại
+    showFormError("Chưa gửi được đơn: " + err.message);
   } finally {
-    if (btnSubmit) {
-      btnSubmit.disabled = false;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Xác Nhận Đặt Trước Nông Sản`;
-    }
+    if (btn) { btn.disabled = false; btn.innerHTML = btnHTML; }
   }
 }
 
-// ================= HIỂN THỊ MODAL THÀNH CÔNG & MÃ VIETQR =================
+// ================= MODAL THÀNH CÔNG =================
 function showSuccessModal(order) {
   const modal = document.getElementById("success-modal");
   if (!modal) return;
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
 
-  const codeEl = document.getElementById("modal-order-code");
-  const totalEl = document.getElementById("modal-total-amount");
-  const qrImg = document.getElementById("modal-vietqr-img");
-  const bankInfoEl = document.getElementById("modal-bank-info");
+  setText("modal-order-code", order.order_code);
+  setText("modal-total-amount", formatVND(order.total_amount));
+  setText("modal-total-amount-cod", formatVND(order.total_amount));
+  setText("modal-delivery-date", formatDateVN(getExpectedDeliveryDate()));
 
-  if (codeEl) codeEl.innerText = order.order_code;
-  if (totalEl) totalEl.innerText = Number(order.total_amount).toLocaleString("vi-VN") + " đ";
+  const isCOD = order.payment_method === "COD";
+  document.getElementById("modal-qr-block")?.classList.toggle("hidden", isCOD);
+  document.getElementById("modal-cod-note")?.classList.toggle("hidden", !isCOD);
 
-  const bank = window.APP_CONFIG.BANK || { BANK_ID: "MB", ACCOUNT_NO: "0987654321", ACCOUNT_NAME: "NGUYEN PHAM KHANH NHI" };
-  const memo = order.order_code;
-  const qrUrl = `https://img.vietqr.io/image/${bank.BANK_ID}-${bank.ACCOUNT_NO}-${bank.TEMPLATE || 'compact2'}.png?amount=${order.total_amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(bank.ACCOUNT_NAME)}`;
-
-  if (qrImg) qrImg.src = qrUrl;
-  if (bankInfoEl) {
-    bankInfoEl.innerHTML = `
-      <div class="text-xs space-y-1">
-        <p><strong>Ngân hàng:</strong> ${bank.BANK_ID}</p>
-        <p><strong>Số tài khoản:</strong> <span class="font-mono font-bold text-emerald-800">${bank.ACCOUNT_NO}</span></p>
-        <p><strong>Chủ tài khoản:</strong> ${bank.ACCOUNT_NAME}</p>
-        <p><strong>Nội dung CK:</strong> <span class="font-mono font-bold text-emerald-800">${memo}</span></p>
-      </div>
-    `;
+  if (!isCOD) {
+    const bank = window.APP_CONFIG.BANK;
+    const qrImg = document.getElementById("modal-vietqr-img");
+    if (qrImg) qrImg.src = buildVietQRUrl(order.total_amount, order.order_code);
+    const bankInfoEl = document.getElementById("modal-bank-info");
+    if (bankInfoEl) {
+      bankInfoEl.innerHTML = `
+        <div class="text-xs space-y-1">
+          <p><strong>Ngân hàng:</strong> ${escapeHTML(bank.BANK_ID)}</p>
+          <p><strong>Số tài khoản:</strong> <span class="font-mono font-bold text-emerald-800">${escapeHTML(bank.ACCOUNT_NO)}</span></p>
+          <p><strong>Chủ tài khoản:</strong> ${escapeHTML(bank.ACCOUNT_NAME)}</p>
+          <p><strong>Nội dung CK:</strong> <span class="font-mono font-bold text-emerald-800">${escapeHTML(order.order_code)}</span></p>
+        </div>`;
+    }
   }
-
   modal.classList.remove("hidden");
 }
 
@@ -409,8 +387,6 @@ window.closeSuccessModal = function () {
   document.getElementById("success-modal")?.classList.add("hidden");
 };
 
-// ================= MOBILE NAVIGATION TOGGLE =================
 window.toggleMobileNav = function () {
-  const menu = document.getElementById("mobile-menu");
-  if (menu) menu.classList.toggle("hidden");
+  document.getElementById("mobile-menu")?.classList.toggle("hidden");
 };

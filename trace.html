@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -19,7 +21,7 @@
     <span>Tem Chứng Thực Xuất Xứ Nông Sản Bình Phước Chính Hiệu</span>
   </div>
 
-  <header class="bg-white border-b border-slate-200 py-4 px-4 sm:px-6">
+  <header class="bg-white border-b border-slate-200 py-4 px-4 sm:px-6 sticky top-0 z-40">
     <div class="max-w-3xl mx-auto flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-2 group">
         <div class="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-sm shadow">
@@ -37,11 +39,52 @@
   <!-- ================= MAIN CONTENT ================= -->
   <main class="max-w-3xl mx-auto w-full px-4 py-8 space-y-6 flex-1">
     
+    <!-- Code Input / Lookup Bar -->
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center">
+      <div class="flex-1 w-full relative">
+        <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+        <input type="text" id="trace-input" placeholder="Nhập mã đơn trên tem (ví dụ: AC-261105-DEMO01)..." class="w-full text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono uppercase">
+      </div>
+      <button onclick="handleLookup()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0">
+        <i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Kiện Hàng
+      </button>
+    </div>
+
+    <!-- Order Info Card (Dynamic) -->
+    <div id="order-trace-card" class="hidden bg-white rounded-3xl p-6 border border-emerald-200 shadow-md space-y-4">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div>
+          <span class="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            Thông Tin Kiện Hàng Hợp Lệ
+          </span>
+          <h2 id="trace-order-code" class="text-lg font-black text-slate-900 mt-1 font-mono"></h2>
+        </div>
+        <div id="trace-status-badge"></div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-3 text-xs">
+        <div class="space-y-1.5">
+          <p><strong class="text-slate-500">Đợt gom hàng:</strong> <span id="trace-batch-name" class="font-semibold text-slate-800"></span></p>
+          <p><strong class="text-slate-500">Nông sản trong kiện:</strong> <span id="trace-items" class="font-bold text-emerald-800"></span></p>
+          <p><strong class="text-slate-500">Tổng trọng lượng:</strong> <span id="trace-kg" class="font-semibold text-slate-800"></span></p>
+        </div>
+        <div class="space-y-1.5">
+          <p><strong class="text-slate-500">Thời gian thu hái:</strong> <span id="trace-harvest" class="font-semibold text-slate-800"></span></p>
+          <p><strong class="text-slate-500">Thời gian giao:</strong> <span id="trace-delivery" class="font-semibold text-slate-800"></span></p>
+          <p><strong class="text-slate-500">Hình thức nhận:</strong> <span id="trace-type" class="font-semibold text-slate-800"></span></p>
+        </div>
+      </div>
+
+      <p class="text-[10px] text-slate-400 italic pt-1 border-t">
+        🔒 Để bảo vệ quyền riêng tư, thông tin cá nhân (họ tên, SĐT, địa chỉ nhà) được mã hóa an toàn và chỉ hiển thị trên nhãn dán trực tiếp của kiện hàng.
+      </p>
+    </div>
+
     <!-- Batch Banner -->
     <div class="bg-gradient-to-br from-emerald-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
       <div class="relative z-10 space-y-3">
         <span class="inline-block bg-white/20 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full backdrop-blur-sm">
-          <i class="fa-solid fa-certificate mr-1 text-amber-300"></i> Mã Lô: BATCH-BP-2026-01
+          <i class="fa-solid fa-certificate mr-1 text-amber-300"></i> Tiêu Chuẩn Nông Sản Bình Phước
         </span>
         <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Sầu Riêng & Măng Cụt Chín Cây Bình Phước</h1>
         <p class="text-xs sm:text-sm text-white/90 max-w-lg leading-relaxed">
@@ -70,6 +113,7 @@
       <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
         <i class="fa-solid fa-tree text-emerald-600 text-lg"></i>
         <h2 class="text-base font-bold text-slate-900">Thông Tin Nhà Vườn Canh Tác</h2>
+        <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto">Thông tin mẫu</span>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-4 text-xs">
@@ -122,5 +166,61 @@
     AgriConnect - Nông Sản Minh Bạch Nguồn Gốc Từ Vườn Nhà Bình Phước
   </footer>
 
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code") || params.get("batch");
+      if (code) {
+        document.getElementById("trace-input").value = code;
+        lookupCode(code);
+      }
+    });
+
+    function handleLookup() {
+      const code = document.getElementById("trace-input")?.value.trim();
+      if (!code) {
+        alert("Vui lòng nhập mã đơn trên tem dán thùng hàng.");
+        return;
+      }
+      lookupCode(code);
+    }
+
+    async function lookupCode(code) {
+      try {
+        const order = await window.db.traceOrder(code);
+        const card = document.getElementById("order-trace-card");
+        if (!order) {
+          alert(`Không tìm thấy kiện hàng với mã: ${code}. Vui lòng kiểm tra lại tem dán trên thùng.`);
+          card?.classList.add("hidden");
+          return;
+        }
+
+        const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v || "-"; };
+        setText("trace-order-code", order.order_code);
+        setText("trace-batch-name", order.batch_name);
+        setText("trace-items", order.item_summary);
+        setText("trace-kg", order.total_kg ? `${Number(order.total_kg).toFixed(1)} kg` : "Đang cập nhật");
+        setText("trace-harvest", order.harvest_date);
+        setText("trace-delivery", order.delivery_date);
+        setText("trace-type", order.delivery_type === "HOME" ? "Giao tận nhà bằng shipper đa điểm" : "Nhận tại trường đại học");
+
+        const isPaid = order.payment_status === "PAID";
+        const badge = document.getElementById("trace-status-badge");
+        if (badge) {
+          badge.innerHTML = isPaid
+            ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle-check"></i> Đã Thanh Toán</span>`
+            : `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-clock"></i> Thu Khi Nhận (COD)</span>`;
+        }
+
+        card?.classList.remove("hidden");
+        card?.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch (err) {
+        alert("Lỗi khi tra cứu: " + err.message);
+      }
+    }
+  </script>
 </body>
 </html>
