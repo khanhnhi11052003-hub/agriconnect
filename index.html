@@ -396,7 +396,7 @@
       </div>
 
       <!-- Market Price Benchmark & Market Factors (Minh Bạch Thị Trường) -->
-      <div class="mt-16 bg-white rounded-3xl p-6 sm:p-10 border border-[#d2f0b6] shadow-md space-y-8">
+      <div class="mt-12 sm:mt-16 bg-white rounded-3xl p-4 sm:p-8 lg:p-10 border border-[#d2f0b6] shadow-md space-y-6 sm:space-y-8">
         
         <div class="text-center max-w-2xl mx-auto space-y-2">
           <span class="inline-flex items-center gap-1.5 text-xs uppercase font-extrabold tracking-wider text-[#256314] bg-[#e1f9cf] px-4 py-1.5 rounded-full border border-[#b8ee99]">
@@ -418,8 +418,8 @@
           </p>
         </div>
 
-        <!-- Bảng giá so sánh chi tiết -->
-        <div class="overflow-x-auto rounded-2xl border border-[#dce9cb]">
+        <!-- Bảng giá so sánh: BẢN DESKTOP (Màn hình lớn) -->
+        <div class="hidden md:block overflow-x-auto rounded-2xl border border-[#dce9cb]">
           <table class="w-full text-left text-xs sm:text-sm">
             <thead class="bg-[#eef8e5] text-[#1c560e] font-black uppercase text-[11px] tracking-wider border-b border-[#dce9cb]">
               <tr>
@@ -545,6 +545,173 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Bảng giá so sánh: BẢN MOBILE (Thẻ card thông minh tối ưu 100% cho khung điện thoại) -->
+        <div class="block md:hidden space-y-3.5">
+          
+          <!-- Card Sầu riêng -->
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#d2f0b6] shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3ba117]"></span>
+                <h4 class="font-black text-[#0f240d] text-base">Sầu Riêng Ri6</h4>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099]">Tiết kiệm 20%</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 bg-white rounded-xl p-3 border border-[#e1f3d4]">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Giá thị trường:</span>
+                <span class="text-xs font-semibold text-slate-600 line-through">95k – 125k/kg</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#256314] block font-medium">Giá Pre-order:</span>
+                <span class="text-sm font-black text-[#22720d]">98.000 đ/kg</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#4d6b33] leading-relaxed">
+              • <strong>Giống:</strong> Ri6 cơm vàng hạt lép hoặc Monthong (Thái)<br>
+              • <strong>Ghi chú:</strong> Hàng nghịch vụ bao ăn 1 đổi 1 tận tay nếu sượng. (Cơm bóc múi thị trường: 280k – 380k/kg).
+            </p>
+          </div>
+
+          <!-- Card Chôm chôm -->
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#d2f0b6] shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3ba117]"></span>
+                <h4 class="font-black text-[#0f240d] text-base">Chôm Chôm Nhãn</h4>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099]">Hái vườn</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 bg-white rounded-xl p-3 border border-[#e1f3d4]">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Giá thị trường:</span>
+                <span class="text-xs font-semibold text-slate-600 line-through">50k – 75k/kg</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#256314] block font-medium">Giá Pre-order:</span>
+                <span class="text-sm font-black text-[#22720d]">52.000 đ/kg</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#4d6b33] leading-relaxed">
+              • <strong>Giống:</strong> Chôm chôm nhãn tróc hạt 100%<br>
+              • <strong>Ghi chú:</strong> Hàng trái vụ quả ngọt ráo, cuống tươi xanh, không hóa chất ngâm ủ.
+            </p>
+          </div>
+
+          <!-- Card Măng cụt -->
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#d2f0b6] shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3ba117]"></span>
+                <h4 class="font-black text-[#0f240d] text-base">Măng Cụt Cổ Thụ</h4>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099]">Cuối vụ hiếm</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 bg-white rounded-xl p-3 border border-[#e1f3d4]">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Giá thị trường:</span>
+                <span class="text-xs font-semibold text-slate-600 line-through">90k – 140k/kg</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#256314] block font-medium">Giá Pre-order:</span>
+                <span class="text-sm font-black text-[#22720d]">95.000 đ/kg</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#4d6b33] leading-relaxed">
+              • <strong>Giống:</strong> Măng cụt vườn cổ thụ trên 25 năm<br>
+              • <strong>Ghi chú:</strong> Vỏ mỏng múi trắng ngần, vị chua ngọt thanh tao giải nhiệt tuyệt đỉnh.
+            </p>
+          </div>
+
+          <!-- Card Bơ sáp -->
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#d2f0b6] shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3ba117]"></span>
+                <h4 class="font-black text-[#0f240d] text-base">Bơ Sáp Dẻo Loại 1</h4>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099]">Đậm vị béo</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 bg-white rounded-xl p-3 border border-[#e1f3d4]">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Giá thị trường:</span>
+                <span class="text-xs font-semibold text-slate-600 line-through">30k – 50k/kg</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#256314] block font-medium">Giá Pre-order:</span>
+                <span class="text-sm font-black text-[#22720d]">38.000 đ/kg</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#4d6b33] leading-relaxed">
+              • <strong>Giống:</strong> Bơ sáp dẻo ruột vàng, hạt nhỏ<br>
+              • <strong>Ghi chú:</strong> Cơm dày béo quánh như bơ sữa, dầm sữa đá hay làm sinh tố cực ngon.
+            </p>
+          </div>
+
+          <!-- Card Bòn bon -->
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#d2f0b6] shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3ba117]"></span>
+                <h4 class="font-black text-[#0f240d] text-base">Bòn Bon Đất Đỏ</h4>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099]">Mọng nước</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 bg-white rounded-xl p-3 border border-[#e1f3d4]">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Giá thị trường:</span>
+                <span class="text-xs font-semibold text-slate-600 line-through">65k – 85k/kg</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#256314] block font-medium">Giá Pre-order:</span>
+                <span class="text-sm font-black text-[#22720d]">68.000 đ/kg</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#4d6b33] leading-relaxed">
+              • <strong>Giống:</strong> Bòn bon chùm đất đỏ nội địa<br>
+              • <strong>Ghi chú:</strong> Vỏ mỏng dính, múi trong veo ngọt thanh mát, không dính mủ tay.
+            </p>
+          </div>
+
+          <!-- Card Dâu da -->
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#d2f0b6] shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3ba117]"></span>
+                <h4 class="font-black text-[#0f240d] text-base">Dâu Da Đất Vàng</h4>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-[#dcf5c8] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099]">Đặc sản dân dã</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 bg-white rounded-xl p-3 border border-[#e1f3d4]">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Giá thị trường:</span>
+                <span class="text-xs font-semibold text-slate-600 line-through">35k – 55k/kg</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#256314] block font-medium">Giá Pre-order:</span>
+                <span class="text-sm font-black text-[#22720d]">38.000 đ/kg</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#4d6b33] leading-relaxed">
+              • <strong>Giống:</strong> Dâu da đất vàng óng ả mọc kín thân cây<br>
+              • <strong>Ghi chú:</strong> Vị chua ngọt thanh khiết xua tan mệt mỏi, ăn vặt cực kỳ thích miệng.
+            </p>
+          </div>
+
         </div>
 
         <!-- 3 Yếu tố ảnh hưởng đến giá thực tế -->
