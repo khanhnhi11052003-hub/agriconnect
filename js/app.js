@@ -96,11 +96,11 @@ let selectedCategory = "ALL";
 window.filterCategory = function (cat) {
   selectedCategory = cat;
   document.querySelectorAll(".cat-tab").forEach(tab => {
-    tab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#345318] border border-[#d2e7b8] hover:bg-[#f1f7e9]";
+    tab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#256314] border border-[#c8edab] hover:bg-[#f1fbe9]";
   });
   const activeTab = document.getElementById(`tab-cat-${cat}`);
   if (activeTab) {
-    activeTab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#5a8d29] text-white shadow-sm";
+    activeTab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-[#389e18] to-[#59c228] text-white shadow-md shadow-[#44a821]/25";
   }
   renderProductGrid();
 };
@@ -115,7 +115,7 @@ function renderProductGrid() {
     : currentProducts.filter(p => p.category === selectedCategory);
 
   if (items.length === 0) {
-    productListEl.innerHTML = `<div class="col-span-full p-8 text-center rounded-3xl bg-[#f5f9ee] border border-[#d2e7b8] text-[#4d7b22] text-sm">Hiện chưa có sản phẩm trong danh mục này.</div>`;
+    productListEl.innerHTML = `<div class="col-span-full p-8 text-center rounded-3xl bg-[#f2fbdf] border border-[#c8edab] text-[#256314] text-sm font-semibold">Hiện chưa có sản phẩm trong danh mục này.</div>`;
     return;
   }
 
@@ -130,35 +130,35 @@ function renderProductGrid() {
 
     const highlightsHtml = Array.isArray(p.highlights) && p.highlights.length > 0
       ? `<div class="flex flex-wrap gap-1.5 mt-2.5">
-          ${p.highlights.map(h => `<span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-[#eaf4dc] text-[#345517] px-2.5 py-0.5 rounded-full border border-[#d2e7b8]"><i class="fa-solid fa-check text-[#5a8d29] text-[9px]"></i>${escapeHTML(h)}</span>`).join("")}
+          ${p.highlights.map(h => `<span class="inline-flex items-center gap-1 text-[11px] font-bold bg-[#e6f9d7] text-[#1c560e] px-2.5 py-0.5 rounded-full border border-[#bbf099] shadow-2xs"><i class="fa-solid fa-circle-check text-[#3ba117] text-[10px]"></i>${escapeHTML(h)}</span>`).join("")}
         </div>`
       : "";
 
     const card = document.createElement("div");
-    card.className = "bg-white rounded-3xl overflow-hidden border border-[#dce9cb] shadow-md card-hover flex flex-col";
+    card.className = "bg-white rounded-3xl overflow-hidden border border-[#d2f0b6] shadow-md card-hover flex flex-col";
     card.innerHTML = `
-      <div class="relative h-64 overflow-hidden bg-[#f5f9ee] group">
+      <div class="relative h-64 overflow-hidden bg-[#f7fdf3] group">
         <img src="${img}" alt="${name}" loading="lazy" class="w-full h-full object-cover fruit-pop transition-transform duration-500 group-hover:scale-105">
-        <span class="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-[#d97706]" : "bg-[#5a8d29]"} text-white shadow-md">
+        <span class="absolute top-3 left-3 text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full ${isCombo ? "bg-amber-500" : "bg-[#3ba117]"} text-white shadow-md">
           ${isCombo ? "Combo Tiết Kiệm" : "Trái cây vườn"}
         </span>
-        <span class="absolute bottom-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-lg bg-black/60 text-white backdrop-blur-md">
-          <i class="fa-solid fa-location-dot text-[#a0dc5c] mr-1"></i>Bình Phước
+        <span class="absolute bottom-3 right-3 text-xs font-bold px-2.5 py-1 rounded-lg bg-black/65 text-white backdrop-blur-md">
+          <i class="fa-solid fa-location-dot text-[#7be038] mr-1"></i>Bình Phước
         </span>
       </div>
       <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          <h3 class="font-bold text-lg text-[#243912] leading-snug">${name}</h3>
+          <h3 class="font-black text-lg text-[#0f240d] leading-snug">${name}</h3>
           ${highlightsHtml}
-          <p class="text-xs text-[#597044] mt-3 leading-relaxed">${desc}</p>
+          <p class="text-xs text-[#4d6b33] mt-3 leading-relaxed">${desc}</p>
         </div>
-        <div class="pt-4 border-t border-[#edf4e3] flex items-center justify-between">
+        <div class="pt-4 border-t border-[#edf7e4] flex items-center justify-between">
           <div>
-            <span class="text-xs text-[#6e8558] block">Giá đặt trước:</span>
-            <span class="text-xl font-black text-[#466e20]">${price}</span>
-            <span class="text-xs text-[#6e8558]"> / ${unit}</span>
+            <span class="text-xs text-[#5f7e45] font-medium block">Giá đặt trước:</span>
+            <span class="text-xl font-black text-[#22720d]">${price}</span>
+            <span class="text-xs text-[#5f7e45]"> / ${unit}</span>
           </div>
-          <button type="button" data-add="${pid}" class="btn-add bg-[#f1f7e9] hover:bg-[#5a8d29] text-[#466e20] hover:text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-[#d2e7b8] transition-all flex items-center gap-1.5 active:scale-95 shadow-sm">
+          <button type="button" data-add="${pid}" class="btn-add bg-[#f0fae8] hover:bg-gradient-to-r hover:from-[#389e18] hover:to-[#59c228] text-[#256314] hover:text-white font-extrabold text-xs px-4 py-2.5 rounded-xl border border-[#c8edab] transition-all flex items-center gap-1.5 active:scale-95 shadow-sm">
             <i class="fa-solid fa-cart-plus"></i> Chọn mua
           </button>
         </div>
@@ -190,19 +190,19 @@ async function loadProducts() {
       const price = formatVND(p.price_sale);
 
       const row = document.createElement("div");
-      row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#dce9cb]";
+      row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#d2f0b6] shadow-2xs";
       row.innerHTML = `
         <div class="flex items-center gap-3 min-w-0">
-          <img src="${img}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#d2e7b8] shrink-0">
+          <img src="${img}" alt="" class="w-12 h-12 rounded-xl object-cover fruit-pop border border-[#c8edab] shrink-0">
           <div class="min-w-0">
-            <h4 class="font-bold text-sm text-[#243912] truncate">${name}</h4>
-            <p class="text-xs text-[#5a8d29] font-bold">${price} / ${unit}</p>
+            <h4 class="font-black text-sm text-[#0f240d] truncate">${name}</h4>
+            <p class="text-xs text-[#2e8213] font-bold">${price} / ${unit}</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button type="button" data-dec="${pid}" aria-label="Giảm" class="w-8 h-8 rounded-lg bg-[#f5f9ee] border border-[#d2e7b8] text-[#345517] font-bold hover:bg-[#e7f2da]">-</button>
-          <span data-qty="${pid}" class="w-8 text-center font-bold text-sm text-[#243912]">0</span>
-          <button type="button" data-inc="${pid}" aria-label="Tăng" class="w-8 h-8 rounded-lg bg-[#5a8d29] text-white font-bold hover:bg-[#466e20]">+</button>
+          <button type="button" data-dec="${pid}" aria-label="Giảm" class="w-8 h-8 rounded-lg bg-[#f0fae8] border border-[#c8edab] text-[#256314] font-black hover:bg-[#e1f9cf]">-</button>
+          <span data-qty="${pid}" class="w-8 text-center font-black text-sm text-[#0f240d]">0</span>
+          <button type="button" data-inc="${pid}" aria-label="Tăng" class="w-8 h-8 rounded-lg bg-[#3ba117] text-white font-black hover:bg-[#2d7d12] shadow-sm">+</button>
         </div>
       `;
       cartSelectorsEl.appendChild(row);

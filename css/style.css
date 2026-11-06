@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root {
-  /* BẢNG MÀU XANH LÁ MẠ (Young Rice Sprout / Spring Meadow) */
-  --primary: #6ba336;           /* Xanh lá mạ tươi non */
-  --primary-dark: #4d7a22;      /* Xanh lá mạ đậm để hover */
-  --primary-light: #f3f8ec;     /* Nền pastel lá mạ */
-  --primary-pastel: #e4f0d5;    /* Viền / tag mạ non */
+  /* BẢNG MÀU TƯƠI TẮN, RẠNG RỠ & NỔI BẬT (Fresh Vibrant Sprout & Sunlight) */
+  --primary: #44a821;           /* Xanh lá tươi tắn, căng tràn sức sống */
+  --primary-dark: #328514;      /* Xanh đậm tương phản cao */
+  --primary-light: #f4fceb;     /* Nền sáng tươi mát */
+  --primary-pastel: #e3f8d0;    /* Viền / tag xanh non tươi */
   
-  /* Màu Pastel bổ trợ tôn trái cây */
-  --pastel-cream: #fbfbf6;
-  --pastel-sprout: #f5f9ee;
-  --pastel-warm: #fffdf5;
-  --pastel-border: #d7e8c5;
+  /* Màu Pastel bổ trợ tôn trái cây tươi sáng */
+  --pastel-cream: #fcfff8;
+  --pastel-sprout: #f2fbdf;
+  --pastel-warm: #fffef5;
+  --pastel-border: #c8edab;
 
-  --dark: #223812;              /* Chữ tiêu đề xanh lá mạ sẫm */
-  --gray-bg: #f8faf4;           /* Nền trang dịu mắt */
-  --card-border: #e2edd5;
+  --dark: #0f240d;              /* Chữ tiêu đề đen lá đậm sắc nét */
+  --gray-bg: #f7fdf3;           /* Nền trang tươi sáng, nhẹ nhàng */
+  --card-border: #d7f2bf;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-serif: 'Playfair Display', serif;
 }
