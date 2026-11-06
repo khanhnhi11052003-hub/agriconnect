@@ -34,43 +34,43 @@ window.getSiteUrl = function () {
 // Dữ liệu mẫu cho chế độ DEMO (Đầy đủ đặc sản đất đỏ Bình Phước & Các Combo hấp dẫn)
 const DEMO_PRODUCTS = [
   {
-    id: "p1", name: "Sầu Riêng Ri6 Đất Đỏ Bình Phước (Cơm Vàng Hạt Lép)", category: "TraiCay",
+    id: "p1", name: "Sầu Riêng Ri6 Bình Phước", category: "TraiCay",
     highlights: ["Múi vàng rực, dẻo quánh béo ngậy", "Hái già rụng tự nhiên, ngọt đậm sâu", "Bao ăn 1 đổi 1 tận tay nếu sượng"],
     description: "Những quả sầu riêng Ri6 tuyển lựa khắt khe từ vùng đất đỏ bazan Phước Long trù phú. Cây nuôi trái già đủ độ, thu hái sáng sớm Thứ Sáu. Múi vàng rực rỡ, cơm dẻo quánh, khô ráo không nhão nước, vị ngọt bùi béo ngậy tan chảy trên đầu lưỡi cùng hương thơm ngào ngạt mê hoặc.",
     unit: "kg", weight_kg: 1, price_original: 80000, price_sale: 125000, image_url: "images/hero-fruits.jpg", is_available: true
   },
   {
-    id: "p2", name: "Măng Cụt Cổ Thụ Bình Phước Chín Cây", category: "TraiCay",
+    id: "p2", name: "Măng Cụt Cổ Thụ Bình Phước", category: "TraiCay",
     highlights: ["Vườn cổ thụ 25 năm không hóa chất", "Múi trắng tinh khiết, hạt lép giòn sần sật", "Vị chua ngọt thanh tao giải nhiệt tuyệt đỉnh"],
     description: "Măng cụt thu hoạch từ những gốc đại thụ Bình Phước, nuôi dưỡng bằng nước ngầm tinh khiết. Nhà vườn tỉ mỉ hái từng trái chín cành vỏ tím mỏng mịn, cuống còn tươi xanh. Tách lớp vỏ mỏng, múi trắng nõn như hoa tuyết mọng nước, cắn ngập miệng cảm nhận ngay vị thanh mát dịu lành.",
     unit: "kg", weight_kg: 1, price_original: 45000, price_sale: 75000, image_url: "images/mangosteen-basket.jpg", is_available: true
   },
   {
-    id: "p3", name: "Chôm Chôm Nhãn Bình Phước (Giòn Ngọt Tróc Hạt)", category: "TraiCay",
+    id: "p3", name: "Chôm Chôm Nhãn Bình Phước", category: "TraiCay",
     highlights: ["Trái nhỏ râu vàng đỏ, tróc hạt 100%", "Cùi dày ráo nước, giòn rụm ngọt lịm", "Hái sớm tươi rói, không dập nát"],
     description: "Đặc sản chôm chôm nhãn 'nhỏ mà có võ' của miệt vườn Bình Phước. Quả nhỏ xinh râu xoăn vàng ửng đỏ, cùi dày trắng trong ráo nước và tróc hạt sạch sẽ 100%. Vị ngọt đậm đà thơm thoang thoảng như hương nhãn lồng, ăn hoài cả chùm mà không ngán.",
     unit: "kg", weight_kg: 1, price_original: 28000, price_sale: 45000, image_url: "images/chomchom.jpg", is_available: true
   },
   {
-    id: "p4", name: "Nhãn Xuồng Cơm Vàng Bình Phước (Dày Cùi Mọng Nước)", category: "TraiCay",
+    id: "p4", name: "Nhãn Xuồng Cơm Vàng", category: "TraiCay",
     highlights: ["Trái to tròn da bò, căng bóng", "Cùi vàng dày cộm, giòn ngọt ứa nước", "Hương thơm nồng nàn sang trọng"],
     description: "Từng chùm nhãn xuồng trĩu quả màu vàng da bò căng mọng. Bóc lớp vỏ mỏng là phần cùi nhãn dày cộm vàng ươm, giòn dai sần sật ngập tràn nước ngọt lịm. Vị ngọt sắc xộc lên vị giác kèm hương thơm nồng nàn đặc trưng của đất đỏ phù sa.",
     unit: "kg", weight_kg: 1, price_original: 40000, price_sale: 65000, image_url: "images/nhan.jpg", is_available: true
   },
   {
-    id: "p5", name: "Bòn Bon Đất Đỏ Bình Phước (Chùm Mọng Ngọt Thanh)", category: "TraiCay",
+    id: "p5", name: "Bòn Bon Đất Đỏ Bình Phước", category: "TraiCay",
     highlights: ["Chùm sai trĩu quả, vỏ mỏng dính", "Múi trong veo mọng nước, ngọt thanh mát", "Không dính mủ tay, giải nhiệt ngày hè"],
     description: "Thức quà quê tinh tế được cắt cẩn thận từng chùm trên thân cây cổ thụ. Vỏ màu vàng ngà mềm mịn, khi bóp nhẹ lộ ra 5 múi bòn bon trong veo lấp lánh như ngọc. Vị ngọt thanh khiết xen chút chua dịu nhẹ tan êm ái, mang lại cảm giác sảng khoái bất tận.",
     unit: "kg", weight_kg: 1, price_original: 35000, price_sale: 55000, image_url: "images/bonbon.jpg", is_available: true
   },
   {
-    id: "p6", name: "Dâu Da Đất Vàng Bình Phước (Chua Ngọt Dịu Mát)", category: "TraiCay",
+    id: "p6", name: "Dâu Da Đất Vàng Bình Phước", category: "TraiCay",
     highlights: ["Trái vàng óng ả mọc kín thân cây", "Vị chua ngọt hài hòa, mọng nước", "Món quà vặt dân dã cực kỳ gây nghiện"],
     description: "Đặc sản dân dã đậm chất rừng vườn Đông Nam Bộ. Trái dâu da tròn trịa vàng ruộm mọc thành dải dài từ gốc lên ngọn cây già. Múi dâu ngậm nước mọng óng ả, vị chua ngọt kích thích tuyến nước bọt, xua tan ngay cảm giác uể oải sau những giờ học tập và làm việc căng thẳng.",
     unit: "kg", weight_kg: 1, price_original: 20000, price_sale: 35000, image_url: "images/dauda.jpg", is_available: true
   },
   {
-    id: "p7", name: "Bơ Sáp Dẻo Bình Phước Tuyển Chọn (Béo Quánh Vàng Ươm)", category: "TraiCay",
+    id: "p7", name: "Bơ Sáp Dẻo Bình Phước", category: "TraiCay",
     highlights: ["Cơm dẻo quánh như bơ sữa, không xơ", "Vỏ mỏng hạt nhỏ, cơm vàng đậm tự nhiên", "Giàu dưỡng chất, ăn tươi hoặc dầm sinh tố"],
     description: "Bơ sáp loại 1 trái dài chắc nịch, da xanh bóng láng. Khi chín tới, phần cơm bơ vàng ươm dẻo quánh như kem tươi, hạt nhỏ xíu tróc vỏ dễ dàng. Vị béo bùi ngậy đượm đà không lẫn tạp chất, thích hợp ăn trực tiếp, làm salad thanh mát hoặc dầm sữa đá mát lạnh cho cả nhà.",
     unit: "kg", weight_kg: 1, price_original: 30000, price_sale: 50000, image_url: "images/bo-sap.jpg", is_available: true
