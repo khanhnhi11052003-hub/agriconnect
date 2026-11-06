@@ -14,8 +14,8 @@
 
 window.APP_CONFIG = {
   // ---------------- Supabase ----------------
-  SUPABASE_URL: "",       // Ví dụ: "https://abcxyz.supabase.co"
-  SUPABASE_ANON_KEY: "",  // Ví dụ: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  SUPABASE_URL: "https://lrzjsmjjqqygqesaltpl.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_0zU88ThdIESJurt5Ht-TcQ_7GUe-Cqc",
 
   // Địa chỉ website chính thức (sau khi deploy). Ví dụ: "https://agriconnect.vercel.app"
   // Để trống: tự lấy địa chỉ hiện tại (khi mở file trực tiếp trên máy, mã QR trên tem sẽ không dùng được).
