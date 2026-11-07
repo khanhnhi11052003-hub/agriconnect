@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AgriConnect - Nền Tảng Kết Nối Nông Sản - Người Tiêu Dùng</title>
+  <link rel="icon" type="image/svg+xml" href="images/logo-agriconnect.svg">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -73,17 +74,20 @@
   <header class="sticky top-0 z-50 glass-nav bg-white/95 backdrop-blur-md border-b border-[#d2f0b6]">
     <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 h-16 sm:h-[72px] flex items-center justify-between gap-2">
       
-      <!-- Brand Logo (Gọn gàng trên màn hình Laptop, đầy đủ trên màn hình rộng) -->
-      <a href="index.html" class="flex items-center gap-2 sm:gap-2.5 shrink-0 group">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-[#389e18] to-[#63d428] flex items-center justify-center text-white shadow-md shadow-[#44a821]/30 group-hover:scale-105 transition-transform shrink-0">
-          <i class="fa-solid fa-seedling text-base sm:text-lg"></i>
+      <!-- Brand Logo Độc Quyền (3D SVG: Lá Kép Hữu Cơ + Lục Giác Blockchain + Cầu Nối Vùng Miền) -->
+      <a href="index.html" class="flex items-center gap-2.5 sm:gap-3 shrink-0 group">
+        <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-gradient-to-tr from-[#1e6b16] via-[#3eb31b] to-[#facc15] shadow-md shadow-[#3ba117]/25 group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 shrink-0">
+          <img src="images/logo-agriconnect.svg" alt="AgriConnect Logo" class="w-full h-full object-contain rounded-[14px]">
+          <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#fef08a] border-2 border-[#173f0c] flex items-center justify-center" title="Đã chứng thực VietGAP & Blockchain Escrow">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#3ba117]"></span>
+          </span>
         </div>
         <div>
           <div class="flex items-center gap-1.5 leading-none">
-            <span class="text-lg sm:text-xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-[#3ba117]">Connect</span></span>
-            <span class="text-[8px] sm:text-[9px] uppercase tracking-wider font-extrabold bg-[#e1f9cf] text-[#256314] px-1.5 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">ĐẶC SẢN VÙNG MIỀN</span>
+            <span class="text-lg sm:text-xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#22720d] via-[#3ba117] to-[#ca8a04]">Connect</span></span>
+            <span class="text-[8px] sm:text-[9px] uppercase tracking-wider font-extrabold bg-gradient-to-r from-[#e1f9cf] to-[#fef9c3] text-[#1c560e] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">ĐẶC SẢN VÙNG MIỀN</span>
           </div>
-          <p class="text-[10px] text-[#4b6b32] font-semibold hidden sm:block lg:hidden 2xl:block mt-0.5">Tinh hoa nông sản Việt • Giá gốc tận vườn</p>
+          <p class="text-[10px] text-[#4b6b32] font-semibold hidden sm:block lg:hidden 2xl:block mt-0.5">Tinh hoa nông sản Việt • Chuỗi lạnh & Ví Escrow</p>
         </div>
       </a>
 
@@ -1584,11 +1588,12 @@
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         
         <div class="space-y-3">
-          <div class="flex items-center gap-2 text-white text-base font-bold">
-            <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white text-xs">
-              <i class="fa-solid fa-seedling"></i>
+          <div class="flex items-center gap-2.5 text-white text-base font-extrabold">
+            <img src="images/logo-agriconnect.svg" alt="AgriConnect Logo" class="w-9 h-9 rounded-xl shadow-md border border-emerald-400/30">
+            <div>
+              <span class="block leading-none">Agri<span class="text-emerald-400">Connect</span></span>
+              <span class="text-[10px] text-amber-300 font-semibold tracking-wider uppercase">Đặc Sản Vùng Miền</span>
             </div>
-            <span>AgriConnect - Đặc Sản Vùng Miền</span>
           </div>
           <p class="text-slate-400 leading-relaxed">
             Nền tảng kết nối trực tiếp mạng lưới nhà vườn đặc sản các vùng miền (Tây Nguyên, Đông Nam Bộ, Miền Tây ĐBSCL, Đà Lạt) với cộng đồng đô thị qua mô hình Pre-order & Cold-Chain Logistics.
