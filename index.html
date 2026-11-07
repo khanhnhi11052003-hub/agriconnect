@@ -449,6 +449,22 @@
             <span>⚡ Happy Hour: Cứu Hộ Nông Sản (-55% đến -65%)</span>
           </button>
         </div>
+
+        <!-- Thanh Tìm Kiếm Tức Thì & Sắp Xếp Thông Minh (UI/UX Expert Upgrade) -->
+        <div class="max-w-3xl mx-auto pt-4 flex flex-col sm:flex-row items-center gap-2.5">
+          <div class="relative flex-1 w-full">
+            <i class="fa-solid fa-magnifying-glass text-[#3ba117] absolute left-3.5 top-1/2 -translate-y-1/2 text-xs"></i>
+            <input type="text" id="product-search-input" oninput="renderProductGrid()" placeholder="Tìm nhanh nông sản hoặc vùng trồng (VD: Cà chua Đà Lạt, Sầu riêng, Bơ, Khoai lang, Hạt điều...)" class="w-full pl-9 pr-4 py-2.5 rounded-2xl border border-[#c8edab] bg-white text-xs font-semibold text-[#0f240d] focus:outline-none focus:ring-2 focus:ring-[#3ba117] shadow-2xs">
+          </div>
+          <div class="w-full sm:w-auto shrink-0 flex items-center gap-2">
+            <select id="product-sort-select" onchange="renderProductGrid()" aria-label="Sắp xếp sản phẩm" class="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl border border-[#c8edab] bg-white text-xs font-extrabold text-[#256314] focus:outline-none focus:ring-2 focus:ring-[#3ba117] shadow-2xs cursor-pointer">
+              <option value="DEFAULT">✨ Đề xuất theo mùa vụ</option>
+              <option value="PRICE_ASC">💰 Giá thấp ➔ cao</option>
+              <option value="PRICE_DESC">💎 Giá cao ➔ thấp (Quà VIP)</option>
+              <option value="COLD_2_6C">❄️ Ưu tiên Khoang Lạnh 2–6°C (Rau lá)</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <!-- GTM Hyper-Local Beachhead & Happy Hour Ugly Food Highlight Banner -->
@@ -1436,6 +1452,11 @@
               </div>
             </div>
 
+            <!-- Cảnh Báo & Phân Khoang Sinh Lý Sau Thu Hoạch (Chuyên Gia Nông Nghiệp & Sinh Thái: Tách Khoang Khí Ethylene & Đa Vùng Nhiệt Độ) -->
+            <div id="coldchain-compartment-alert" class="hidden p-3.5 rounded-2xl bg-sky-50 border-2 border-sky-300 text-xs text-sky-950 space-y-1.5 shadow-2xs">
+              <!-- Rendered dynamically by updateOrderSummary() in js/app.js -->
+            </div>
+
             <!-- Thu Hồi & Tái Sử Dụng Vật Tư: Đổi Thùng Trống Nhận Ngay Voucher 10.000đ -->
             <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-300 flex items-start gap-2.5">
               <input type="checkbox" id="order-return-box-check" onchange="updateOrderSummary()" class="mt-0.5 w-4 h-4 accent-[#3ba117] rounded shrink-0 cursor-pointer">
@@ -1871,8 +1892,8 @@
   </div>
 
   <!-- Scripts (Kèm version chống cache trình duyệt) -->
-  <script src="js/config.js?v=20261107_v14"></script>
-  <script src="js/supabaseClient.js?v=20261107_v14"></script>
-  <script src="js/app.js?v=20261107_v14"></script>
+  <script src="js/config.js?v=20261107_v15"></script>
+  <script src="js/supabaseClient.js?v=20261107_v15"></script>
+  <script src="js/app.js?v=20261107_v15"></script>
 </body>
 </html>

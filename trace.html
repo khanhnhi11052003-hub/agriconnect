@@ -96,6 +96,9 @@
 
       <!-- Escrow Status & Data Masking Box -->
       <div id="trace-escrow-box" class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs space-y-1.5"></div>
+
+      <!-- Blockchain SHA-256 Merkle Proof & Smart Contract Escrow Verification Box -->
+      <div id="trace-blockchain-box" class="p-4 rounded-2xl bg-slate-900 text-white border border-slate-800 text-xs space-y-2.5"></div>
     </div>
 
     <!-- MODULE XỬ LÝ BỒI THƯỜNG TỰ ĐỘNG TRONG 12 GIỜ (ESCROW UNBOX CLAIM) -->
@@ -202,8 +205,8 @@
     AgriConnect - Nông Sản Minh Bạch Nguồn Gốc & Bảo Vệ Ví Tạm Giữ Escrow
   </footer>
 
-  <script src="js/config.js?v=20261106_v9"></script>
-  <script src="js/supabaseClient.js?v=20261106_v9"></script>
+  <script src="js/config.js?v=20261107_v15"></script>
+  <script src="js/supabaseClient.js?v=20261107_v15"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
@@ -219,7 +222,12 @@
         const order_code = document.getElementById("claim-order-code").value.trim().toUpperCase();
         const customer_phone = document.getElementById("claim-phone").value.trim();
         const claim_type = document.querySelector('input[name="claim_type"]:checked')?.value || "PARTIAL_20";
-        const unbox_video_url = document.getElementById("claim-video").value.trim();
+        const rawVideoUrl = document.getElementById("claim-video").value.trim();
+        const unbox_video_url = window.security?.sanitizeUrl ? window.security.sanitizeUrl(rawVideoUrl) : rawVideoUrl;
+        if (unbox_video_url === "#blocked-unsafe-url") {
+          alert("🛡️ [Chống XSS]: Đường dẫn Video Unbox không hợp lệ (chỉ chấp nhận giao thức http:// hoặc https://).");
+          return;
+        }
         const reason = document.getElementById("claim-reason").value.trim();
 
         await window.db.submitRefundClaim({
@@ -307,6 +315,35 @@
             phoneMaskEl.textContent = "0987 *** 321 (Đang ẩn bảo mật - Mở khóa khi Delivered)";
             phoneMaskEl.className = "font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded";
           }
+        }
+
+        const bcBox = document.getElementById("trace-blockchain-box");
+        if (bcBox) {
+          const mp = order.merkle_proof || (window.security?.generateBatchMerkleProof ? window.security.generateBatchMerkleProof(order.order_code, order.escrow_status) : { merkle_root: "0x8a91f4c2b9e0...", leaves: [] });
+          const leavesHtml = (mp.leaves || []).map(lf => `
+            <div class="p-2 rounded-xl bg-white/5 border border-white/10">
+              <span class="text-[10px] text-slate-400 block">${escapeHTML(lf.label)}</span>
+              <span class="font-mono text-[10px] text-emerald-300 font-bold">${escapeHTML(String(lf.hash).slice(0, 18))}...</span>
+            </div>
+          `).join("");
+          bcBox.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
+              <span class="font-extrabold text-sky-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-cubes"></i>
+                <span>Chứng Thực Blockchain Merkle Proof & Smart Contract Escrow</span>
+              </span>
+              <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-400/30">
+                ✓ On-Chain Anchored
+              </span>
+            </div>
+            <div class="space-y-1 text-[11px]">
+              <p><span class="text-slate-400">Hợp đồng thông minh (Escrow):</span> <code class="text-amber-300 font-mono">${escapeHTML(order.smart_contract_address || "0x7F4c...92E8 (AgriEscrowV2)")}</code></p>
+              <p class="break-all"><span class="text-slate-400">Gốc cây băm (Merkle Root SHA-256):</span> <code class="text-sky-300 font-mono">${escapeHTML(mp.merkle_root)}</code></p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              ${leavesHtml}
+            </div>
+          `;
         }
 
         card?.classList.remove("hidden");

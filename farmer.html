@@ -167,7 +167,7 @@
 
     <!-- 2. ĐĂNG BÁN LỨA MỚI + VOICE-TO-TEXT (NHẬP BẰNG GIỌNG NÓI) -->
     <section id="dang-ban-lua-moi" class="bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-[#c8edab]">
-      <div class="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-[#eaf9df]">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-[#eaf9df]">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-xl shrink-0">
             🌱
@@ -177,6 +177,9 @@
             <p class="text-xs text-[#4b6b32]">Chọn nhanh loại trái cây bên dưới hoặc bấm nút Micro để đọc mô tả bằng giọng nói</p>
           </div>
         </div>
+        <span id="farmer-draft-badge" class="text-[11px] font-bold text-[#256314] bg-[#f2fbdf] px-2.5 py-1 rounded-full border border-[#c8edab]">
+          💾 Tự động lưu nháp chống mất sóng 4G
+        </span>
       </div>
 
       <form id="farmer-post-form" class="space-y-4">
@@ -328,8 +331,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261107_v14"></script>
-  <script src="js/supabaseClient.js?v=20261107_v14"></script>
+  <script src="js/config.js?v=20261107_v15"></script>
+  <script src="js/supabaseClient.js?v=20261107_v15"></script>
   <script>
     window.testFarmerRbacBoundary = function () {
       try {
@@ -497,12 +500,48 @@
         image_url
       });
 
+      localStorage.removeItem("agriconnect_farmer_draft_v1");
       showFarmerToast("🎉 Đã đăng lứa mới '" + name + "' lên Chợ thành công!");
       await loadFarmerPortal();
       document.getElementById("vuon-dang-co-gi").scrollIntoView({ behavior: "smooth" });
     });
 
+    function saveFarmerDraft() {
+      try {
+        const draft = {
+          name: document.getElementById("f-name")?.value || "",
+          price: document.getElementById("f-price")?.value || "",
+          stock: document.getElementById("f-stock")?.value || "",
+          desc: document.getElementById("f-desc")?.value || "",
+          image: document.getElementById("f-image")?.value || "",
+          savedAt: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
+        };
+        localStorage.setItem("agriconnect_farmer_draft_v1", JSON.stringify(draft));
+        const b = document.getElementById("farmer-draft-badge");
+        if (b) b.textContent = `💾 Đã lưu nháp tự động (${draft.savedAt})`;
+      } catch (e) {}
+    }
+
+    function restoreFarmerDraft() {
+      try {
+        const raw = localStorage.getItem("agriconnect_farmer_draft_v1");
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (d.name) document.getElementById("f-name").value = d.name;
+        if (d.price) document.getElementById("f-price").value = d.price;
+        if (d.stock) document.getElementById("f-stock").value = d.stock;
+        if (d.desc) document.getElementById("f-desc").value = d.desc;
+        if (d.image) document.getElementById("f-image").value = d.image;
+        const b = document.getElementById("farmer-draft-badge");
+        if (b && d.savedAt) b.textContent = `💾 Đã khôi phục bản nháp (${d.savedAt})`;
+      } catch (e) {}
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      restoreFarmerDraft();
+      ["f-name", "f-price", "f-stock", "f-desc"].forEach(id => {
+        document.getElementById(id)?.addEventListener("input", saveFarmerDraft);
+      });
       loadFarmerPortal();
       if (window.lucide) lucide.createIcons();
     });
