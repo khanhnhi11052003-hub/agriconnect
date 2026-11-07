@@ -166,16 +166,16 @@
       </div>
     </section>
 
-    <!-- 2. ĐĂNG BÁN LỨA MỚI + VOICE-TO-TEXT (NHẬP BẰNG GIỌNG NÓI) -->
+    <!-- 2. ĐĂNG BÀI / CHỈNH SỬA NÔNG SẢN + QUẢN LÝ HÌNH ẢNH, VIDEO & THÔNG TIN NHÀ VƯỜN -->
     <section id="dang-ban-lua-moi" class="bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-[#c8edab]">
       <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-[#eaf9df]">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-xl shrink-0">
-            🌱
+            📝
           </div>
           <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#0f240d]">Đăng Bán Lứa Nông Sản Mới</h2>
-            <p class="text-xs text-[#4b6b32]">Chọn nhanh loại trái cây bên dưới hoặc bấm nút Micro để đọc mô tả bằng giọng nói</p>
+            <h2 id="farmer-form-title" class="text-base sm:text-lg font-extrabold text-[#0f240d]">Đăng Bài Nông Sản Mới & Thông Tin Nhà Vườn</h2>
+            <p class="text-xs text-[#4b6b32]">Hỗ trợ thêm/sửa/xóa nhiều hình ảnh, video thực tế tại vườn, thông tin Nhà vườn & nhập giọng nói</p>
           </div>
         </div>
         <span id="farmer-draft-badge" class="text-[11px] font-bold text-[#256314] bg-[#f2fbdf] px-2.5 py-1 rounded-full border border-[#c8edab]">
@@ -183,56 +183,87 @@
         </span>
       </div>
 
+      <!-- Banner thông báo khi đang ở chế độ Chỉnh sửa sản phẩm -->
+      <div id="farmer-edit-banner" class="hidden mb-4 p-3.5 rounded-xl bg-amber-50 border-2 border-amber-300 flex flex-wrap items-center justify-between gap-2">
+        <div class="text-xs sm:text-sm font-bold text-amber-950">
+          ✏️ Đang chỉnh sửa bài đăng: <span id="farmer-edit-name" class="text-[#256314] underline"></span>
+        </div>
+        <button type="button" onclick="cancelEditProduct()" class="px-3 py-1.5 rounded-lg bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 text-xs font-extrabold transition">
+          ✕ Hủy chỉnh sửa (Chuyển về Đăng mới)
+        </button>
+      </div>
+
       <form id="farmer-post-form" class="space-y-4">
-        <!-- Bước 1: Chọn nhanh loại trái cây / rau củ quả -->
+        <input type="hidden" id="f-edit-id" value="" />
+        <input type="hidden" id="f-image" value="images/durian-open.jpg" />
+
+        <!-- Bước 1: Chọn nhanh loại trái cây / rau củ quả & Danh mục -->
         <div>
-          <label class="block text-xs sm:text-sm font-bold text-[#1f3813] mb-2">1. Đợt này vườn thu hoạch nông sản / rau củ quả gì?</label>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2.5">
-            <button type="button" onclick="quickPickFruit('Sầu Riêng Ri6 Chín Rụng', 98000, 'images/durian-open.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+          <label class="block text-xs sm:text-sm font-bold text-[#1f3813] mb-2">1. Chọn nhanh nông sản mẫu hoặc nhập tên sản phẩm cần đăng / sửa:</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+            <button type="button" onclick="quickPickFruit('Sầu Riêng Ri6 Chín Rụng', 98000, 'images/durian-open.jpg', 'TraiCay')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🍈 Sầu Riêng Ri6
             </button>
-            <button type="button" onclick="quickPickFruit('Măng Cụt Cổ Thụ Lứa Mới', 95000, 'images/mangosteen-basket.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Măng Cụt Cổ Thụ Lứa Mới', 95000, 'images/mangosteen-basket.jpg', 'TraiCay')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🟣 Măng Cụt Cổ Thụ
             </button>
-            <button type="button" onclick="quickPickFruit('Bơ Sáp Dẻo Tây Nguyên', 38000, 'images/bo-sap.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Bơ Sáp Dẻo Tây Nguyên', 38000, 'images/bo-sap.jpg', 'TraiCay')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🥑 Bơ Sáp Tây Nguyên
             </button>
-            <button type="button" onclick="quickPickFruit('Cà Chua Hữu Cơ Đà Lạt', 42000, 'images/ca-chua-dalat.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Cà Chua Hữu Cơ Đà Lạt', 42000, 'images/ca-chua-dalat.jpg', 'RauCuQua')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🍅 Cà Chua Hữu Cơ Đà Lạt
             </button>
-            <button type="button" onclick="quickPickFruit('Khoai Lang Mật Tà Nung', 39000, 'images/khoai-lang-mat.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Khoai Lang Mật Tà Nung', 39000, 'images/khoai-lang-mat.jpg', 'RauCuQua')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🍠 Khoai Lang Mật Đà Lạt
             </button>
-            <button type="button" onclick="quickPickFruit('Bông Cải Xanh & Ớt Chuông Đà Lạt', 48000, 'images/bong-cai-ot-chuong.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Bông Cải Xanh & Ớt Chuông Đà Lạt', 48000, 'images/bong-cai-ot-chuong.jpg', 'RauCuQua')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🥦 Bông Cải & Ớt Chuông
             </button>
-            <button type="button" onclick="quickPickFruit('Xà Lách Thủy Canh & Cải Bó Xôi', 45000, 'images/xa-lach-thuy-canh.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Xà Lách Thủy Canh & Cải Bó Xôi', 45000, 'images/xa-lach-thuy-canh.jpg', 'RauCuQua')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🥬 Xà Lách Thủy Canh
             </button>
-            <button type="button" onclick="quickPickFruit('Bưởi Da Xanh Ruột Hồng Bến Tre', 62000, 'images/buoi-da-xanh.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Bưởi Da Xanh Ruột Hồng Bến Tre', 62000, 'images/buoi-da-xanh.jpg', 'TraiCay')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🍊 Bưởi Da Xanh Bến Tre
             </button>
-            <button type="button" onclick="quickPickFruit('Hạt Điều Rang Củi & Macca', 145000, 'images/hat-dieu-macca.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+            <button type="button" onclick="quickPickFruit('Hạt Điều Rang Củi & Macca', 145000, 'images/hat-dieu-macca.jpg', 'NongSanKho')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🌰 Hạt Điều & Macca
             </button>
           </div>
-          <input type="text" id="f-name" required value="Sầu Riêng Ri6 Chín Rụng Đợt Mới"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-[#b8ee99] focus:outline-none focus:border-[#3ba117] text-sm font-bold text-[#0f240d] bg-white"
-            placeholder="Tên nông sản..." />
-          <input type="hidden" id="f-image" value="images/hero-fruits.jpg" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-bold text-[#4b6b32] mb-1">Tên bài đăng / Tên nông sản:</label>
+              <input type="text" id="f-name" required value="Sầu Riêng Ri6 Chín Rụng Đợt Mới"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-[#b8ee99] focus:outline-none focus:border-[#3ba117] text-sm font-bold text-[#0f240d] bg-white"
+                placeholder="Nhập tên nông sản..." />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-[#4b6b32] mb-1">Danh mục & Đơn vị:</label>
+              <div class="flex gap-1.5">
+                <select id="f-category" class="flex-1 px-2.5 py-2.5 rounded-xl border border-[#b8ee99] text-xs font-bold text-[#0f240d] bg-white">
+                  <option value="TraiCay">🍈 Trái Cây Tươi</option>
+                  <option value="RauCuQua">🥬 Rau Củ Quả Sạch</option>
+                  <option value="NongSanKho">🌰 Nông Sản Khô</option>
+                  <option value="Combo">🎁 Combo Tiết Kiệm</option>
+                  <option value="UglyFood">⚡ Cứu Hộ Ugly Food</option>
+                </select>
+                <input type="text" id="f-unit" value="kg" class="w-20 px-2.5 py-2.5 rounded-xl border border-[#b8ee99] text-xs font-bold text-center text-[#0f240d] bg-white" placeholder="kg/hộp" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Bước 2: Giá bán & Sản lượng dự kiến -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div class="bg-[#f7fdf3] p-3.5 rounded-xl border border-[#d2f0b6]">
-            <label class="block text-xs font-bold text-[#1f3813] mb-1.5">2. Giá bán Loại 1 mỗi Kg (đồng):</label>
+            <label class="block text-xs font-bold text-[#1f3813] mb-1.5">2. Giá bán Loại 1 (đồng):</label>
             <input type="number" id="f-price" required value="98000" step="1000"
               class="w-full px-3.5 py-2 rounded-xl border border-[#b8ee99] focus:outline-none focus:border-[#3ba117] text-base font-extrabold text-[#256314] bg-white" />
             <p class="text-[11px] text-[#4b6b32] mt-1">Hệ thống tự động tạo thêm Loại 2 (-15%) & Loại 3 (-30%) để phụ bán hết cả vườn.</p>
           </div>
 
           <div class="bg-[#f7fdf3] p-3.5 rounded-xl border border-[#d2f0b6]">
-            <label class="block text-xs font-bold text-[#1f3813] mb-1.5">3. Sản lượng dự kiến thu hoạch (Kg):</label>
+            <label class="block text-xs font-bold text-[#1f3813] mb-1.5">3. Sản lượng dự kiến mở bán (Kg):</label>
             <div class="flex items-center gap-2">
               <button type="button" onclick="adjustFarmerKg(-10)" class="w-9 h-9 rounded-xl bg-white hover:bg-[#e1f9cf] border border-[#b8ee99] text-base font-bold text-[#256314]">-</button>
               <input type="number" id="f-stock" required value="60"
@@ -243,11 +274,133 @@
           </div>
         </div>
 
-        <!-- Bước 3: VOICE-TO-TEXT (NHẬP LIỆU BẰNG GIỌNG NÓI) -->
+        <!-- Bước 3: QUẢN LÝ HÌNH ẢNH & VIDEO CỦA SẢN PHẨM (THÊM, THAY ĐỔI, ĐẶT ẢNH CHÍNH, XÓA) -->
+        <div class="bg-[#f7fdf3] p-4 rounded-2xl border-2 border-[#b8ee99] space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold text-[#0f240d] flex items-center gap-1.5">
+                📸 4. Quản Lý Hình Ảnh & Video Sản Phẩm (Thêm / Thay đổi / Xóa)
+              </h3>
+              <p class="text-[11px] text-[#4b6b32]">Tải ảnh/video trực tiếp từ máy tính/điện thoại, chọn kho ảnh mẫu hoặc dán link ảnh/video thực tế tại vườn</p>
+            </div>
+            <span id="f-media-count-badge" class="px-2.5 py-1 rounded-full bg-white text-[#256314] text-[11px] font-extrabold border border-[#b8ee99]">
+              1 ảnh • 0 video
+            </span>
+          </div>
+
+          <!-- Công cụ Thêm Ảnh / Video -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <!-- Nút tải file ảnh/video từ máy -->
+            <label class="cursor-pointer py-2.5 px-3.5 rounded-xl bg-[#3ba117] hover:bg-[#2e7d14] text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-xs transition">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+              <span>📁 Tải Ảnh / Video Từ Thiết Bị Lên</span>
+              <input type="file" id="f-media-file-input" accept="image/*,video/*" multiple class="hidden" onchange="handleFarmerFileUpload(event)" />
+            </label>
+
+            <!-- Chọn nhanh từ thư viện ảnh nông sản chuẩn -->
+            <select id="f-preset-image-select" onchange="addPresetMediaToGallery(this.value)" class="px-3 py-2.5 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#1f3813]">
+              <option value="">🖼️ + Chọn thêm ảnh từ Thư viện Nông sản...</option>
+              <option value="images/durian-open.jpg">🍈 Sầu riêng Ri6 bổ múi vàng</option>
+              <option value="images/durian-pile.jpg">🍈 Sầu riêng Ri6 thu hoạch tại vườn</option>
+              <option value="images/mangosteen-basket.jpg">🟣 Măng cụt cổ thụ giỏ tre</option>
+              <option value="images/mangosteen-harvest.jpg">🟣 Măng cụt cổ thụ chín cây</option>
+              <option value="images/bo-sap.jpg">🥑 Bơ sáp Đắk Lắk ruột vàng</option>
+              <option value="images/ca-chua-dalat.jpg">🍅 Cà chua Beef & Bi Đà Lạt</option>
+              <option value="images/khoai-lang-mat.jpg">🍠 Khoai lang mật Tà Nung</option>
+              <option value="images/bong-cai-ot-chuong.jpg">🥦 Bông cải xanh & Ớt chuông Đà Lạt</option>
+              <option value="images/xa-lach-thuy-canh.jpg">🥬 Xà lách thủy canh & Cải bó xôi</option>
+              <option value="images/ca-rot-khoai-tay.jpg">🥕 Cà rốt baby & Khoai tây hồng</option>
+              <option value="images/bap-ngot-bi-do.jpg">🌽 Bắp ngọt & Bí đỏ hồ lô</option>
+              <option value="images/buoi-da-xanh.jpg">🍊 Bưởi da xanh ruột hồng Bến Tre</option>
+              <option value="images/xoai-cat-hoa-loc.jpg">🥭 Xoài cát Hòa Lộc Tiền Giang</option>
+              <option value="images/hat-dieu-macca.jpg">🌰 Hạt điều rang củi & Macca</option>
+              <option value="images/combo-rau-cu-tuan.jpg">🧺 Thùng rau củ quả Đà Lạt 5kg</option>
+              <option value="images/chomchom.jpg">🍓 Chôm chôm nhãn Chợ Lách</option>
+              <option value="images/nhan.jpg">🟡 Nhãn xuồng cơm vàng</option>
+              <option value="images/bonbon.jpg">🟠 Bòn bon chùm ngọt thanh</option>
+              <option value="images/dauda.jpg">🍋 Dâu da đất miệt vườn</option>
+            </select>
+          </div>
+
+          <!-- Nhập URL Hình ảnh hoặc Video (YouTube, TikTok, MP4, Google Drive) -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+            <select id="f-new-media-type" class="sm:col-span-3 px-2.5 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]">
+              <option value="image">🖼️ Link Hình Ảnh</option>
+              <option value="video">🎬 Link Video Vườn</option>
+            </select>
+            <input type="text" id="f-new-media-url" placeholder="Dán link ảnh (https://...) hoặc link Video YouTube / MP4 / Drive..."
+              class="sm:col-span-6 px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs text-[#0f240d] focus:outline-none focus:border-[#3ba117]" />
+            <button type="button" onclick="addUrlMediaToGallery()"
+              class="sm:col-span-3 py-2 px-3 rounded-xl bg-[#1f4716] hover:bg-[#256314] text-white font-extrabold text-xs transition">
+              + Thêm Ảnh / Video
+            </button>
+          </div>
+
+          <!-- Ô nhập nhanh Link Video chính của sản phẩm -->
+          <div class="bg-white p-3 rounded-xl border border-[#d2f0b6]">
+            <label class="block text-[11px] font-bold text-[#1f3813] mb-1">🎬 Link Video thực tế của sản phẩm / Nhà vườn (YouTube, MP4, Google Drive hoặc tải file video ở nút trên):</label>
+            <input type="text" id="f-video-url" placeholder="Ví dụ: https://www.youtube.com/watch?v=... hoặc link video quay tại vườn"
+              class="w-full px-3 py-2 rounded-lg border border-[#b8ee99] text-xs text-[#0f240d] focus:outline-none focus:border-[#3ba117]" />
+          </div>
+
+          <!-- Danh sách Album Hình ảnh & Video hiện tại của sản phẩm (Có nút Đổi ảnh, Đặt làm ảnh chính, Xóa) -->
+          <div>
+            <div class="text-[11px] font-bold text-[#256314] mb-1.5">Danh sách Hình ảnh & Video đang đính kèm bài đăng (Bấm để Đổi ảnh, Đặt ảnh đại diện hoặc Xóa):</div>
+            <div id="f-media-gallery-list" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <!-- Render bằng JS -->
+            </div>
+            <!-- Input ẩn phục vụ nút "🔄 Đổi ảnh" của từng tấm hình -->
+            <input type="file" id="f-replace-single-file" accept="image/*,video/*" class="hidden" onchange="handleReplaceSingleMediaFile(event)" />
+          </div>
+        </div>
+
+        <!-- Bước 4: ĐĂNG THÊM THÔNG TIN CỦA NHÀ VƯỜN ĐÍNH KÈM SẢN PHẨM -->
+        <div class="bg-[#f2fbdf]/80 p-4 rounded-2xl border-2 border-[#b8ee99] space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold text-[#0f240d] flex items-center gap-1.5">
+                🏡 5. Thông Tin Nhà Vườn & Nguồn Gốc Canh Tác
+              </h3>
+              <p class="text-[11px] text-[#4b6b32]">Thông tin Nhà vườn sẽ hiển thị minh bạch trên thẻ sản phẩm và trong Hồ sơ Truy xuất nguồn gốc</p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-white text-[#256314] text-[11px] font-bold border border-[#c8edab]">
+              ✓ Minh bạch Nông hộ
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Tên Nhà vườn / Hợp tác xã:</label>
+              <input type="text" id="f-farmer-name" required value="Vườn Bác Năm — Liên Minh HTX Nông Sản Sạch"
+                class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]"
+                placeholder="VD: Vườn Bác Năm / Nông Trại Hữu Cơ Đà Lạt..." />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Vùng trồng / Địa chỉ Nhà vườn:</label>
+              <input type="text" id="f-farm-region" required value="Đông Nam Bộ • Chợ Lách (Bến Tre) • Lâm Đồng"
+                class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]"
+                placeholder="VD: Đơn Dương, Đà Lạt / Chợ Lách, Bến Tre..." />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Quy trình canh tác & Chứng nhận:</label>
+              <input type="text" id="f-farming-method" value="Canh tác VietGAP • Hữu cơ vi sinh • Chín tự nhiên 100%"
+                class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs text-[#0f240d]"
+                placeholder="VD: VietGAP, GlobalGAP, Thủy canh nhà kính..." />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-[#1f3813] mb-1">SĐT / Zalo liên hệ Nhà vườn:</label>
+              <input type="text" id="f-farmer-phone" value="0784 203 424"
+                class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]"
+                placeholder="VD: 0784 203 424" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 5: VOICE-TO-TEXT (NHẬP LIỆU BẰNG GIỌNG NÓI CHO MÔ TẢ & CÂU CHUYỆN NHÀ VƯỜN) -->
         <div class="bg-[#f2fbdf]/70 p-4 rounded-2xl border border-[#b8ee99] space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <label for="f-desc" class="text-xs sm:text-sm font-bold text-[#0f240d]">
-              4. Mô tả lứa trái cây (Hỗ trợ nhập bằng giọng nói Tiếng Việt):
+              6. Mô tả chi tiết & Câu chuyện Nhà vườn (Hỗ trợ nhập bằng giọng nói Tiếng Việt):
             </label>
             <span id="voice-status-badge" class="px-2.5 py-0.5 rounded-full bg-white text-[#256314] text-[11px] font-semibold border border-[#c8edab]">
               🎙️ Sẵn sàng nghe giọng nói
@@ -269,10 +422,10 @@
 
           <textarea id="f-desc" rows="3" required
             class="w-full p-3 rounded-xl border border-[#b8ee99] focus:outline-none focus:border-[#3ba117] text-xs sm:text-sm text-[#0f240d] bg-white leading-relaxed"
-            placeholder="Bấm nút 'Bấm Để Nói Mô Tả' ở trên rồi đọc: Ví dụ 'Sầu riêng vườn bác sáng thứ sáu này cắt 60 ký, trái già rụng tự nhiên cơm vàng dẻo lắm...'"></textarea>
+            placeholder="Nhập hoặc đọc mô tả sản phẩm và thông tin thu hoạch thực tế tại Nhà vườn..."></textarea>
         </div>
 
-        <!-- Bước 5: TÙY CHỌN GIỜ VÀNG CỨU HỘ NÔNG SẢN (UGLY FOOD - TRỤ CỘT 8) -->
+        <!-- Bước 6: TÙY CHỌN GIỜ VÀNG CỨU HỘ NÔNG SẢN (UGLY FOOD - TRỤ CỘT 8) -->
         <label class="flex items-start gap-3 p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 cursor-pointer hover:bg-amber-50 transition">
           <input type="checkbox" id="f-is-ugly" class="mt-0.5 w-4 h-4 accent-amber-600 rounded shrink-0" />
           <div>
@@ -285,7 +438,7 @@
           </div>
         </label>
 
-        <!-- Bước 6: HỢP ĐỒNG ĐIỆN TỬ & CAM KẾT PHÁP LÝ AN TOÀN VỆ SINH THỰC PHẨM (TRỤ CỘT 6) -->
+        <!-- Bước 7: HỢP ĐỒNG ĐIỆN TỬ & CAM KẾT PHÁP LÝ AN TOÀN VỆ SINH THỰC PHẨM (TRỤ CỘT 6) -->
         <div class="p-3.5 rounded-xl bg-[#f7fdf3] border border-[#b8ee99]">
           <label class="flex items-start gap-3 cursor-pointer">
             <input type="checkbox" id="f-safety-commit" required checked class="mt-0.5 w-4 h-4 accent-[#3ba117] rounded shrink-0" />
@@ -296,28 +449,129 @@
           </label>
         </div>
 
-        <!-- NÚT ĐĂNG BÁN CÂN ĐỐI -->
-        <button type="submit"
-          class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e7d14] hover:to-[#4aa720] active:scale-99 text-white font-extrabold text-sm shadow-md shadow-[#44a821]/20 flex items-center justify-center gap-2 transition">
-          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-          <span>Đăng Bán Lứa Mới Lên Chợ</span>
-        </button>
+        <!-- NÚT ĐĂNG BÀI / LƯU CHỈNH SỬA -->
+        <div class="flex flex-wrap gap-2.5">
+          <button type="submit" id="farmer-submit-btn"
+            class="flex-1 py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e7d14] hover:to-[#4aa720] active:scale-99 text-white font-extrabold text-sm shadow-md shadow-[#44a821]/20 flex items-center justify-center gap-2 transition">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span id="farmer-submit-label">🚀 Đăng Bài Nông Sản & Nhà Vườn Lên Chợ</span>
+          </button>
+          <button type="button" id="farmer-cancel-edit-btn" onclick="cancelEditProduct()"
+            class="hidden py-3.5 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs sm:text-sm transition">
+            Hủy sửa
+          </button>
+        </div>
       </form>
     </section>
 
-    <!-- 3. "VƯỜN ĐANG CÓ GÌ" (DANH SÁCH THẺ GỌN GÀNG, DỄ ĐỌC) -->
-    <section id="vuon-dang-co-gi" class="space-y-3">
-      <div class="flex items-center justify-between">
+    <!-- 3. "VƯỜN ĐANG CÓ GÌ" (QUẢN LÝ, SỬA ẢNH/VIDEO, CẬP NHẬT NHÀ VƯỜN & XÓA SẢN PHẨM) -->
+    <section id="vuon-dang-co-gi" class="space-y-3 bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-[#c8edab]">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#eaf9df]">
         <div>
-          <h2 class="text-base sm:text-lg font-extrabold text-[#0f240d]">🧺 Vườn Đang Có Gì</h2>
-          <p class="text-xs text-[#4b6b32]">Danh sách các lứa nông sản đang mở nhận đơn trên chợ AgriConnect</p>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#0f240d]">🧺 Quản Lý Sản Phẩm & Bài Đăng Trên Chợ</h2>
+          <p class="text-xs text-[#4b6b32]">Bấm <strong>"✏️ Sửa bài / Ảnh & Video"</strong> để thay đổi, thêm hoặc xóa hình ảnh, video, thông tin Nhà vườn hoặc <strong>"🗑️ Xóa"</strong> sản phẩm</p>
         </div>
-        <span id="farmer-product-count" class="px-3 py-1 rounded-full bg-[#e1f9cf] text-[#256314] font-bold text-xs border border-[#b8ee99]">
-          Đang tải...
+        <div class="flex items-center gap-2">
+          <span id="farmer-product-count" class="px-3 py-1 rounded-full bg-[#e1f9cf] text-[#256314] font-bold text-xs border border-[#b8ee99]">
+            Đang tải...
+          </span>
+          <button type="button" onclick="handleRestoreDefaultProducts()" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-300 transition" title="Khôi phục lại các sản phẩm gốc nếu lỡ xóa">
+            🔄 Khôi phục gốc
+          </button>
+        </div>
+      </div>
+
+      <!-- Thanh tìm kiếm nhanh sản phẩm để sửa ảnh/video -->
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input type="text" id="farmer-manage-search" oninput="renderFarmerProductCards()" placeholder="🔍 Tìm nhanh sản phẩm để sửa hình ảnh, video hoặc thông tin Nhà vườn..."
+          class="flex-1 px-3.5 py-2 rounded-xl border border-[#b8ee99] text-xs font-semibold text-[#0f240d] bg-[#f7fdf3] focus:bg-white focus:outline-none focus:border-[#3ba117]" />
+        <select id="farmer-manage-cat" onchange="renderFarmerProductCards()" class="px-3 py-2 rounded-xl border border-[#b8ee99] text-xs font-bold text-[#1f3813] bg-[#f7fdf3]">
+          <option value="ALL">Tất cả danh mục (27+ SP)</option>
+          <option value="TraiCay">🍈 Trái Cây Đặc Sản</option>
+          <option value="RauCuQua">🥬 Rau Củ Quả Sạch</option>
+          <option value="NongSanKho">🌰 Nông Sản Khô</option>
+          <option value="Combo">🎁 Combo Tiết Kiệm</option>
+          <option value="UglyFood">⚡ Cứu Hộ Ugly Food</option>
+        </select>
+      </div>
+
+      <div id="farmer-cards-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <!-- Render bằng JS -->
+      </div>
+    </section>
+
+    <!-- 4. ĐĂNG THÊM THÔNG TIN & NHẬT KÝ NHÀ VƯỜN (BÀI ĐĂNG CÂU CHUYỆN NHÀ VƯỜN KÈM ẢNH & VIDEO) -->
+    <section id="nhat-ky-nha-vuon" class="bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-[#c8edab] space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#eaf9df]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-xl shrink-0">
+            🏡
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#0f240d]">Đăng Thêm Thông Tin & Nhật Ký Nhà Vườn</h2>
+            <p class="text-xs text-[#4b6b32]">Đăng bài giới thiệu Nhà vườn, quy trình canh tác, hình ảnh & video thu hoạch thực tế lên trang chủ</p>
+          </div>
+        </div>
+        <span id="farm-posts-count-badge" class="px-3 py-1 rounded-full bg-[#e1f9cf] text-[#256314] font-bold text-xs border border-[#b8ee99]">
+          3 bài đăng Nhà vườn
         </span>
       </div>
 
-      <div id="farmer-cards-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <form id="farm-story-form" class="bg-[#f7fdf3] p-4 rounded-2xl border border-[#b8ee99] space-y-3">
+        <input type="hidden" id="fp-edit-id" value="" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Tên Nhà vườn / Hợp tác xã:</label>
+            <input type="text" id="fp-farmer-name" required value="Vườn Bác Năm — Chuyên Canh Nông Sản VietGAP"
+              class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Vùng trồng & Diện tích:</label>
+            <input type="text" id="fp-farm-region" required value="Đông Nam Bộ • Đà Lạt • Miền Tây (4.5 ha)"
+              class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Chứng nhận & Phương pháp canh tác:</label>
+            <input type="text" id="fp-farming-method" value="VietGAP • Hữu cơ vi sinh • Thu hoạch sáng sớm"
+              class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs text-[#0f240d]" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Tiêu đề bản tin Nhà vườn:</label>
+            <input type="text" id="fp-title" required placeholder="VD: Sáng nay vườn cắt lứa Cà chua hữu cơ & Sầu riêng Ri6 chín cây..."
+              class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-[#1f3813] mb-1">Nội dung chia sẻ từ Nhà vườn:</label>
+          <textarea id="fp-story" rows="2" required placeholder="Chia sẻ quy trình chăm sóc, độ ngọt Brix, cam kết không hóa chất và lịch xe lạnh về TP.HCM..."
+            class="w-full p-3 rounded-xl border border-[#b8ee99] bg-white text-xs text-[#0f240d]"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <label class="cursor-pointer py-2 px-3 rounded-xl bg-[#3ba117] hover:bg-[#2e7d14] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition">
+            <span>📷 Tải Ảnh/Video Vườn</span>
+            <input type="file" accept="image/*,video/*" multiple class="hidden" onchange="handleFarmPostFileUpload(event)" />
+          </label>
+          <input type="text" id="fp-image-url" placeholder="Hoặc dán link ảnh Nhà vườn..."
+            class="px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs text-[#0f240d]" />
+          <input type="text" id="fp-video-url" placeholder="Link Video Nhà vườn (YouTube/MP4)..."
+            class="px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs text-[#0f240d]" />
+        </div>
+
+        <div id="fp-media-preview" class="flex flex-wrap gap-2"></div>
+
+        <div class="flex gap-2">
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#1f4716] hover:bg-[#256314] text-white font-extrabold text-xs shadow-xs transition">
+            🏡 Đăng Bản Tin & Thông Tin Nhà Vườn
+          </button>
+          <button type="button" id="fp-cancel-btn" onclick="resetFarmStoryForm()" class="hidden px-3 py-2.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 font-bold text-xs">
+            Hủy sửa
+          </button>
+        </div>
+      </form>
+
+      <div id="farm-posts-list" class="grid grid-cols-1 gap-3">
         <!-- Render bằng JS -->
       </div>
     </section>
@@ -332,8 +586,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261107_v15"></script>
-  <script src="js/supabaseClient.js?v=20261107_v15"></script>
+  <script src="js/config.js?v=20261107_v16"></script>
+  <script src="js/supabaseClient.js?v=20261107_v16"></script>
   <script>
     window.testFarmerRbacBoundary = function () {
       try {
@@ -344,6 +598,13 @@
     };
     let recognition = null;
     let isRecording = false;
+    let currentFormMediaGallery = [
+      { id: "m-init-1", type: "image", url: "images/durian-open.jpg", caption: "Ảnh chính sản phẩm" }
+    ];
+    let replacingMediaIndex = -1;
+    let quickCardUploadProductId = null;
+    let allLoadedProducts = [];
+    let currentFarmPostMedia = [];
 
     function showFarmerToast(msg) {
       const box = document.getElementById("farmer-toast");
@@ -351,14 +612,221 @@
       if (!box || !text) return;
       text.textContent = msg;
       box.classList.remove("hidden");
-      setTimeout(() => box.classList.add("hidden"), 4000);
+      setTimeout(() => box.classList.add("hidden"), 4200);
     }
 
-    function quickPickFruit(name, price, img) {
+    function renderFormMediaGallery() {
+      const grid = document.getElementById("f-media-gallery-list");
+      const badge = document.getElementById("f-media-count-badge");
+      if (!grid) return;
+
+      if (!Array.isArray(currentFormMediaGallery) || currentFormMediaGallery.length === 0) {
+        currentFormMediaGallery = [
+          { id: "m-fallback", type: "image", url: document.getElementById("f-image")?.value || "images/hero-fruits.jpg", caption: "Ảnh đại diện" }
+        ];
+      }
+
+      const firstImg = currentFormMediaGallery.find(m => m.type !== "video");
+      if (firstImg && document.getElementById("f-image")) {
+        document.getElementById("f-image").value = firstImg.url;
+      }
+
+      const imgCount = currentFormMediaGallery.filter(m => m.type !== "video").length;
+      const vidCount = currentFormMediaGallery.filter(m => m.type === "video").length;
+      if (badge) badge.textContent = `${imgCount} ảnh • ${vidCount} video`;
+
+      grid.innerHTML = currentFormMediaGallery.map((m, idx) => {
+        const isVideo = m.type === "video";
+        const isPrimary = idx === 0 && !isVideo;
+        return `
+          <div class="bg-white rounded-xl p-2 border ${isPrimary ? 'border-2 border-[#3ba117]' : 'border-[#c8edab]'} shadow-2xs flex flex-col justify-between gap-1.5 relative">
+            <div class="relative h-24 rounded-lg overflow-hidden bg-slate-100">
+              ${isVideo ? `
+                <div class="w-full h-full bg-slate-900 text-white flex flex-col items-center justify-center p-2 text-center">
+                  <span class="text-xl">🎬</span>
+                  <span class="text-[10px] font-bold text-emerald-300 line-clamp-2 mt-0.5">${escapeHTML(m.url.startsWith("data:") ? "Video tải từ máy" : m.url)}</span>
+                </div>
+              ` : `
+                <img src="${escapeHTML(m.url)}" onerror="this.src='images/hero-fruits.jpg'" class="w-full h-full object-cover" alt="Media ${idx + 1}" />
+              `}
+              <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-white text-[9px] font-extrabold">
+                ${isPrimary ? '⭐ Ảnh chính' : (isVideo ? '🎬 Video' : `Ảnh #${idx + 1}`)}
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1 text-[10px] font-bold">
+              ${!isPrimary && !isVideo ? `
+                <button type="button" onclick="setPrimaryMediaInGallery(${idx})" class="py-1 px-1 rounded bg-[#e1f9cf] hover:bg-[#c8edab] text-[#173f0c] truncate" title="Đặt làm ảnh đại diện chính">
+                  ⭐ Chính
+                </button>
+              ` : `
+                <span class="py-1 px-1 rounded bg-slate-100 text-slate-500 text-center truncate">${isVideo ? 'Video' : 'Đang dùng'}</span>
+              `}
+              <button type="button" onclick="triggerReplaceMediaSlot(${idx})" class="py-1 px-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 truncate" title="Thay đổi ảnh/video này">
+                🔄 Đổi
+              </button>
+              <button type="button" onclick="removeMediaFromGallery(${idx})" class="py-1 px-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 truncate" title="Xóa ảnh/video này">
+                🗑️ Xóa
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function setPrimaryMediaInGallery(idx) {
+      if (idx <= 0 || idx >= currentFormMediaGallery.length) return;
+      const [picked] = currentFormMediaGallery.splice(idx, 1);
+      currentFormMediaGallery.unshift(picked);
+      renderFormMediaGallery();
+      showFarmerToast("⭐ Đã đặt làm hình ảnh đại diện chính của sản phẩm!");
+    }
+
+    function removeMediaFromGallery(idx) {
+      if (currentFormMediaGallery.length <= 1) {
+        const newUrl = prompt("Sản phẩm cần tối thiểu 1 hình ảnh. Nhập đường dẫn ảnh mới để thay thế hoặc bấm Hủy:", "images/hero-fruits.jpg");
+        if (newUrl && newUrl.trim()) {
+          currentFormMediaGallery[0].url = newUrl.trim();
+          currentFormMediaGallery[0].type = "image";
+          renderFormMediaGallery();
+          showFarmerToast("🔄 Đã thay đổi hình ảnh sản phẩm!");
+        } else {
+          showFarmerToast("⚠️ Bài đăng cần ít nhất 1 hình ảnh đại diện (Bạn có thể bấm '🔄 Đổi' để thay ảnh khác).");
+        }
+        return;
+      }
+      currentFormMediaGallery.splice(idx, 1);
+      renderFormMediaGallery();
+      showFarmerToast("🗑️ Đã xóa ảnh/video khỏi bài đăng!");
+    }
+
+    function triggerReplaceMediaSlot(idx) {
+      replacingMediaIndex = idx;
+      const fileInput = document.getElementById("f-replace-single-file");
+      if (fileInput) fileInput.click();
+    }
+
+    async function handleReplaceSingleMediaFile(event) {
+      const file = event.target.files?.[0];
+      if (!file || replacingMediaIndex < 0 || replacingMediaIndex >= currentFormMediaGallery.length) return;
+      try {
+        if (file.type.startsWith("video/")) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            currentFormMediaGallery[replacingMediaIndex] = {
+              id: "m-" + Date.now(),
+              type: "video",
+              url: ev.target.result,
+              caption: file.name
+            };
+            document.getElementById("f-video-url").value = ev.target.result;
+            renderFormMediaGallery();
+            showFarmerToast("🎬 Đã thay thế bằng video mới tải lên!");
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const dataUrl = await window.db.compressImageToDataUrl(file);
+          currentFormMediaGallery[replacingMediaIndex] = {
+            id: "m-" + Date.now(),
+            type: "image",
+            url: dataUrl,
+            caption: file.name
+          };
+          renderFormMediaGallery();
+          showFarmerToast("📸 Đã thay đổi hình ảnh thành công!");
+        }
+      } catch (err) {
+        showFarmerToast("❌ Lỗi đọc file: " + err.message);
+      } finally {
+        event.target.value = "";
+        replacingMediaIndex = -1;
+      }
+    }
+
+    async function handleFarmerFileUpload(event) {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+      for (const file of files) {
+        try {
+          if (file.type.startsWith("video/")) {
+            const videoDataUrl = await new Promise((res, rej) => {
+              const r = new FileReader();
+              r.onload = e => res(e.target.result);
+              r.onerror = rej;
+              r.readAsDataURL(file);
+            });
+            currentFormMediaGallery.push({
+              id: "vid-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+              type: "video",
+              url: videoDataUrl,
+              caption: file.name
+            });
+            document.getElementById("f-video-url").value = videoDataUrl;
+          } else {
+            const compressed = await window.db.compressImageToDataUrl(file);
+            currentFormMediaGallery.unshift({
+              id: "img-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+              type: "image",
+              url: compressed,
+              caption: file.name
+            });
+          }
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      event.target.value = "";
+      renderFormMediaGallery();
+      showFarmerToast(`📸 Đã tải lên ${files.length} ảnh/video vào bài đăng!`);
+    }
+
+    function addPresetMediaToGallery(imgUrl) {
+      if (!imgUrl) return;
+      currentFormMediaGallery.unshift({
+        id: "preset-" + Date.now(),
+        type: "image",
+        url: imgUrl,
+        caption: "Ảnh nông sản thực tế"
+      });
+      document.getElementById("f-preset-image-select").value = "";
+      renderFormMediaGallery();
+      showFarmerToast("🖼️ Đã thêm hình ảnh từ thư viện vào đầu Album!");
+    }
+
+    function addUrlMediaToGallery() {
+      const type = document.getElementById("f-new-media-type")?.value || "image";
+      const rawUrl = (document.getElementById("f-new-media-url")?.value || "").trim();
+      if (!rawUrl) {
+        showFarmerToast("⚠️ Vui lòng dán đường dẫn (URL) hình ảnh hoặc video trước khi bấm Thêm!");
+        return;
+      }
+      if (type === "video") {
+        currentFormMediaGallery.push({ id: "v-" + Date.now(), type: "video", url: rawUrl, caption: "Video thực tế tại Nhà vườn" });
+        document.getElementById("f-video-url").value = rawUrl;
+      } else {
+        currentFormMediaGallery.unshift({ id: "i-" + Date.now(), type: "image", url: rawUrl, caption: "Ảnh thực tế tại Nhà vườn" });
+      }
+      document.getElementById("f-new-media-url").value = "";
+      renderFormMediaGallery();
+      showFarmerToast(`✓ Đã thêm ${type === "video" ? "Video" : "Hình ảnh"} vào bài đăng!`);
+    }
+
+    function quickPickFruit(name, price, img, category = "TraiCay") {
       document.getElementById("f-name").value = name;
       document.getElementById("f-price").value = price;
       document.getElementById("f-image").value = img;
-      showFarmerToast("Đã chọn: " + name + " (" + formatVND(price) + "/kg)");
+      if (document.getElementById("f-category")) {
+        document.getElementById("f-category").value = category;
+      }
+      // Cập nhật hoặc đưa ảnh mẫu lên đầu album
+      const existingIdx = currentFormMediaGallery.findIndex(m => m.url === img);
+      if (existingIdx >= 0) {
+        const [item] = currentFormMediaGallery.splice(existingIdx, 1);
+        currentFormMediaGallery.unshift(item);
+      } else {
+        currentFormMediaGallery[0] = { id: "m-pick-" + Date.now(), type: "image", url: img, caption: name };
+      }
+      renderFormMediaGallery();
+      showFarmerToast("Đã chọn mẫu: " + name + " (" + formatVND(price) + ")");
     }
 
     function adjustFarmerKg(delta) {
@@ -424,8 +892,8 @@
     function simulateFarmerVoiceSample() {
       const samples = [
         "Lứa sầu riêng Ri6 này vườn Bác Năm cắt sáng sớm thứ Sáu được khoảng 60 ký. Trái già tự nhiên trên cây 25 năm tuổi, cơm vàng dẻo ngọt đậm, không nhúng thuốc, bao ăn từng múi cho bà con Sài Gòn.",
-        "Măng cụt cổ thụ vườn bác vừa hái sáng nay, vỏ tím mỏng, múi trắng tinh ngọt thanh. Bác đã phân sẵn Loại 1 làm quà biếu và Loại 2 ăn gia đình tiết kiệm 15 phần trăm.",
-        "Bơ sáp đất đỏ Bình Phước già trái, lắc kêu hạt, cơm vàng dẻo quánh như kem. Bà con mua về dầm sữa chua ăn cực kỳ bổ dưỡng."
+        "Rau củ quả hữu cơ Đà Lạt nhà vườn Đơn Dương vừa thu hoạch lúc 5 giờ sáng khi sương còn đọng trên lá, đóng thùng mát vận chuyển về thẳng Hub TP.HCM trong ngày.",
+        "Bơ sáp đất đỏ Tây Nguyên già trái, lắc kêu hạt, cơm vàng dẻo quánh như kem. Bà con mua về dầm sữa chua ăn cực kỳ bổ dưỡng."
       ];
       const pick = samples[Math.floor(Math.random() * samples.length)];
       const descEl = document.getElementById("f-desc");
@@ -433,40 +901,360 @@
       const statusBadge = document.getElementById("voice-status-badge");
       statusBadge.textContent = "✓ Đã nhận diện giọng nói Tiếng Việt";
       statusBadge.className = "px-2.5 py-0.5 rounded-full bg-[#e1f9cf] text-[#256314] text-[11px] font-bold border border-[#b8ee99]";
-      showFarmerToast("🎙️ Đã tự động chép lời nói của Bác Năm vào ô mô tả!");
+      showFarmerToast("🎙️ Đã tự động chép lời nói của Nhà vườn vào ô mô tả!");
     }
+
+    // CHỈNH SỬA SẢN PHẨM: Nạp thông tin, hình ảnh, video & thông tin Nhà vườn lên Form
+    function startEditProduct(productId) {
+      const p = allLoadedProducts.find(item => String(item.id) === String(productId));
+      if (!p) return;
+
+      document.getElementById("f-edit-id").value = p.id;
+      document.getElementById("f-name").value = p.name || "";
+      document.getElementById("f-category").value = p.category || "TraiCay";
+      document.getElementById("f-unit").value = p.unit || "kg";
+      document.getElementById("f-price").value = p.price_sale || 65000;
+      document.getElementById("f-stock").value = p.stock_kg || 60;
+      document.getElementById("f-desc").value = p.description || "";
+      document.getElementById("f-image").value = p.image_url || "images/hero-fruits.jpg";
+      document.getElementById("f-video-url").value = p.video_url || "";
+      document.getElementById("f-is-ugly").checked = Boolean(p.is_ugly_food || p.category === "UglyFood");
+
+      const farm = p.farm_info || {};
+      document.getElementById("f-farmer-name").value = farm.farmer_name || "Vườn Bác Năm & HTX Liên Kết";
+      document.getElementById("f-farm-region").value = farm.farm_region || "Đông Nam Bộ • Tây Nguyên • Đà Lạt";
+      document.getElementById("f-farming-method").value = farm.farming_method || "Canh tác VietGAP • Hữu cơ vi sinh";
+      document.getElementById("f-farmer-phone").value = farm.farmer_phone || "0784 203 424";
+
+      currentFormMediaGallery = Array.isArray(p.media_gallery) && p.media_gallery.length > 0
+        ? p.media_gallery.map(m => ({ ...m }))
+        : [{ id: "m-edit-1", type: "image", url: p.image_url || "images/hero-fruits.jpg", caption: p.name }];
+
+      renderFormMediaGallery();
+
+      document.getElementById("farmer-edit-banner")?.classList.remove("hidden");
+      document.getElementById("farmer-cancel-edit-btn")?.classList.remove("hidden");
+      document.getElementById("farmer-edit-name").textContent = p.name;
+      document.getElementById("farmer-form-title").textContent = "✏️ Chỉnh Sửa Bài Đăng, Hình Ảnh/Video & Nhà Vườn";
+      document.getElementById("farmer-submit-label").textContent = "💾 Lưu Cập Nhật Bài Đăng & Hình Ảnh/Video";
+
+      document.getElementById("dang-ban-lua-moi")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      showFarmerToast(`✏️ Đang chỉnh sửa "${p.name}" — Bạn có thể thêm/đổi/xóa ảnh, video và thông tin Nhà vườn!`);
+    }
+
+    function cancelEditProduct() {
+      document.getElementById("f-edit-id").value = "";
+      document.getElementById("f-name").value = "Sầu Riêng Ri6 Chín Rụng Đợt Mới";
+      document.getElementById("f-category").value = "TraiCay";
+      document.getElementById("f-unit").value = "kg";
+      document.getElementById("f-price").value = 98000;
+      document.getElementById("f-stock").value = 60;
+      document.getElementById("f-desc").value = "";
+      document.getElementById("f-video-url").value = "";
+      document.getElementById("f-is-ugly").checked = false;
+      currentFormMediaGallery = [
+        { id: "m-init-1", type: "image", url: "images/durian-open.jpg", caption: "Ảnh đại diện sản phẩm" }
+      ];
+      renderFormMediaGallery();
+
+      document.getElementById("farmer-edit-banner")?.classList.add("hidden");
+      document.getElementById("farmer-cancel-edit-btn")?.classList.add("hidden");
+      document.getElementById("farmer-form-title").textContent = "Đăng Bài Nông Sản Mới & Thông Tin Nhà Vườn";
+      document.getElementById("farmer-submit-label").textContent = "🚀 Đăng Bài Nông Sản & Nhà Vườn Lên Chợ";
+      showFarmerToast("Đã chuyển về chế độ Đăng bài nông sản mới!");
+    }
+
+    async function handleDeleteProduct(productId, productName) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa bài đăng sản phẩm "${productName}" khỏi kệ hàng không?`)) return;
+      await window.db.deleteProductPost(productId);
+      if (document.getElementById("f-edit-id").value === String(productId)) {
+        cancelEditProduct();
+      }
+      await loadFarmerPortal();
+      showFarmerToast(`🗑️ Đã xóa sản phẩm "${productName}" thành công!`);
+    }
+
+    async function handleRestoreDefaultProducts() {
+      if (!confirm("Khôi phục lại toàn bộ danh sách sản phẩm và hình ảnh mặc định ban đầu?")) return;
+      await window.db.restoreDefaultProducts();
+      await loadFarmerPortal();
+      showFarmerToast("🔄 Đã khôi phục danh mục sản phẩm gốc!");
+    }
+
+    // Đổi ảnh nhanh 1-Click ngay trên thẻ sản phẩm ở danh sách bên dưới
+    function triggerQuickCardImageChange(productId) {
+      quickCardUploadProductId = productId;
+      let inp = document.getElementById("quick-card-file-input");
+      if (!inp) {
+        inp = document.createElement("input");
+        inp.type = "file";
+        inp.id = "quick-card-file-input";
+        inp.accept = "image/*,video/*";
+        inp.className = "hidden";
+        inp.onchange = handleQuickCardFileSelected;
+        document.body.appendChild(inp);
+      }
+      inp.click();
+    }
+
+    async function handleQuickCardFileSelected(event) {
+      const file = event.target.files?.[0];
+      const pid = quickCardUploadProductId;
+      if (!file || !pid) return;
+      const p = allLoadedProducts.find(item => String(item.id) === String(pid));
+      if (!p) return;
+
+      try {
+        const gallery = Array.isArray(p.media_gallery) ? [...p.media_gallery] : [];
+        if (file.type.startsWith("video/")) {
+          const videoUrl = await new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onload = e => res(e.target.result);
+            r.onerror = rej;
+            r.readAsDataURL(file);
+          });
+          gallery.push({ id: "v-" + Date.now(), type: "video", url: videoUrl, caption: file.name });
+          await window.db.saveProductPost({ ...p, video_url: videoUrl, media_gallery: gallery });
+          showFarmerToast(`🎬 Đã thêm video mới cho "${p.name}"!`);
+        } else {
+          const dataUrl = await window.db.compressImageToDataUrl(file);
+          gallery.unshift({ id: "i-" + Date.now(), type: "image", url: dataUrl, caption: file.name });
+          await window.db.saveProductPost({ ...p, image_url: dataUrl, custom_image_url: dataUrl, media_gallery: gallery });
+          showFarmerToast(`📸 Đã cập nhật hình ảnh mới cho "${p.name}"!`);
+        }
+        await loadFarmerPortal();
+      } catch (e) {
+        showFarmerToast("❌ Không thể đổi ảnh: " + e.message);
+      } finally {
+        event.target.value = "";
+        quickCardUploadProductId = null;
+      }
+    }
+
+    function renderFarmerProductCards() {
+      const searchQ = (document.getElementById("farmer-manage-search")?.value || "").trim().toLowerCase();
+      const catFilter = document.getElementById("farmer-manage-cat")?.value || "ALL";
+
+      const filtered = allLoadedProducts.filter(p => {
+        if (catFilter !== "ALL" && p.category !== catFilter) return false;
+        if (searchQ) {
+          const hay = `${p.name} ${p.description} ${p.farm_info?.farmer_name || ""} ${p.farm_info?.farm_region || ""}`.toLowerCase();
+          if (!hay.includes(searchQ)) return false;
+        }
+        return true;
+      });
+
+      document.getElementById("farmer-product-count").textContent = `${filtered.length} sản phẩm đang mở`;
+      const container = document.getElementById("farmer-cards-list");
+      if (!container) return;
+
+      container.innerHTML = filtered.map(p => {
+        const mediaCount = Array.isArray(p.media_gallery) ? p.media_gallery.length : 1;
+        const hasVideo = Boolean(p.video_url || (Array.isArray(p.media_gallery) && p.media_gallery.some(m => m.type === "video")));
+        const farmName = p.farm_info?.farmer_name || "Liên Minh Vườn Bác Năm";
+        const farmRegion = p.farm_info?.farm_region || "Đông Nam Bộ & Đà Lạt";
+        return `
+          <div class="bg-[#f7fdf3] rounded-2xl p-3.5 shadow-2xs border border-[#c8edab] flex flex-col justify-between gap-3 hover:border-[#3ba117] transition">
+            <div class="flex items-start gap-3 min-w-0">
+              <div class="relative shrink-0 group cursor-pointer" onclick="triggerQuickCardImageChange('${escapeHTML(p.id)}')" title="Bấm để tải ảnh/video mới thay thế nhanh">
+                <img src="${escapeHTML(p.image_url || 'images/hero-fruits.jpg')}" onerror="this.src='images/hero-fruits.jpg'"
+                  class="w-20 h-20 rounded-xl object-cover border-2 border-[#b8ee99]" alt="${escapeHTML(p.name)}" />
+                <span class="absolute bottom-1 left-1 right-1 bg-black/75 text-white text-[9px] font-bold text-center py-0.5 rounded">
+                  📸 ${mediaCount} media ${hasVideo ? '• 🎬' : ''}
+                </span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-1 mb-1">
+                  <span class="inline-block px-2 py-0.5 rounded-full bg-[#e1f9cf] text-[#256314] text-[10px] font-bold">
+                    ✓ ${escapeHTML(p.certification_badge || 'VietGAP')}
+                  </span>
+                  ${hasVideo ? `<span class="inline-block px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold">🎬 Có Video</span>` : ''}
+                </div>
+                <h3 class="text-xs sm:text-sm font-extrabold text-[#0f240d] line-clamp-2">${escapeHTML(p.name)}</h3>
+                <p class="text-[11px] font-semibold text-[#35591d] mt-1 truncate">
+                  🏡 ${escapeHTML(farmName)}
+                </p>
+                <p class="text-[10px] text-slate-500 truncate">
+                  📍 ${escapeHTML(farmRegion)}
+                </p>
+                <p class="text-xs font-extrabold text-[#2e7d14] mt-1">
+                  Giá Loại 1: ${formatVND(p.price_sale)}/${escapeHTML(p.unit)}
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5 pt-2 border-t border-[#dff5cb]">
+              <button type="button" onclick="startEditProduct('${escapeHTML(p.id)}')"
+                class="py-1.5 px-2 rounded-xl bg-[#3ba117] hover:bg-[#2e7d14] text-white font-extrabold text-[11px] flex items-center justify-center gap-1 shadow-2xs transition">
+                ✏️ Sửa bài & Ảnh
+              </button>
+              <button type="button" onclick="triggerQuickCardImageChange('${escapeHTML(p.id)}')"
+                class="py-1.5 px-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-[11px] flex items-center justify-center gap-1 transition">
+                📸 Đổi ảnh nhanh
+              </button>
+              <button type="button" onclick="handleDeleteProduct('${escapeHTML(p.id)}', '${escapeHTML(p.name.replace(/'/g, "\\'"))}')"
+                class="py-1.5 px-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] flex items-center justify-center gap-1 transition">
+                🗑️ Xóa bài
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ================= QUẢN LÝ BÀI ĐĂNG THÔNG TIN & NHẬT KÝ NHÀ VƯỜN =================
+    async function handleFarmPostFileUpload(event) {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+      for (const file of files) {
+        if (file.type.startsWith("video/")) {
+          const vUrl = await new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onload = e => res(e.target.result);
+            r.onerror = rej;
+            r.readAsDataURL(file);
+          });
+          currentFarmPostMedia.push({ id: "fpv-" + Date.now(), type: "video", url: vUrl, caption: file.name });
+          document.getElementById("fp-video-url").value = vUrl;
+        } else {
+          const imgData = await window.db.compressImageToDataUrl(file);
+          currentFarmPostMedia.push({ id: "fpi-" + Date.now(), type: "image", url: imgData, caption: file.name });
+        }
+      }
+      event.target.value = "";
+      renderFarmPostMediaPreview();
+      showFarmerToast("📷 Đã đính kèm ảnh/video vào bản tin Nhà vườn!");
+    }
+
+    function renderFarmPostMediaPreview() {
+      const box = document.getElementById("fp-media-preview");
+      if (!box) return;
+      box.innerHTML = currentFarmPostMedia.map((m, i) => `
+        <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-[#b8ee99] bg-white">
+          ${m.type === "video"
+            ? `<div class="w-full h-full bg-slate-900 text-white text-[9px] flex items-center justify-center font-bold">🎬 Video</div>`
+            : `<img src="${escapeHTML(m.url)}" class="w-full h-full object-cover" />`
+          }
+          <button type="button" onclick="currentFarmPostMedia.splice(${i},1);renderFarmPostMediaPreview();"
+            class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center">✕</button>
+        </div>
+      `).join("");
+    }
+
+    function renderFarmPostsList() {
+      const posts = window.db.getFarmPosts();
+      const badge = document.getElementById("farm-posts-count-badge");
+      if (badge) badge.textContent = `${posts.length} bài đăng Nhà vườn`;
+      const container = document.getElementById("farm-posts-list");
+      if (!container) return;
+
+      container.innerHTML = posts.map(post => {
+        const gallery = Array.isArray(post.media_gallery) ? post.media_gallery : [];
+        return `
+          <div class="bg-[#f7fdf3] rounded-2xl p-4 border border-[#c8edab] space-y-2.5">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#e1f9cf] text-[#256314] text-[10px] font-extrabold">
+                  🏡 ${escapeHTML(post.farmer_name)} • 📍 ${escapeHTML(post.farm_region)}
+                </span>
+                <h3 class="text-sm font-extrabold text-[#0f240d] mt-1">${escapeHTML(post.title)}</h3>
+                <p class="text-[11px] font-semibold text-[#3ba117]">🌱 ${escapeHTML(post.farming_method || 'Canh tác VietGAP')}</p>
+              </div>
+              <div class="flex gap-1.5">
+                <button type="button" onclick="startEditFarmPost('${escapeHTML(post.id)}')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-[#e1f9cf] text-[#256314] border border-[#b8ee99] text-[11px] font-bold">
+                  ✏️ Sửa
+                </button>
+                <button type="button" onclick="handleDeleteFarmPost('${escapeHTML(post.id)}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold">
+                  🗑️ Xóa
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-[#243912] leading-relaxed">${escapeHTML(post.story)}</p>
+            ${gallery.length > 0 ? `
+              <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
+                ${gallery.map(m => m.type === "video" ? `
+                  <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener" class="h-20 rounded-xl bg-slate-900 text-white flex flex-col items-center justify-center p-2 text-center border border-emerald-400">
+                    <span class="text-lg">🎬</span>
+                    <span class="text-[10px] font-bold text-emerald-300">Xem Video Vườn</span>
+                  </a>
+                ` : `
+                  <img src="${escapeHTML(m.url)}" onerror="this.src='images/hero-fruits.jpg'" class="h-20 w-full rounded-xl object-cover border border-[#c8edab]" alt="Ảnh vườn" />
+                `).join("")}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function startEditFarmPost(postId) {
+      const post = window.db.getFarmPosts().find(item => String(item.id) === String(postId));
+      if (!post) return;
+      document.getElementById("fp-edit-id").value = post.id;
+      document.getElementById("fp-farmer-name").value = post.farmer_name || "";
+      document.getElementById("fp-farm-region").value = post.farm_region || "";
+      document.getElementById("fp-farming-method").value = post.farming_method || "";
+      document.getElementById("fp-title").value = post.title || "";
+      document.getElementById("fp-story").value = post.story || "";
+      document.getElementById("fp-video-url").value = post.video_url || "";
+      currentFarmPostMedia = Array.isArray(post.media_gallery) ? [...post.media_gallery] : [];
+      renderFarmPostMediaPreview();
+      document.getElementById("fp-cancel-btn")?.classList.remove("hidden");
+      document.getElementById("nhat-ky-nha-vuon")?.scrollIntoView({ behavior: "smooth" });
+      showFarmerToast("✏️ Đang chỉnh sửa bài đăng thông tin Nhà vườn!");
+    }
+
+    function resetFarmStoryForm() {
+      document.getElementById("fp-edit-id").value = "";
+      document.getElementById("fp-title").value = "";
+      document.getElementById("fp-story").value = "";
+      document.getElementById("fp-image-url").value = "";
+      document.getElementById("fp-video-url").value = "";
+      currentFarmPostMedia = [];
+      renderFarmPostMediaPreview();
+      document.getElementById("fp-cancel-btn")?.classList.add("hidden");
+    }
+
+    function handleDeleteFarmPost(postId) {
+      if (!confirm("Xóa bài đăng thông tin Nhà vườn này?")) return;
+      window.db.deleteFarmPost(postId);
+      renderFarmPostsList();
+      showFarmerToast("🗑️ Đã xóa bài đăng Nhà vườn!");
+    }
+
+    document.getElementById("farm-story-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const extraImg = (document.getElementById("fp-image-url")?.value || "").trim();
+      const extraVid = (document.getElementById("fp-video-url")?.value || "").trim();
+      const gallery = [...currentFarmPostMedia];
+      if (extraImg) gallery.unshift({ id: "fpi-" + Date.now(), type: "image", url: extraImg, caption: "Ảnh thực tế Nhà vườn" });
+      if (extraVid && !gallery.some(m => m.url === extraVid)) {
+        gallery.push({ id: "fpv-" + Date.now(), type: "video", url: extraVid, caption: "Video thực tế Nhà vườn" });
+      }
+      window.db.saveFarmPost({
+        id: document.getElementById("fp-edit-id")?.value || "",
+        farmer_name: document.getElementById("fp-farmer-name")?.value.trim(),
+        farm_region: document.getElementById("fp-farm-region")?.value.trim(),
+        farming_method: document.getElementById("fp-farming-method")?.value.trim(),
+        title: document.getElementById("fp-title")?.value.trim(),
+        story: document.getElementById("fp-story")?.value.trim(),
+        video_url: extraVid,
+        media_gallery: gallery
+      });
+      resetFarmStoryForm();
+      renderFarmPostsList();
+      showFarmerToast("🏡 Đã đăng thông tin & nhật ký Nhà vườn thành công!");
+    });
 
     async function loadFarmerPortal() {
       const wallet = window.db.getFarmerWallet();
       document.getElementById("farmer-wallet-available").textContent = formatVND(wallet.available_balance);
       document.getElementById("farmer-wallet-escrow").textContent = formatVND(wallet.escrow_pending);
 
-      const products = await window.db.getAllProducts();
-      const fruitItems = products.filter(p => p.category === "TraiCay" || p.category === "UglyFood" || String(p.id).startsWith("farmer-"));
-      document.getElementById("farmer-product-count").textContent = fruitItems.length + " lứa đang mở";
-
-      const container = document.getElementById("farmer-cards-list");
-      container.innerHTML = fruitItems.map(p => `
-        <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-[#d2f0b6] flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3 min-w-0">
-            <img src="${escapeHTML(p.image_url || 'images/hero-fruits.jpg')}" onerror="this.src='images/hero-fruits.jpg'"
-              class="w-14 h-14 rounded-xl object-cover border border-[#c8edab] shrink-0" alt="${escapeHTML(p.name)}" />
-            <div class="min-w-0">
-              <span class="inline-block px-2 py-0.5 rounded-full bg-[#e1f9cf] text-[#256314] text-[10px] font-bold mb-0.5">
-                ✓ ${escapeHTML(p.certification_badge || 'VietGAP • Đang mở bán')}
-              </span>
-              <h3 class="text-xs sm:text-sm font-extrabold text-[#0f240d] truncate">${escapeHTML(p.name)}</h3>
-              <p class="text-xs font-bold text-[#2e7d14] mt-0.5">
-                Loại 1: ${formatVND(p.price_sale)}/${escapeHTML(p.unit)}
-                <span class="text-[10px] font-normal text-slate-500 block">Loại 2: ${formatVND(Math.round(p.price_sale * 0.85))} • Loại 3: ${formatVND(Math.round(p.price_sale * 0.7))}</span>
-              </p>
-            </div>
-          </div>
-          <span class="py-1.5 px-2.5 rounded-xl bg-[#f2fce9] border border-[#b8ee99] text-[#256314] font-bold text-[11px] shrink-0">
-            🟢 Đang bán
-          </span>
-        </div>
-      `).join("");
+      allLoadedProducts = await window.db.getAllProducts();
+      renderFarmerProductCards();
+      renderFarmPostsList();
+      renderFormMediaGallery();
       if (window.lucide) lucide.createIcons();
     }
 
@@ -481,40 +1269,70 @@
         alert("Vui lòng đánh dấu đồng ý Cam kết an toàn vệ sinh thực phẩm trước khi đăng bán.");
         return;
       }
+      const editId = (document.getElementById("f-edit-id")?.value || "").trim();
       const isUgly = document.getElementById("f-is-ugly")?.checked;
       const rawName = document.getElementById("f-name").value.trim();
-      const name = isUgly ? `[Cứu Hộ Nông Sản -60%] ${rawName} (Ugly Food)` : rawName;
+      const name = (isUgly && !rawName.includes("Cứu Hộ") && !rawName.includes("Happy Hour"))
+        ? `[Cứu Hộ Nông Sản -60%] ${rawName} (Ugly Food)`
+        : rawName;
       const rawPrice = Number(document.getElementById("f-price").value || 85000);
-      const price_sale = isUgly ? Math.round(rawPrice * 0.4) : rawPrice;
+      const price_sale = (!editId && isUgly) ? Math.round(rawPrice * 0.4) : rawPrice;
       const stock_kg = Number(document.getElementById("f-stock").value || 50);
       const description = document.getElementById("f-desc").value.trim();
-      const image_url = document.getElementById("f-image").value;
+      const category = isUgly ? "UglyFood" : (document.getElementById("f-category")?.value || "TraiCay");
+      const unit = (document.getElementById("f-unit")?.value || "kg").trim();
+      const video_url = (document.getElementById("f-video-url")?.value || "").trim();
 
-      await window.db.addFarmerBatchProduct({
+      const gallery = [...currentFormMediaGallery];
+      if (video_url && !gallery.some(m => m.type === "video" && m.url === video_url)) {
+        gallery.push({ id: "v-" + Date.now(), type: "video", url: video_url, caption: "Video thực tế tại Nhà vườn" });
+      }
+      const primaryImg = gallery.find(m => m.type !== "video")?.url || document.getElementById("f-image").value || "images/hero-fruits.jpg";
+
+      const farm_info = {
+        farmer_name: document.getElementById("f-farmer-name")?.value.trim() || "Vườn Bác Năm & HTX Liên Kết",
+        farm_region: document.getElementById("f-farm-region")?.value.trim() || "Đông Nam Bộ & Đà Lạt",
+        farming_method: document.getElementById("f-farming-method")?.value.trim() || "Canh tác VietGAP • Hữu cơ vi sinh",
+        farmer_phone: document.getElementById("f-farmer-phone")?.value.trim() || "0784 203 424",
+        farm_story: description
+      };
+
+      await window.db.saveProductPost({
+        id: editId || undefined,
         name,
-        category: isUgly ? "UglyFood" : "TraiCay",
+        category,
+        unit,
         is_ugly_food: isUgly,
         price_sale,
         stock_kg,
-        description: description || "Trái cây hái chín tự nhiên tại vườn Bác Năm Bình Phước (Đã ký cam kết ATVSTP).",
-        certification_badge: isUgly ? "⚡ Cứu Hộ Ugly Food (-60%)" : "VietGAP • Đã Cam Kết ATVSTP",
-        image_url
+        description: description || "Nông sản thu hoạch tươi tại vườn, đã ký cam kết ATVSTP và bảo hành qua Ví Escrow.",
+        certification_badge: isUgly ? "⚡ Cứu Hộ Ugly Food (-60%)" : `VietGAP • ${farm_info.farmer_name.slice(0, 22)}`,
+        image_url: primaryImg,
+        custom_image_url: primaryImg,
+        video_url,
+        media_gallery: gallery,
+        farm_info
       });
 
       localStorage.removeItem("agriconnect_farmer_draft_v1");
-      showFarmerToast("🎉 Đã đăng lứa mới '" + name + "' lên Chợ thành công!");
+      const wasEdit = Boolean(editId);
+      cancelEditProduct();
+      showFarmerToast(wasEdit ? `✅ Đã cập nhật bài đăng & hình ảnh/video cho "${name}"!` : `🎉 Đã đăng bài mới "${name}" lên Chợ thành công!`);
       await loadFarmerPortal();
       document.getElementById("vuon-dang-co-gi").scrollIntoView({ behavior: "smooth" });
     });
 
     function saveFarmerDraft() {
       try {
+        if (document.getElementById("f-edit-id")?.value) return; // Không ghi đè nháp khi đang sửa bài cũ
         const draft = {
           name: document.getElementById("f-name")?.value || "",
           price: document.getElementById("f-price")?.value || "",
           stock: document.getElementById("f-stock")?.value || "",
           desc: document.getElementById("f-desc")?.value || "",
           image: document.getElementById("f-image")?.value || "",
+          farmer_name: document.getElementById("f-farmer-name")?.value || "",
+          farm_region: document.getElementById("f-farm-region")?.value || "",
           savedAt: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
         };
         localStorage.setItem("agriconnect_farmer_draft_v1", JSON.stringify(draft));
@@ -533,17 +1351,25 @@
         if (d.stock) document.getElementById("f-stock").value = d.stock;
         if (d.desc) document.getElementById("f-desc").value = d.desc;
         if (d.image) document.getElementById("f-image").value = d.image;
+        if (d.farmer_name && document.getElementById("f-farmer-name")) document.getElementById("f-farmer-name").value = d.farmer_name;
+        if (d.farm_region && document.getElementById("f-farm-region")) document.getElementById("f-farm-region").value = d.farm_region;
         const b = document.getElementById("farmer-draft-badge");
         if (b && d.savedAt) b.textContent = `💾 Đã khôi phục bản nháp (${d.savedAt})`;
       } catch (e) {}
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       restoreFarmerDraft();
-      ["f-name", "f-price", "f-stock", "f-desc"].forEach(id => {
+      ["f-name", "f-price", "f-stock", "f-desc", "f-farmer-name", "f-farm-region"].forEach(id => {
         document.getElementById(id)?.addEventListener("input", saveFarmerDraft);
       });
-      loadFarmerPortal();
+      await loadFarmerPortal();
+      // Nếu mở từ trang chủ với ?edit=productId thì tự động bật chế độ sửa sản phẩm đó
+      const params = new URLSearchParams(window.location.search);
+      const editPid = params.get("edit");
+      if (editPid) {
+        startEditProduct(editPid);
+      }
       if (window.lucide) lucide.createIcons();
     });
   </script>

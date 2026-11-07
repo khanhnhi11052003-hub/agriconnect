@@ -212,6 +212,14 @@ function computeDeterministicHashHex(input) {
 }
 
 function resolveAccurateProductImage(p) {
+  // Nếu người dùng / nhà vườn đã chỉnh sửa hoặc tải lên hình ảnh tùy chỉnh thì ưu tiên tuyệt đối ảnh đó
+  if (p?.custom_image_url) return p.custom_image_url;
+  if (p?.is_custom_media && p?.image_url) return p.image_url;
+  if (p?.is_custom_media && Array.isArray(p?.media_gallery)) {
+    const firstImg = p.media_gallery.find(m => m && m.type !== "video" && m.url);
+    if (firstImg) return firstImg.url;
+  }
+
   const name = String(p?.name || "").toLowerCase();
   // Ưu tiên khớp chính xác các Combo trước
   if (name.includes("combo 7") || name.includes("thùng rau củ")) return "images/combo-rau-cu-tuan.jpg";
@@ -244,6 +252,39 @@ function resolveAccurateProductImage(p) {
   return p?.image_url || "images/hero-fruits.jpg";
 }
 
+function getDefaultFarmInfo(p) {
+  const cat = p?.category || "TraiCay";
+  const nameLower = String(p?.name || "").toLowerCase();
+  if (cat === "RauCuQua" || nameLower.includes("đà lạt") || nameLower.includes("rau củ")) {
+    return {
+      farmer_name: "Nông Trại Hữu Cơ Đơn Dương & Tà Nung (Đà Lạt)",
+      farm_region: "Đơn Dương & Tà Nung, TP. Đà Lạt, Lâm Đồng",
+      farming_method: "Nhà kính Thủy canh & Hữu cơ Vi sinh • Chuẩn VietGAP",
+      farmer_phone: "0784 203 424",
+      farm_experience: "15 năm canh tác rau củ ôn đới công nghệ cao",
+      farm_story: "Thu hoạch lúc 05:00 sáng khi sương còn đọng trên lá, sơ chế lạnh tại chỗ và vận chuyển xe lạnh 2-8°C về thẳng Hub TP.HCM."
+    };
+  }
+  if (cat === "NongSanKho" || p?.is_dry) {
+    return {
+      farmer_name: "Xưởng Điều Rang Củi Bác Năm & HTX Macca Tây Nguyên",
+      farm_region: "Bù Đăng (Bình Phước) & Cư M'gar (Đắk Lắk)",
+      farming_method: "Rang củi truyền thống • Sấy lạnh giữ nguyên dưỡng chất • OCOP 4 Sao",
+      farmer_phone: "0784 203 424",
+      farm_experience: "20 năm chế biến hạt đặc sản xuất khẩu",
+      farm_story: "Tuyển chọn hạt loại A+ chín rụng tự nhiên, rang củi mẻ mới mỗi tuần và đóng hộp hút chân không chống ẩm."
+    };
+  }
+  return {
+    farmer_name: "Liên Minh Vườn Bác Năm & HTX Trái Cây Miền Tây - Đông Nam Bộ",
+    farm_region: "Chợ Lách (Bến Tre) • Cái Bè (Tiền Giang) • Đông Nam Bộ",
+    farming_method: "Canh tác VietGAP • Chín cây tự nhiên 100% • Không nhúng thuốc",
+    farmer_phone: "0784 203 424",
+    farm_experience: "25 năm gắn bó với vườn cây ăn trái cổ thụ",
+    farm_story: "Chỉ cắt những trái đã già đủ độ ngọt Brix từ 05:30 sáng Thứ Sáu, dán tem QR truy xuất từng lô và bảo hành 1 đổi 1 qua Ví Escrow."
+  };
+}
+
 function enrichProductMeta(p, idx = 0) {
   const isCombo = p.category === "Combo";
   const nameLower = String(p.name || "").toLowerCase();
@@ -252,9 +293,30 @@ function enrichProductMeta(p, idx = 0) {
   const cleanDesc = String(p.description || "").replace(/từ vùng đất đỏ bazan Phước Long/gi, "từ vùng chuyên canh Đông Nam Bộ & Miền Tây").replace(/Bình Phước/gi, "vùng chuyên canh");
   const bioProfile = getAgronomyBioProfile(p);
   const merkleRoot = computeDeterministicHashHex(`AGRI_BATCH_${p.id || idx}_${p.name}_${bioProfile.tempZone}_PHI${bioProfile.phiDays}`);
+  const resolvedImg = resolveAccurateProductImage(p);
+  const defaultFarm = getDefaultFarmInfo(p);
+  const farmInfo = {
+    ...defaultFarm,
+    ...(p.farm_info || {})
+  };
+  let mediaGallery = Array.isArray(p.media_gallery) && p.media_gallery.length > 0
+    ? p.media_gallery.filter(m => m && m.url)
+    : [{ id: "img-main", type: "image", url: resolvedImg, caption: "Ảnh thực tế sản phẩm" }];
+  if (mediaGallery.length === 0) {
+    mediaGallery = [{ id: "img-main", type: "image", url: resolvedImg, caption: "Ảnh thực tế sản phẩm" }];
+  }
+  const videoEntry = mediaGallery.find(m => m.type === "video");
+  const videoUrl = p.video_url !== undefined ? p.video_url : (videoEntry ? videoEntry.url : "");
+  if (videoUrl && !mediaGallery.some(m => m.type === "video" && m.url === videoUrl)) {
+    mediaGallery.push({ id: "vid-main", type: "video", url: videoUrl, caption: "Video thực tế tại Nhà vườn" });
+  }
+
   return {
     ...p,
-    image_url: resolveAccurateProductImage(p),
+    image_url: resolvedImg,
+    media_gallery: mediaGallery,
+    video_url: videoUrl,
+    farm_info: farmInfo,
     description: cleanDesc || p.description,
     is_fresh: p.is_fresh !== undefined ? p.is_fresh : !isDry,
     is_dry: isDry,
@@ -597,9 +659,63 @@ const DEMO_REFUND_CLAIMS = [
   }
 ];
 
+const DEMO_FARM_POSTS = [
+  {
+    id: "fpost-001",
+    farmer_name: "Vườn Bác Năm — Chuyên Canh Sầu Riêng Ri6 & Măng Cụt Cổ Thụ",
+    farm_region: "Đông Nam Bộ & Chợ Lách (Bến Tre) • Diện tích 4.5 ha",
+    farming_method: "VietGAP • Hữu cơ vi sinh • Chín rụng tự nhiên 100%",
+    farmer_phone: "0784 203 424",
+    title: "Sáng nay vườn cắt lứa Sầu Riêng Ri6 già 8.8 tuổi & Măng Cụt cổ thụ 25 năm!",
+    story: "Bà con yên tâm nhé, từng trái sầu riêng Ri6 tại vườn Bác Năm đều được gõ kiểm tra độ già và đo độ ngọt Brix ≥ 28% trước khi cắt. Tuyệt đối không nhúng thuốc kích chín, bao ăn 1 đổi 1 tận tay qua Ví Tạm Giữ Escrow!",
+    media_gallery: [
+      { id: "fp1-img1", type: "image", url: "images/durian-open.jpg", caption: "Múi sầu riêng Ri6 vàng rực, dẻo quánh" },
+      { id: "fp1-img2", type: "image", url: "images/mangosteen-harvest.jpg", caption: "Thu hoạch măng cụt cổ thụ lúc 05:30 sáng" },
+      { id: "fp1-img3", type: "image", url: "images/durian-warehouse.jpg", caption: "Đóng thùng xốp dán tem QR chuẩn bị lên xe lạnh" }
+    ],
+    video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    created_at: new Date(Date.now() - 3600000 * 6).toISOString()
+  },
+  {
+    id: "fpost-002",
+    farmer_name: "Nông Trại Hữu Cơ Đơn Dương & Tà Nung (Đà Lạt - Lâm Đồng)",
+    farm_region: "Đơn Dương & Tà Nung, TP. Đà Lạt, Lâm Đồng • Độ cao 1.500m",
+    farming_method: "Nhà kính Thủy canh Hồi lưu & Đất đỏ Bazan Hữu cơ",
+    farmer_phone: "0784 203 424",
+    title: "Nhật ký thu hoạch Rau Củ Quả Đà Lạt & Khoai Lang Mật Tà Nung sáng sớm",
+    story: "Cà chua Beef, xà lách thủy canh, bông cải xanh và ớt chuông ba màu vừa cắt lúc 05:00 sáng trong nhà màng khép kín. Khoai lang mật Tà Nung đã ủ tự nhiên đủ 7 ngày tươm mật ngọt lịm, đóng thùng lạnh 2–8°C về thẳng TP.HCM!",
+    media_gallery: [
+      { id: "fp2-img1", type: "image", url: "images/ca-chua-dalat.jpg", caption: "Cà chua Beef & Cà chua Bi chín mọng trên giàn" },
+      { id: "fp2-img2", type: "image", url: "images/xa-lach-thuy-canh.jpg", caption: "Xà lách thủy canh & Cải bó xôi nhà kính" },
+      { id: "fp2-img3", type: "image", url: "images/khoai-lang-mat.jpg", caption: "Khoai lang mật Tà Nung tươm mật vàng óng" }
+    ],
+    video_url: "",
+    created_at: new Date(Date.now() - 3600000 * 14).toISOString()
+  },
+  {
+    id: "fpost-003",
+    farmer_name: "HTX Trái Cây Miệt Vườn Cái Bè (Tiền Giang) & Đắk Lắk",
+    farm_region: "Cái Bè (Tiền Giang) • Cư M'gar (Đắk Lắk) • Bình Phước",
+    farming_method: "VietGAP & OCOP 4 Sao • Canh tác thuận tự nhiên",
+    farmer_phone: "0784 203 424",
+    title: "Lên kệ Xoài Cát Hòa Lộc chín cây, Bưởi Da Xanh ruột hồng & Hạt Điều - Macca mới rang",
+    story: "Tuần này liên minh HTX gửi về Hub TP.HCM lô Xoài Cát Hòa Lộc thơm lừng không xơ, Bưởi Da Xanh Chợ Lách mọng nước và mẻ Hạt Điều rang củi Bình Phước & Macca Đắk Lắk vừa ra lò nóng hổi!",
+    media_gallery: [
+      { id: "fp3-img1", type: "image", url: "images/xoai-cat-hoa-loc.jpg", caption: "Xoài Cát Hòa Lộc chín cây vàng ươm" },
+      { id: "fp3-img2", type: "image", url: "images/buoi-da-xanh.jpg", caption: "Bưởi Da Xanh Chợ Lách ruột hồng mọng nước" },
+      { id: "fp3-img3", type: "image", url: "images/hat-dieu-macca.jpg", caption: "Hạt Điều rang củi & Macca Tây Nguyên sấy lạnh" }
+    ],
+    video_url: "",
+    created_at: new Date(Date.now() - 3600000 * 24).toISOString()
+  }
+];
+
 const LS = {
   products: "agri_v2_products",
   farmerCustomProducts: "agri_v2_farmer_custom_products",
+  productOverrides: "agri_v2_product_overrides",
+  deletedProductIds: "agri_v2_deleted_product_ids",
+  farmPosts: "agri_v2_farm_posts",
   orders: "agri_v2_orders",
   batch: "agri_v2_batch",
   contacts: "agri_v2_contacts",
@@ -1004,6 +1120,7 @@ class AgriDB {
   initDemoData() {
     try {
       localStorage.setItem(LS.products, JSON.stringify([...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD]));
+      if (!localStorage.getItem(LS.farmPosts)) localStorage.setItem(LS.farmPosts, JSON.stringify(DEMO_FARM_POSTS));
       if (!localStorage.getItem(LS.orders)) localStorage.setItem(LS.orders, JSON.stringify(DEMO_ORDERS));
       if (!localStorage.getItem(LS.refundClaims)) localStorage.setItem(LS.refundClaims, JSON.stringify(DEMO_REFUND_CLAIMS));
       if (!localStorage.getItem(LS.esgPartners)) localStorage.setItem(LS.esgPartners, JSON.stringify(DEMO_ESG_PARTNERS));
@@ -1053,6 +1170,14 @@ class AgriDB {
     }
   }
 
+  _readObj(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "{}") || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
   _write(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -1070,7 +1195,26 @@ class AgriDB {
     return msg;
   }
 
-  // ================= SẢN PHẨM =================
+  // Hợp nhất bản ghi chỉnh sửa (overrides) và lọc bỏ sản phẩm đã xóa (deletedIds)
+  _applyProductCustomizations(rawList) {
+    const overrides = this._readObj(LS.productOverrides);
+    const deletedIds = new Set(this._read(LS.deletedProductIds).map(String));
+    const seen = new Set();
+    const out = [];
+    for (let i = 0; i < rawList.length; i++) {
+      const p = rawList[i];
+      if (!p || !p.id) continue;
+      const pid = String(p.id);
+      if (deletedIds.has(pid) || seen.has(pid)) continue;
+      seen.add(pid);
+      const ov = overrides[pid];
+      const merged = ov ? { ...p, ...ov, is_custom_media: true } : p;
+      out.push(enrichProductMeta(merged, i));
+    }
+    return out;
+  }
+
+  // ================= SẢN PHẨM & QUẢN LÝ BÀI ĐĂNG (THÊM / SỬA / XÓA ẢNH, VIDEO & NHÀ VƯỜN) =================
   async getProducts() {
     const customFarmerItems = this._read(LS.farmerCustomProducts);
     // Các loại Rau củ quả Đà Lạt, Nông sản khô & Đặc sản mới bổ sung (p14 -> p23) luôn được hợp nhất kể cả ở chế độ Cloud
@@ -1080,8 +1224,7 @@ class AgriDB {
         const { data, error } = await this.client
           .from("products").select("*").eq("is_available", true).order("created_at", { ascending: true });
         if (!error && data && data.length > 0) {
-          const cloudEnriched = data.map((p, idx) => enrichProductMeta(p, idx));
-          return [...customFarmerItems.map((p, i) => enrichProductMeta(p, i)), ...cloudEnriched, ...extraCatalogItems, ...HAPPY_HOUR_UGLY_FOOD];
+          return this._applyProductCustomizations([...customFarmerItems, ...data, ...extraCatalogItems, ...HAPPY_HOUR_UGLY_FOOD]);
         }
       } catch (err) {
         console.warn("[AgriConnect] Không tải được từ Supabase, dùng dữ liệu dự phòng:", err);
@@ -1089,7 +1232,7 @@ class AgriDB {
     }
     const local = this._read(LS.products);
     const base = (local && local.length > 0) ? local.filter(p => p.is_available !== false) : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
-    return [...customFarmerItems, ...base].map((p, idx) => enrichProductMeta(p, idx));
+    return this._applyProductCustomizations([...customFarmerItems, ...base]);
   }
 
   async getAllProducts() {
@@ -1099,7 +1242,7 @@ class AgriDB {
       try {
         const { data, error } = await this.client.from("products").select("*");
         if (!error && data && data.length > 0) {
-          return [...customFarmerItems, ...data, ...extraCatalogItems, ...HAPPY_HOUR_UGLY_FOOD].map((p, idx) => enrichProductMeta(p, idx));
+          return this._applyProductCustomizations([...customFarmerItems, ...data, ...extraCatalogItems, ...HAPPY_HOUR_UGLY_FOOD]);
         }
       } catch (err) {
         console.warn("[AgriConnect] Lỗi lấy sản phẩm admin:", err);
@@ -1107,36 +1250,221 @@ class AgriDB {
     }
     const local = this._read(LS.products);
     const base = (local && local.length > 0) ? local : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
-    return [...customFarmerItems, ...base].map((p, idx) => enrichProductMeta(p, idx));
+    return this._applyProductCustomizations([...customFarmerItems, ...base]);
   }
 
-  // Nhà vườn đăng lứa mới từ trang farmer.html (Mobile-First + Voice-to-Text)
-  async addFarmerBatchProduct(newProd) {
-    const item = enrichProductMeta({
-      id: "farmer-" + Date.now(),
-      name: newProd.name,
-      category: newProd.category || "TraiCay",
-      highlights: [
-        "Vừa đăng trực tiếp từ Vườn Bác Năm (Voice-to-Text)",
-        `Sản lượng mở bán: ${newProd.stock_kg || 50} kg • ${newProd.harvest_date || "Hái sáng Thứ Sáu"}`,
-        "Đạt chuẩn VietGAP • Bảo hành Ví Tạm Giữ Escrow 12h"
-      ],
-      description: newProd.description || "Nông sản hái chín tự nhiên tại vườn Bình Phước.",
-      unit: newProd.unit || "kg",
-      weight_kg: Number(newProd.weight_kg || 1),
-      price_original: Math.round(Number(newProd.price_sale || 65000) * 0.72),
-      price_sale: Number(newProd.price_sale || 65000),
-      image_url: newProd.image_url || "images/hero-fruits.jpg",
-      harvest_date: newProd.harvest_date || "Thu hoạch sáng Thứ Sáu tuần này",
-      certification_badge: newProd.certification_badge || "VietGAP • Vườn Bác Năm",
+  // Nén ảnh tải lên từ thiết bị thành Base64 DataURL gọn nhẹ để lưu LocalStorage mượt mà
+  async compressImageToDataUrl(file, maxWidth = 900, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      if (!file) return reject(new Error("Không có file"));
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let w = img.width;
+          let h = img.height;
+          if (w > maxWidth) {
+            h = Math.round((h * maxWidth) / w);
+            w = maxWidth;
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => resolve(ev.target.result);
+        img.src = ev.target.result;
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Tạo mới hoặc Cập nhật bài đăng sản phẩm (hỗ trợ đa ảnh, video & thông tin Nhà vườn)
+  async saveProductPost(postData) {
+    const isEditing = Boolean(postData.id);
+    const pid = isEditing ? String(postData.id) : ("farmer-" + Date.now());
+    const mediaGallery = Array.isArray(postData.media_gallery) && postData.media_gallery.length > 0
+      ? postData.media_gallery.filter(m => m && m.url)
+      : [{ id: "m-" + Date.now(), type: "image", url: postData.image_url || "images/hero-fruits.jpg", caption: "Ảnh thực tế tại vườn" }];
+
+    const primaryImg = mediaGallery.find(m => m.type !== "video")?.url || postData.image_url || "images/hero-fruits.jpg";
+    const primaryVid = postData.video_url !== undefined
+      ? postData.video_url
+      : (mediaGallery.find(m => m.type === "video")?.url || "");
+
+    if (primaryVid && !mediaGallery.some(m => m.type === "video" && m.url === primaryVid)) {
+      mediaGallery.push({ id: "v-" + Date.now(), type: "video", url: primaryVid, caption: "Video quay thực tế tại Nhà vườn" });
+    }
+
+    const farmInfo = {
+      farmer_name: postData.farm_info?.farmer_name || postData.farmer_name || "Vườn Bác Năm & HTX Liên Kết",
+      farm_region: postData.farm_info?.farm_region || postData.farm_region || "Đông Nam Bộ • Tây Nguyên • Đà Lạt",
+      farming_method: postData.farm_info?.farming_method || postData.farming_method || "Canh tác VietGAP • Hữu cơ vi sinh",
+      farmer_phone: postData.farm_info?.farmer_phone || postData.farmer_phone || "0784 203 424",
+      farm_story: postData.farm_info?.farm_story || postData.farm_story || "Thu hoạch sáng sớm Thứ Sáu, vận chuyển Cold-Chain về TP.HCM."
+    };
+
+    const customList = this._read(LS.farmerCustomProducts);
+    const existingCustomIdx = customList.findIndex(p => String(p.id) === pid);
+    let existingBase = existingCustomIdx >= 0 ? customList[existingCustomIdx] : null;
+    if (!existingBase && isEditing) {
+      const all = await this.getAllProducts();
+      existingBase = all.find(p => String(p.id) === pid) || {};
+    }
+
+    const priceSale = Number(postData.price_sale || existingBase?.price_sale || 65000);
+    const priceOriginal = Number(postData.price_original || existingBase?.price_original || Math.round(priceSale * 0.72));
+
+    const updatedRecord = enrichProductMeta({
+      ...(existingBase || {}),
+      id: pid,
+      name: postData.name || existingBase?.name || "Nông sản mới đăng từ Nhà vườn",
+      category: postData.category || existingBase?.category || "TraiCay",
+      highlights: Array.isArray(postData.highlights) && postData.highlights.length > 0
+        ? postData.highlights
+        : (existingBase?.highlights || [
+            `🏡 ${farmInfo.farmer_name} (${farmInfo.farm_region})`,
+            `Sản lượng mở bán: ${postData.stock_kg || 50} kg • ${postData.harvest_date || "Hái sáng Thứ Sáu"}`,
+            `${farmInfo.farming_method} • Bảo hành Ví Escrow 12h`
+          ]),
+      description: postData.description || existingBase?.description || farmInfo.farm_story,
+      unit: postData.unit || existingBase?.unit || "kg",
+      weight_kg: Number(postData.weight_kg || existingBase?.weight_kg || 1),
+      stock_kg: Number(postData.stock_kg || existingBase?.stock_kg || 50),
+      price_original: priceOriginal,
+      price_sale: priceSale,
+      image_url: primaryImg,
+      custom_image_url: primaryImg,
+      is_custom_media: true,
+      media_gallery: mediaGallery,
+      video_url: primaryVid,
+      farm_info: farmInfo,
+      harvest_date: postData.harvest_date || existingBase?.harvest_date || "Thu hoạch sáng Thứ Sáu tuần này",
+      certification_badge: postData.certification_badge || existingBase?.certification_badge || `VietGAP • ${farmInfo.farmer_name.slice(0, 26)}`,
       is_available: true,
-      created_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      created_at: existingBase?.created_at || new Date().toISOString()
     });
 
-    const list = this._read(LS.farmerCustomProducts);
-    list.unshift(item);
-    this._write(LS.farmerCustomProducts, list);
-    return item;
+    if (existingCustomIdx >= 0) {
+      customList[existingCustomIdx] = updatedRecord;
+      this._write(LS.farmerCustomProducts, customList);
+    } else if (!isEditing || pid.startsWith("farmer-")) {
+      customList.unshift(updatedRecord);
+      this._write(LS.farmerCustomProducts, customList);
+    }
+
+    // Luôn lưu vào productOverrides để cả sản phẩm mặc định (p1..p23, ugly-1..4) hay Cloud đều giữ nguyên ảnh/video/thông tin vườn đã sửa
+    const overrides = this._readObj(LS.productOverrides);
+    overrides[pid] = updatedRecord;
+    this._write(LS.productOverrides, overrides);
+
+    // Nếu sản phẩm này trước đó bị xóa thì gỡ khỏi danh sách xóa
+    const deletedIds = this._read(LS.deletedProductIds).filter(id => String(id) !== pid);
+    this._write(LS.deletedProductIds, deletedIds);
+
+    window.security.logAudit({
+      actor_role: "FARMER_PORTAL",
+      actor_name: farmInfo.farmer_name,
+      action: isEditing ? "PRODUCT_POST_UPDATED" : "PRODUCT_POST_CREATED",
+      target: pid,
+      severity: "SUCCESS",
+      detail: `${isEditing ? "Cập nhật" : "Đăng mới"} bài sản phẩm "${updatedRecord.name}" (${mediaGallery.length} media, Video: ${primaryVid ? "Có" : "Không"}) • Nhà vườn: ${farmInfo.farmer_name}.`
+    });
+
+    return updatedRecord;
+  }
+
+  // Xóa bài đăng sản phẩm (hỗ trợ xóa cả bài tự đăng lẫn ẩn sản phẩm mặc định)
+  async deleteProductPost(productId) {
+    const pid = String(productId || "");
+    if (!pid) return false;
+    const customList = this._read(LS.farmerCustomProducts).filter(p => String(p.id) !== pid);
+    this._write(LS.farmerCustomProducts, customList);
+
+    const overrides = this._readObj(LS.productOverrides);
+    delete overrides[pid];
+    this._write(LS.productOverrides, overrides);
+
+    const deletedIds = this._read(LS.deletedProductIds);
+    if (!deletedIds.includes(pid)) {
+      deletedIds.push(pid);
+      this._write(LS.deletedProductIds, deletedIds);
+    }
+
+    window.security.logAudit({
+      actor_role: "FARMER_PORTAL",
+      actor_name: "Quản lý Nhà Vườn",
+      action: "PRODUCT_POST_DELETED",
+      target: pid,
+      severity: "WARN",
+      detail: `Đã xóa bài đăng nông sản mã [${pid}] khỏi kệ hàng.`
+    });
+    return true;
+  }
+
+  // Khôi phục lại toàn bộ sản phẩm gốc nếu người dùng muốn reset các mục đã xóa
+  async restoreDefaultProducts() {
+    localStorage.removeItem(LS.deletedProductIds);
+    localStorage.removeItem(LS.productOverrides);
+    return this.getProducts();
+  }
+
+  // Nhà vườn đăng lứa mới từ trang farmer.html (Tương thích ngược, gọi thẳng saveProductPost)
+  async addFarmerBatchProduct(newProd) {
+    return this.saveProductPost(newProd);
+  }
+
+  // ================= BÀI ĐĂNG & NHẬT KÝ THÔNG TIN NHÀ VƯỜN (FARM PROFILE & GALLERY POSTS) =================
+  getFarmPosts() {
+    const list = this._read(LS.farmPosts);
+    if (!list || list.length === 0) {
+      this._write(LS.farmPosts, DEMO_FARM_POSTS);
+      return DEMO_FARM_POSTS;
+    }
+    return list;
+  }
+
+  saveFarmPost(postInput) {
+    const list = this.getFarmPosts();
+    const isEdit = Boolean(postInput.id);
+    const postId = isEdit ? String(postInput.id) : ("fpost-" + Date.now());
+    const mediaGallery = Array.isArray(postInput.media_gallery) && postInput.media_gallery.length > 0
+      ? postInput.media_gallery.filter(m => m && m.url)
+      : [{ id: "fp-img-" + Date.now(), type: "image", url: postInput.image_url || "images/hero-fruits.jpg", caption: "Hình ảnh thực tế tại Nhà vườn" }];
+
+    const record = {
+      id: postId,
+      farmer_name: postInput.farmer_name || "Nhà Vườn Liên Kết AgriConnect",
+      farm_region: postInput.farm_region || "Đông Nam Bộ • Tây Nguyên • Đà Lạt • Miền Tây",
+      farming_method: postInput.farming_method || "Canh tác VietGAP • Chín cây tự nhiên 100%",
+      farmer_phone: postInput.farmer_phone || "0784 203 424",
+      title: postInput.title || "Nhật ký mùa vụ & Thu hoạch thực tế tại Nhà vườn",
+      story: postInput.story || "Cập nhật hình ảnh và video thu hoạch nông sản tươi sạch sáng nay tại vườn.",
+      media_gallery: mediaGallery,
+      video_url: postInput.video_url || (mediaGallery.find(m => m.type === "video")?.url || ""),
+      updated_at: new Date().toISOString(),
+      created_at: postInput.created_at || new Date().toISOString()
+    };
+
+    const idx = list.findIndex(item => String(item.id) === postId);
+    if (idx >= 0) {
+      list[idx] = record;
+    } else {
+      list.unshift(record);
+    }
+    this._write(LS.farmPosts, list);
+    return record;
+  }
+
+  deleteFarmPost(postId) {
+    const pid = String(postId || "");
+    const list = this.getFarmPosts().filter(item => String(item.id) !== pid);
+    this._write(LS.farmPosts, list);
+    return list;
   }
 
   // ================= ĐỢT GOM HÀNG =================
