@@ -391,11 +391,22 @@ window.closeInAppChatModal = function () {
 window.sendQuickChatMsg = function (text) {
   appendChatMessage("USER", text);
   setTimeout(() => {
+    if (window.security && typeof window.security.evaluateAiPrompt === "function") {
+      const guard = window.security.evaluateAiPrompt(text);
+      if (guard.blocked) {
+        appendChatMessage("AI_BLOCK", guard.safeReply);
+        return;
+      }
+      if (/chính sách|freeship|escrow|ai|mùa vụ|giá|đổi trả/i.test(text)) {
+        appendChatMessage("AI_BOT", guard.safeReply);
+        return;
+      }
+    }
     appendChatMessage(
       "FARMER",
       "Dạ Bác Năm nhận được tin nhắn rồi nha! Bác đã ghi chú chọn kỹ từng trái chuẩn độ chín cho đơn của mình. Nhờ đặt qua Ví Tạm Giữ AgriConnect nên đơn được bảo hành 1 đổi 1 tận tay trong 12h sau khi nhận hàng ạ!"
     );
-  }, 600);
+  }, 450);
 };
 
 window.handleSendInAppChat = function (e) {
@@ -414,6 +425,18 @@ function appendChatMessage(sender, text) {
   if (sender === "USER") {
     div.className = "flex justify-end";
     div.innerHTML = `<div class="bg-[#3ba117] text-white p-3 rounded-2xl rounded-tr-none max-w-[82%] shadow-2xs">${escapeHTML(text)}</div>`;
+  } else if (sender === "AI_BLOCK") {
+    div.className = "flex items-start gap-2";
+    div.innerHTML = `
+      <div class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold shrink-0">🛡️</div>
+      <div class="bg-rose-50 p-3 rounded-2xl rounded-tl-none border-2 border-rose-300 text-rose-900 font-semibold max-w-[85%] shadow-2xs">${escapeHTML(text)}</div>
+    `;
+  } else if (sender === "AI_BOT") {
+    div.className = "flex items-start gap-2";
+    div.innerHTML = `
+      <div class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0">AI</div>
+      <div class="bg-indigo-50 p-3 rounded-2xl rounded-tl-none border border-indigo-200 text-slate-800 max-w-[85%] shadow-2xs">${escapeHTML(text)}</div>
+    `;
   } else {
     div.className = "flex items-start gap-2";
     div.innerHTML = `

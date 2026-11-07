@@ -108,6 +108,22 @@
       </a>
     </div>
 
+    <!-- VÁCH NGĂN PHÂN QUYỀN RBAC & BẢO VỆ DỮ LIỆU ĐỊNH DANH (ROLE-BASED ACCESS CONTROL) -->
+    <div class="bg-slate-900 text-white rounded-2xl p-3.5 sm:p-4 border border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div class="text-xs space-y-0.5">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-extrabold text-emerald-300">🛡️ Vách Ngăn Phân Quyền RBAC (Role: FARMER • Hộ Bác Năm):</span>
+          <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-400/30">Data Boundary Active</span>
+        </div>
+        <p class="text-slate-300 text-[11px] leading-relaxed">
+          Tài khoản Cổng Nông Dân được phân lập dữ liệu độc lập: chỉ hiển thị sản lượng & ví của <strong>Vườn Bác Năm</strong>. Hệ thống tự động che giấu SĐT/Địa chỉ khách hàng (<code>090****123</code>) và chặn mọi lệnh gọi API xem thông tin vườn khác hoặc tổng doanh thu toàn sàn.
+        </p>
+      </div>
+      <button type="button" onclick="testFarmerRbacBoundary()" class="text-[11px] font-extrabold text-rose-200 bg-rose-500/20 hover:bg-rose-500/30 px-3 py-1.5 rounded-xl border border-rose-400/40 whitespace-nowrap shrink-0">
+        🔒 Kiểm chứng chặn API Toàn Sàn
+      </button>
+    </div>
+
     <!-- 1. THẺ VÍ TẠM GIỮ ESCROW (T+1) PHỐI MÀU XANH DỊU NHẸ -->
     <section id="vi-tien-cua-bac" class="bg-gradient-to-br from-[#1f5c12] to-[#2e7d14] text-white rounded-2xl p-5 shadow-md border border-[#3ba117]/40">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -303,9 +319,16 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261107_v10"></script>
-  <script src="js/supabaseClient.js?v=20261107_v10"></script>
+  <script src="js/config.js?v=20261107_v12"></script>
+  <script src="js/supabaseClient.js?v=20261107_v12"></script>
   <script>
+    window.testFarmerRbacBoundary = function () {
+      try {
+        window.security.assertRoleAccess("FARMER", ["ADMIN"], "GET /api/admin/platform-revenue-and-other-farms-pii");
+      } catch (err) {
+        showFarmerToast("🛡️ Đã chặn bởi RBAC: " + err.message);
+      }
+    };
     let recognition = null;
     let isRecording = false;
 

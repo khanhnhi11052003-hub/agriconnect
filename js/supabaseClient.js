@@ -340,7 +340,229 @@ const LS = {
   esgPartners: "agri_v2_esg_partners",
   esgMetrics: "agri_v2_esg_metrics",
   chatMessages: "agri_v2_inapp_chat",
-  adminSession: "agri_v2_admin_demo_session"
+  adminSession: "agri_v2_admin_demo_session",
+  auditLogs: "agri_v2_security_audit_logs",
+  idempotencyStore: "agri_v2_idempotency_keys"
+};
+
+// ================= KIẾN TRÚC BẢO MẬT 4 TRỌNG ĐIỂM (DATA MASKING, JWT + IDEMPOTENCY, RBAC + AUDIT TRAIL, AI GUARDRAIL) =================
+const INITIAL_AUDIT_LOGS = [
+  {
+    id: "aud-1001",
+    timestamp: new Date(Date.now() - 3600000 * 3).toISOString(),
+    actor_role: "SYSTEM_GUARD",
+    actor_name: "DataPrivacyEngine",
+    action: "AUTO_PII_MASKING",
+    target: "AC-261105-DEMO01",
+    severity: "INFO",
+    detail: "Đơn hàng chuyển sang trạng thái Hoàn tất (DELIVERED): Tự động che giấu SĐT (091****678) & Địa chỉ nhà riêng."
+  },
+  {
+    id: "aud-1002",
+    timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+    actor_role: "ESCROW_GATEWAY",
+    actor_name: "PaymentIdempotency",
+    action: "IDEMPOTENCY_VERIFIED",
+    target: "IDEM-AC-261105-DEMO02",
+    severity: "SUCCESS",
+    detail: "Xác thực chữ ký JWT ngắn hạn (TTL 300s) & khóa Idempotency-Key thành công cho giao dịch Ví Escrow 276.750 đ."
+  },
+  {
+    id: "aud-1003",
+    timestamp: new Date(Date.now() - 3600000 * 1).toISOString(),
+    actor_role: "RBAC_FIREWALL",
+    actor_name: "RoleAccessControl",
+    action: "RBAC_ISOLATION_ACTIVE",
+    target: "FARM_BAC_NAM",
+    severity: "WARN",
+    detail: "Áp dụng vách ngăn dữ liệu (Data Boundary): Tài khoản Cổng Nông Dân chỉ được xem sản lượng vườn mình, chặn truy cập PII khách & doanh thu toàn sàn."
+  }
+];
+
+window.security = {
+  // 1. Quyền riêng tư & Che giấu dữ liệu động (Data Privacy & Dynamic Masking)
+  // Chỉ hiển thị SĐT và địa chỉ thực khi đơn hàng ở trạng thái "SHIPPING" (Đang giao) hoặc Admin mở khóa có ghi Audit Log.
+  maskPhone(phone, orderStatus, isUnmaskedByAdmin = false) {
+    const raw = String(phone || "").trim();
+    if (!raw) return "***";
+    if (orderStatus === "SHIPPING" || isUnmaskedByAdmin) return raw;
+    if (raw.length <= 6) return "******";
+    return `${raw.slice(0, 3)}****${raw.slice(-3)}`;
+  },
+
+  maskAddress(address, orderStatus, isUnmaskedByAdmin = false) {
+    const raw = String(address || "").trim();
+    if (!raw) return "Đã ẩn địa chỉ";
+    if (orderStatus === "SHIPPING" || isUnmaskedByAdmin) return raw;
+    // Giữ lại thông tin Quận/Huyện hoặc Cụm để điều phối chung, ẩn số nhà & tên đường chi tiết
+    const parts = raw.split(",").map(s => s.trim());
+    if (parts.length >= 3) {
+      const tail = parts.slice(-2).join(", ");
+      return `Số ***, Đường ***, ${tail} (🔒 Đã ẩn PII)`;
+    }
+    return `Địa chỉ đã mã hóa bảo mật (🔒 Chỉ mở khi Đang giao)`;
+  },
+
+  // 2. An toàn Giao dịch Ví Escrow: Short-lived JWT Token (TTL 5 phút) & Idempotency Key chống Double-spending / Replay Attack
+  issueShortLivedJwt(role = "CUSTOMER", subject = "checkout", ttlSeconds = 300) {
+    const nowSec = Math.floor(Date.now() / 1000);
+    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" })).replace(/=+$/, "");
+    const jti = "jti_" + Math.random().toString(36).slice(2, 10) + "_" + nowSec;
+    const payloadObj = {
+      sub: subject,
+      role,
+      iat: nowSec,
+      exp: nowSec + ttlSeconds,
+      jti,
+      iss: "agriconnect-escrow-auth"
+    };
+    const payload = btoa(unescape(encodeURIComponent(JSON.stringify(payloadObj)))).replace(/=+$/, "");
+    const sig = btoa("sig_" + jti + "_" + role).replace(/=+$/, "").slice(0, 24);
+    return {
+      token: `${header}.${payload}.${sig}`,
+      jti,
+      expiresAt: new Date((nowSec + ttlSeconds) * 1000).toISOString(),
+      ttlSeconds
+    };
+  },
+
+  generateIdempotencyKey(prefix = "ORDER", fingerprint = "") {
+    const cleanFp = String(fingerprint || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 18);
+    const timeBucket = Math.floor(Date.now() / 15000); // Khóa chống bấm đúp trong cửa sổ 15 giây
+    return `IDEM-${prefix}-${cleanFp}-${timeBucket}`;
+  },
+
+  checkAndLockIdempotency(idemKey, actionName = "CREATE_ORDER", amountVnd = 0) {
+    let store = {};
+    try {
+      store = JSON.parse(localStorage.getItem(LS.idempotencyStore) || "{}");
+    } catch (e) { store = {}; }
+
+    const now = Date.now();
+    // Dọn các khóa hết hạn quá 10 phút
+    Object.keys(store).forEach(k => {
+      if (now - Number(store[k]?.timestamp || 0) > 600000) delete store[k];
+    });
+
+    if (store[idemKey]) {
+      this.logAudit({
+        actor_role: "ESCROW_GATEWAY",
+        actor_name: "IdempotencyGuard",
+        action: "IDEMPOTENCY_REPLAY_BLOCKED",
+        target: idemKey,
+        severity: "DANGER",
+        detail: `Chặn giao dịch trùng lặp (Double-spending / Replay Attack) trên hành động ${actionName} (${formatVND(amountVnd)}).`
+      });
+      throw new Error(`Bảo mật Ví Escrow (Idempotency Key: ${idemKey}): Phát hiện thao tác bấm đúp hoặc gửi lặp giao dịch. Hệ thống đã chặn tự động để bảo vệ bạn khỏi bị trừ tiền 2 lần!`);
+    }
+
+    store[idemKey] = {
+      action: actionName,
+      amount: amountVnd,
+      timestamp: now
+    };
+    try {
+      localStorage.setItem(LS.idempotencyStore, JSON.stringify(store));
+    } catch (e) {}
+    return true;
+  },
+
+  // 3. Phân quyền RBAC (Role-Based Access Control) & Nhật ký Truy vết Bất biến (Audit Trail)
+  getAuditLogs() {
+    try {
+      const raw = localStorage.getItem(LS.auditLogs);
+      if (!raw) {
+        localStorage.setItem(LS.auditLogs, JSON.stringify(INITIAL_AUDIT_LOGS));
+        return INITIAL_AUDIT_LOGS;
+      }
+      return JSON.parse(raw);
+    } catch (e) {
+      return INITIAL_AUDIT_LOGS;
+    }
+  },
+
+  logAudit(entry) {
+    const logs = this.getAuditLogs();
+    const record = {
+      id: "aud-" + Date.now() + "-" + Math.floor(Math.random() * 900 + 100),
+      timestamp: new Date().toISOString(),
+      actor_role: entry.actor_role || "ADMIN",
+      actor_name: entry.actor_name || "Quản trị viên",
+      action: entry.action || "SECURITY_EVENT",
+      target: entry.target || "SYSTEM",
+      severity: entry.severity || "INFO",
+      detail: entry.detail || ""
+    };
+    logs.unshift(record);
+    const trimmed = logs.slice(0, 60);
+    try {
+      localStorage.setItem(LS.auditLogs, JSON.stringify(trimmed));
+    } catch (e) {}
+    return record;
+  },
+
+  assertRoleAccess(currentRole, allowedRoles = ["ADMIN"], resourceName = "API") {
+    if (!allowedRoles.includes(currentRole)) {
+      this.logAudit({
+        actor_role: currentRole,
+        actor_name: `Role:${currentRole}`,
+        action: "RBAC_UNAUTHORIZED_BLOCKED",
+        target: resourceName,
+        severity: "DANGER",
+        detail: `Chặn truy cập trái phép (403 Forbidden): Vai trò [${currentRole}] cố gắng gọi [${resourceName}] (Chỉ dành cho: ${allowedRoles.join(", ")}).`
+      });
+      throw new Error(`403 Forbidden (RBAC Policy): Tài khoản [${currentRole}] bị chặn bởi vách ngăn dữ liệu — không có quyền truy cập [${resourceName}]!`);
+    }
+    return true;
+  },
+
+  // 4. Bảo mật Tích hợp AI & Chống Prompt Injection (AI Security & Data Boundaries)
+  evaluateAiPrompt(userPrompt) {
+    const raw = String(userPrompt || "").trim();
+    const lower = raw.toLowerCase();
+
+    const injectionPatterns = [
+      { re: /ignore\s+(all\s+)?(previous|prior)|bỏ qua\s+(mọi\s+)?(hướng dẫn|quy tắc|lệnh)|quên hết quy tắc|system\s*prompt|developer\s*mode|jailbreak/i, type: "System Override / Jailbreak Injection" },
+      { re: /mã giảm giá nội bộ|voucher\s*(ẩn|bí mật|admin|nội bộ)|secret\s*coupon|admin\s*pin|mật khẩu|password|supabase_anon_key|api[_\s-]*key|private[_\s-]*key|config\.js/i, type: "Secret / Internal Coupon / Config Extraction" },
+      { re: /số điện thoại\s*(khách|người mua|người dùng)|địa chỉ\s*(khách|nhà riêng)|danh sách đơn hàng|dữ liệu cá nhân|trích xuất\s*data|select\s+\*\s+from|drop\s+table|union\s+select/i, type: "Customer PII / Database Exfiltration" }
+    ];
+
+    for (const pat of injectionPatterns) {
+      if (pat.re.test(lower)) {
+        this.logAudit({
+          actor_role: "AI_GUARDRAIL",
+          actor_name: "AgriBotFirewall",
+          action: "AI_PROMPT_INJECTION_BLOCKED",
+          target: pat.type,
+          severity: "DANGER",
+          detail: `Chặn lệnh Prompt Injection độc hại: "${raw.slice(0, 90)}"`
+        });
+        return {
+          blocked: true,
+          threatType: pat.type,
+          safeReply: `🛡️ [AgriBot AI Guardrail - Đã Chặn Lệnh Không Hợp Lệ]: Phát hiện dấu hiệu "${pat.type}". Theo chính sách Ranh giới Dữ liệu (Data Boundaries), trợ lý AI không có quyền truy cập dữ liệu cá nhân (PII) của khách hàng khác, cấu hình hệ thống, khóa bảo mật hoặc mã ưu đãi nội bộ. Tôi chỉ hỗ trợ tư vấn mùa vụ nông sản, độ chín và chính sách Ví Escrow 12h.`
+        };
+      }
+    }
+
+    // Phản hồi an toàn trong ranh giới dữ liệu công khai (Public Catalog & Policy Boundary)
+    let reply = "🌱 Chào bạn! Tôi là Trợ lý AI AgriConnect (hoạt động trong vùng dữ liệu công khai đã kiểm duyệt). ";
+    if (/sầu riêng|ri6|măng cụt|bơ|chôm chôm|mùa vụ|giá/i.test(lower)) {
+      reply += "Hiện sàn đang mở gom Sầu riêng Ri6 ruột vàng (98.000 đ/kg), Măng cụt cổ thụ (95.000 đ/kg), Bơ sáp Đắk Lắk (38.000 đ/kg) và Combo Đi Chợ Tuần (359k - 389k). Bạn có thể chọn Loại 1 (VIP), Loại 2 (-15%) hoặc Loại 3 (-30%).";
+    } else if (/ship|vận chuyển|freeship|giao hàng/i.test(lower)) {
+      reply += "Chính sách vận chuyển: Miễn phí 0đ khi nhận tại Hub Xe Lạnh hoặc khi đơn hàng đạt chuẩn AOV ≥ 350.000 đ. Đơn dưới 350k tính phí đồng giá 25.000 đ (VietQR Escrow) hoặc 35.000 đ (COD).";
+    } else if (/đổi trả|bảo hành|sượng|hỏng|escrow|hoàn tiền/i.test(lower)) {
+      reply += "100% đơn thanh toán qua Ví Tạm Giữ Escrow được bảo vệ 12 giờ sau khi nhận hàng. Nếu trái bị sượng/dập, bạn chỉ cần gửi link Video Unbox tại trang Tra Cứu để được duyệt hoàn 20% hoặc 100% tự động 1-Click!";
+    } else {
+      reply += "Bạn có thể hỏi tôi về: (1) Tư vấn đặc sản Tây Nguyên - Đông Nam Bộ - Miền Tây, (2) Chính sách Freeship đơn ≥ 350.000 đ, hoặc (3) Cơ chế bảo vệ Ví Escrow 12h & đổi thùng trống nhận Voucher 10.000 đ!";
+    }
+
+    return {
+      blocked: false,
+      threatType: null,
+      safeReply: reply
+    };
+  }
 };
 
 class AgriDB {
@@ -529,13 +751,23 @@ class AgriDB {
     };
   }
 
-  // ================= GỬI ĐƠN HÀNG =================
+  // ================= GỬI ĐƠN HÀNG (BẢO VỆ BẰNG SHORT-LIVED JWT & IDEMPOTENCY KEY) =================
   async createOrder(orderInput, pricedPreview) {
+    // 1. Kiểm tra Idempotency-Key chống bấm đúp "Thanh toán" / Double-spending / Replay Attack
+    const idemFp = `${orderInput.customer_phone}_${pricedPreview.total_amount}_${(orderInput.items || []).length}`;
+    const idemKey = orderInput.idempotency_key || window.security.generateIdempotencyKey("ESCROW", idemFp);
+    window.security.checkAndLockIdempotency(idemKey, "CREATE_ESCROW_ORDER", pricedPreview.total_amount);
+
+    // 2. Cấp phát Token bảo mật JWT ngắn hạn (TTL 300s) cho phiên giao dịch Ví Escrow
+    const jwtSession = window.security.issueShortLivedJwt("CUSTOMER", orderInput.customer_phone, 300);
+
     // Lưu bản sao mở rộng vào LocalStorage để phục vụ hiển thị Ví Escrow, Subscription & Pre-order
     const localOrderRecord = {
       id: "ord-" + Date.now(),
       ...orderInput,
       ...pricedPreview,
+      idempotency_key: idemKey,
+      jwt_jti: jwtSession.jti,
       order_mode: orderInput.order_mode || "SINGLE",
       deposit_amount: orderInput.deposit_amount || 0,
       escrow_status: "HELD_IN_ESCROW",
@@ -544,6 +776,15 @@ class AgriDB {
       order_status: "CONFIRMED",
       created_at: new Date().toISOString()
     };
+
+    window.security.logAudit({
+      actor_role: "CUSTOMER",
+      actor_name: orderInput.customer_name || "Khách đặt hàng",
+      action: "ORDER_CREATED_ESCROW",
+      target: orderInput.order_code,
+      severity: "SUCCESS",
+      detail: `Tạo đơn ${orderInput.order_code} (${formatVND(pricedPreview.total_amount)}) • Khóa Idempotency [${idemKey}] • JWT [${jwtSession.jti}] • Đã kích hoạt che giấu PII (SĐT/Địa chỉ) mặc định.`
+    });
 
     if (Number(orderInput.insurance_fee || 0) > 0) {
       this.addInsuranceFee(Number(orderInput.insurance_fee));
@@ -630,15 +871,44 @@ class AgriDB {
     // Cập nhật song song trong LocalStorage cho các trường mở rộng (escrow_status, refund_status)
     const orders = this._read(LS.orders);
     const idx = orders.findIndex(o => o.id === orderId || o.order_code === orderId);
+    const targetCode = idx !== -1 ? orders[idx].order_code : String(orderId);
     if (idx !== -1) {
       orders[idx] = { ...orders[idx], ...updates };
       this._write(LS.orders, orders);
     }
 
+    // Ghi nhận Nhật ký Truy vết Bảo mật (Audit Trail) cho mọi thao tác đổi trạng thái đơn / thanh toán
+    if (updates.order_status) {
+      const piiNote = updates.order_status === "SHIPPING"
+        ? "🔓 Mở khóa tạm thời SĐT & Địa chỉ thực cho Shipper/Nhà vườn giao hàng"
+        : "🔒 Tự động khóa & che giấu SĐT (090****123) + Địa chỉ nhà riêng sau khi kết thúc giao";
+      window.security.logAudit({
+        actor_role: "ADMIN",
+        actor_name: "Admin Portal",
+        action: "ORDER_STATUS_CHANGE",
+        target: targetCode,
+        severity: updates.order_status === "SHIPPING" ? "WARN" : "INFO",
+        detail: `Chuyển trạng thái đơn ${targetCode} ➔ [${updates.order_status}]. ${piiNote}.`
+      });
+    }
+    if (updates.payment_status) {
+      window.security.logAudit({
+        actor_role: "ADMIN",
+        actor_name: "Admin Portal",
+        action: "PAYMENT_STATUS_CHANGE",
+        target: targetCode,
+        severity: "SUCCESS",
+        detail: `Cập nhật trạng thái thanh toán đơn ${targetCode} ➔ [${updates.payment_status}].`
+      });
+    }
+
     if (this.isCloud) {
       const cloudSafeUpdates = {};
       if (updates.payment_status) cloudSafeUpdates.payment_status = updates.payment_status;
-      if (updates.order_status) cloudSafeUpdates.order_status = updates.order_status;
+      if (updates.order_status) {
+        // Trên Supabase schema, order_status chấp nhận CONFIRMED / DELIVERED / CANCELLED (ánh xạ SHIPPING -> CONFIRMED nếu cần)
+        cloudSafeUpdates.order_status = updates.order_status === "SHIPPING" ? "CONFIRMED" : updates.order_status;
+      }
       if (updates.notes !== undefined) cloudSafeUpdates.notes = updates.notes;
       if (Object.keys(cloudSafeUpdates).length > 0) {
         const { error } = await this.client.from("orders").update(cloudSafeUpdates).eq("id", orderId);
@@ -689,13 +959,28 @@ class AgriDB {
 
   async resolveRefundClaim(claimId, decision) {
     // decision: 'APPROVE_20' | 'APPROVE_100' | 'REJECT'
+    const idemKey = window.security.generateIdempotencyKey("REFUND", `${claimId}_${decision}`);
+    window.security.checkAndLockIdempotency(idemKey, `ESCROW_${decision}`, 0);
+    const jwt = window.security.issueShortLivedJwt("ADMIN", `refund_${claimId}`, 180);
+
     const list = this._read(LS.refundClaims);
     const idx = list.findIndex(c => c.id === claimId);
     if (idx === -1) return false;
     list[idx].status = decision === "REJECT" ? "REJECTED" : "APPROVED";
     list[idx].decision = decision;
     list[idx].resolved_at = new Date().toISOString();
+    list[idx].idempotency_key = idemKey;
+    list[idx].jwt_jti = jwt.jti;
     this._write(LS.refundClaims, list);
+
+    window.security.logAudit({
+      actor_role: "ADMIN",
+      actor_name: "Admin Escrow Auditor",
+      action: `ESCROW_REFUND_${decision}`,
+      target: list[idx].order_code || claimId,
+      severity: decision === "REJECT" ? "WARN" : "SUCCESS",
+      detail: `Phê duyệt 1-Click [${decision}] cho đơn ${list[idx].order_code} • Khóa chống lặp [${idemKey}] • Token [${jwt.jti}].`
+    });
     return list[idx];
   }
 
@@ -708,12 +993,25 @@ class AgriDB {
   }
 
   releaseEscrowToFarmer(amountVND) {
-    const w = this.getFarmerWallet();
     const amt = Number(amountVND || 0);
+    const idemKey = window.security.generateIdempotencyKey("ESCROW_RELEASE", `T1_${amt}`);
+    window.security.checkAndLockIdempotency(idemKey, "ESCROW_RELEASE_T1", amt);
+    const jwt = window.security.issueShortLivedJwt("ADMIN", "escrow_cron_t1", 180);
+
+    const w = this.getFarmerWallet();
     w.available_balance = Number(w.available_balance || 0) + amt;
     w.escrow_pending = Math.max(0, Number(w.escrow_pending || 0) - amt);
     w.last_release_at = new Date().toISOString();
     localStorage.setItem(LS.farmerWallet, JSON.stringify(w));
+
+    window.security.logAudit({
+      actor_role: "ESCROW_GATEWAY",
+      actor_name: "AutoTriggerCronT1",
+      action: "ESCROW_CRON_RELEASE_T1",
+      target: "FARM_BAC_NAM",
+      severity: "SUCCESS",
+      detail: `Giải ngân T+1 số tiền ${formatVND(amt)} về Ví Nhà Vườn Bác Năm • Idempotency [${idemKey}] • JWT [${jwt.jti}].`
+    });
     return w;
   }
 

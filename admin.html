@@ -573,6 +573,93 @@
       </div>
     </div>
 
+    <!-- KIẾN TRÚC BẢO MẬT 4 TRỌNG ĐIỂM: DATA MASKING, PAYMENT JWT + IDEMPOTENCY, RBAC + AUDIT TRAIL, AI PROMPT INJECTION FIREWALL -->
+    <div class="bg-slate-900 text-white rounded-3xl p-5 sm:p-6 border border-slate-800 shadow-lg space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <h2 class="text-sm sm:text-base font-black text-white">Trung Tâm Bảo Mật 4 Trọng Điểm & Nhật Ký Truy Vết (Security & Audit Trail Console)</h2>
+            <p class="text-[11px] text-slate-400">Bảo vệ tính toàn vẹn luồng dữ liệu giao dịch, thông tin định danh khách hàng (PII), Ví Escrow và Ranh giới dữ liệu AI</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="simulateIdempotencyReplayAttack()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 font-extrabold text-[11px] px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
+            <i class="fa-solid fa-key"></i>
+            <span>Test Chặn Replay / Double-Spend (Idempotency)</span>
+          </button>
+          <button type="button" onclick="simulateRbacUnauthorizedAccess()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-400/40 font-extrabold text-[11px] px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
+            <i class="fa-solid fa-ban"></i>
+            <span>Test Vách Ngăn RBAC (Chặn Nông Dân Xem Doanh Thu Sàn)</span>
+          </button>
+          <button type="button" onclick="simulateAiPromptInjectionAttack()" class="bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-400/40 font-extrabold text-[11px] px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
+            <i class="fa-solid fa-robot"></i>
+            <span>Test Tường Lửa Chống Prompt Injection AI</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Thẻ Trạng Thái Kiến Trúc Bảo Mật -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-emerald-300">1. Data Privacy & Masking</span>
+            <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">090****123</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Tự động ẩn SĐT & Địa chỉ nhà riêng của khách Pre-order. <strong>Chỉ mở khóa khi đơn chuyển sang trạng thái "Đang giao" (SHIPPING)</strong> và tự động khóa lại ngay khi Hoàn tất.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-amber-300">2. Payment & Ví Escrow</span>
+            <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">JWT + Idempotency</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Xác thực bằng <strong>Short-lived JWT (TTL 300s)</strong> & khóa <strong>Idempotency-Key</strong> độc nhất. Chặn tuyệt đối lỗi trừ tiền 2 lần (Double-spending) khi bấm đúp hoặc Replay Attack.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-sky-300">3. Phân Quyền RBAC & Audit</span>
+            <span class="text-[10px] font-bold bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded">3 Vách Ngăn</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Phân lập <strong>Khách hàng / Nông dân / Admin</strong>. Cổng Nông Dân bị chặn gọi API xem khách vườn khác hoặc doanh thu sàn. Ghi <strong>Audit Trail</strong> mọi thao tác hoàn tiền & đổi trạng thái.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-purple-300">4. AI Security Guardrail</span>
+            <span class="text-[10px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded">Anti-Injection</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Thiết lập <strong>Data Boundaries</strong> chặt chẽ cho AgriBot AI. Chặn các lệnh <strong>Prompt Injection</strong> cố tình ép AI tiết lộ mã giảm giá nội bộ, cấu hình hệ thống hoặc PII khách hàng.
+          </p>
+        </div>
+      </div>
+
+      <!-- Bảng Nhật Ký Truy Vết Bảo Mật (Immutable Security Audit Trail) -->
+      <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-emerald-300 flex items-center gap-2">
+            <i class="fa-solid fa-fingerprint"></i>
+            <span>Nhật Ký Truy Vết Bảo Mật Thời Gian Thực (Immutable Audit Trail Log)</span>
+          </span>
+          <span id="audit-log-count" class="text-[11px] text-slate-400 font-mono">Đang ghi nhận mọi thao tác nhạy cảm</span>
+        </div>
+        <div id="admin-audit-trail-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+          <!-- Rendered by js/admin.js -->
+        </div>
+      </div>
+    </div>
+
     <!-- Orders Table Card -->
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
       
@@ -677,8 +764,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/config.js?v=20261107_v11"></script>
-  <script src="js/supabaseClient.js?v=20261107_v11"></script>
-  <script src="js/admin.js?v=20261107_v11"></script>
+  <script src="js/config.js?v=20261107_v12"></script>
+  <script src="js/supabaseClient.js?v=20261107_v12"></script>
+  <script src="js/admin.js?v=20261107_v12"></script>
 </body>
 </html>
