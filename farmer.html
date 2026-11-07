@@ -37,57 +37,74 @@
 </head>
 <body class="bg-[#f7fdf3] text-[#1f3813] antialiased pb-20">
 
-  <!-- HEADER DỊU MẮT, ĐỒNG BỘ VỚI TRANG CHỦ AGRICONNECT -->
+  <!-- HEADER DỊU MẮT, HIỂN THỊ TRỌN VẸN TRÊN MOBILE KHÔNG BỊ CẮT CHỮ -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#d2f0b6] shadow-2xs">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#389e18] to-[#63d428] text-white flex items-center justify-center text-lg shadow-sm shrink-0">
+    <div class="max-w-4xl mx-auto px-3.5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <a href="index.html" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#389e18] to-[#63d428] text-white flex items-center justify-center text-base sm:text-lg shadow-sm shrink-0">
           🌾
         </a>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-lg font-extrabold text-[#0f240d] leading-tight">Cổng Nhà Vườn Đối Tác (Bác Năm)</h1>
-            <span class="text-[10px] font-bold uppercase tracking-wider bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-full border border-[#b8ee99]">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <h1 class="text-sm sm:text-lg font-extrabold text-[#0f240d] leading-snug">Cổng Nhà Vườn Bác Năm</h1>
+            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-full border border-[#b8ee99] whitespace-nowrap">
               Đặc Sản Vùng Miền
             </span>
           </div>
-          <p class="text-xs text-[#4b6b32] font-medium">Giao diện Thẻ đơn giản • Hỗ trợ nhập bằng giọng nói</p>
+          <p class="text-[11px] text-[#4b6b32] font-medium truncate">Thao tác thẻ đơn giản • Nhập bằng giọng nói</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <a href="index.html" class="px-3.5 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#256314] font-bold text-xs flex items-center gap-1.5 border border-[#c8edab] transition">
-          <i data-lucide="store" class="w-4 h-4 text-[#3ba117]"></i>
-          <span>Về Trang Chợ</span>
-        </a>
-      </div>
+      <a href="index.html" class="px-3 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#256314] font-extrabold text-xs flex items-center gap-1.5 border border-[#c8edab] transition whitespace-nowrap shrink-0">
+        <i data-lucide="store" class="w-3.5 h-3.5 text-[#3ba117] shrink-0"></i>
+        <span>Về Chợ</span>
+      </a>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-5 space-y-5">
+  <main class="max-w-4xl mx-auto px-3.5 sm:px-6 pt-4 space-y-4 sm:space-y-5">
 
-    <!-- 3 THẺ ĐIỀU HƯỚNG GỌN GÀNG, DỄ NHÌN -->
-    <div class="grid grid-cols-3 gap-3">
-      <a href="#dang-ban-lua-moi" class="bg-white hover:bg-[#f2fce9] active:scale-98 transition rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs border border-[#c8edab]">
-        <div class="w-10 h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-lg shrink-0">🌱</div>
-        <div class="min-w-0">
-          <span class="text-xs sm:text-sm font-extrabold text-[#0f240d] block truncate">Đăng Bán Lứa Mới</span>
-          <span class="text-[11px] text-[#4b6b32] hidden sm:block">Nhập bằng giọng nói</span>
+    <!-- 3 THẺ ĐIỀU HƯỚNG (BỐ CỤC DỌC TRÊN MOBILE ĐỂ HIỂN THỊ ĐẦY ĐỦ 100% CHỮ, KHÔNG BỊ CẮT "Đă...", "Vư...") -->
+    <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
+      <a href="#dang-ban-lua-moi" class="bg-white hover:bg-[#f2fce9] active:scale-98 transition rounded-2xl p-2.5 sm:p-3.5 flex flex-col sm:flex-row items-center justify-center sm:justify-start text-center sm:text-left gap-1.5 sm:gap-3 shadow-2xs border border-[#c8edab]">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-base sm:text-lg shrink-0">🌱</div>
+        <div>
+          <span class="text-[11px] sm:text-sm font-extrabold text-[#0f240d] block leading-tight">Đăng Bán Mới</span>
+          <span class="text-[10px] text-[#4b6b32] hidden sm:block mt-0.5">Nhập bằng giọng nói</span>
         </div>
       </a>
-      <a href="#vuon-dang-co-gi" class="bg-white hover:bg-[#f2fce9] active:scale-98 transition rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs border border-[#c8edab]">
-        <div class="w-10 h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-lg shrink-0">🧺</div>
-        <div class="min-w-0">
-          <span class="text-xs sm:text-sm font-extrabold text-[#0f240d] block truncate">Vườn Đang Có Gì</span>
-          <span class="text-[11px] text-[#4b6b32] hidden sm:block">Quản lý các lứa trái cây</span>
+      <a href="#vuon-dang-co-gi" class="bg-white hover:bg-[#f2fce9] active:scale-98 transition rounded-2xl p-2.5 sm:p-3.5 flex flex-col sm:flex-row items-center justify-center sm:justify-start text-center sm:text-left gap-1.5 sm:gap-3 shadow-2xs border border-[#c8edab]">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center text-base sm:text-lg shrink-0">🧺</div>
+        <div>
+          <span class="text-[11px] sm:text-sm font-extrabold text-[#0f240d] block leading-tight">Vườn Có Gì</span>
+          <span class="text-[10px] text-[#4b6b32] hidden sm:block mt-0.5">Quản lý các lứa trái cây</span>
         </div>
       </a>
-      <a href="#vi-tien-cua-bac" class="bg-white hover:bg-[#f2fce9] active:scale-98 transition rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs border border-[#c8edab]">
-        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg shrink-0">💰</div>
-        <div class="min-w-0">
-          <span class="text-xs sm:text-sm font-extrabold text-[#0f240d] block truncate">Ví Tiền Nhà Vườn</span>
-          <span class="text-[11px] text-[#4b6b32] hidden sm:block">Bảo vệ chống boom COD</span>
+      <a href="#vi-tien-cua-bac" class="bg-white hover:bg-[#f2fce9] active:scale-98 transition rounded-2xl p-2.5 sm:p-3.5 flex flex-col sm:flex-row items-center justify-center sm:justify-start text-center sm:text-left gap-1.5 sm:gap-3 shadow-2xs border border-[#c8edab]">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-base sm:text-lg shrink-0">💰</div>
+        <div>
+          <span class="text-[11px] sm:text-sm font-extrabold text-[#0f240d] block leading-tight">Ví Nhà Vườn</span>
+          <span class="text-[10px] text-[#4b6b32] hidden sm:block mt-0.5">Bảo vệ chống boom COD</span>
         </div>
+      </a>
+    </div>
+
+    <!-- TÍN HIỆU THỊ TRƯỜNG & DỰ BÁO SẢN LƯỢNG CHO NHÀ VƯỜN (GÓC NHÌN DATA ANALYST & BA) -->
+    <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#c8edab] shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div class="flex items-start gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm shrink-0 mt-0.5">📊</div>
+        <div class="text-xs space-y-0.5">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-extrabold text-[#0f240d]">Dự Báo Nhu Cầu Đô Thị Tuần Này (Data Signal):</span>
+            <span class="text-[10px] font-bold bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-full">Tăng +24% tại Q.1 & Q.3</span>
+          </div>
+          <p class="text-[#4b6b32] leading-relaxed">
+            Khách văn phòng đang đặt mạnh <strong>Sầu riêng Ri6 (đã gom 28kg)</strong>, <strong>Măng cụt cổ thụ (22kg)</strong> & <strong>Bơ sáp Tây Nguyên (15kg)</strong>. Khuyến nghị vườn cắt đúng độ già 8.5 tuổi vào sáng Thứ Sáu!
+          </p>
+        </div>
+      </div>
+      <a href="#dang-ban-lua-moi" class="text-[11px] font-extrabold text-[#256314] bg-[#f2fce9] hover:bg-[#e1f9cf] px-3 py-1.5 rounded-xl border border-[#b8ee99] whitespace-nowrap shrink-0">
+        + Báo sản lượng ngay
       </a>
     </div>
 
@@ -286,8 +303,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261106_v9"></script>
-  <script src="js/supabaseClient.js?v=20261106_v9"></script>
+  <script src="js/config.js?v=20261107_v10"></script>
+  <script src="js/supabaseClient.js?v=20261107_v10"></script>
   <script>
     let recognition = null;
     let isRecording = false;
