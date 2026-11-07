@@ -180,9 +180,9 @@
       </div>
 
       <form id="farmer-post-form" class="space-y-4">
-        <!-- Bước 1: Chọn nhanh loại trái cây -->
+        <!-- Bước 1: Chọn nhanh loại trái cây / rau củ quả -->
         <div>
-          <label class="block text-xs sm:text-sm font-bold text-[#1f3813] mb-2">1. Đợt này vườn thu hoạch trái gì?</label>
+          <label class="block text-xs sm:text-sm font-bold text-[#1f3813] mb-2">1. Đợt này vườn thu hoạch nông sản / rau củ quả gì?</label>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2.5">
             <button type="button" onclick="quickPickFruit('Sầu Riêng Ri6 Chín Rụng', 98000, 'images/hero-fruits.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🍈 Sầu Riêng Ri6
@@ -190,17 +190,26 @@
             <button type="button" onclick="quickPickFruit('Măng Cụt Cổ Thụ Lứa Mới', 95000, 'images/mangosteen-basket.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
               🟣 Măng Cụt Cổ Thụ
             </button>
-            <button type="button" onclick="quickPickFruit('Bơ Sáp Dẻo Hái Già', 38000, 'images/bo-sap.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
-              🥑 Bơ Sáp Dẻo
+            <button type="button" onclick="quickPickFruit('Bơ Sáp Dẻo Tây Nguyên', 38000, 'images/bo-sap.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🥑 Bơ Sáp Tây Nguyên
             </button>
-            <button type="button" onclick="quickPickFruit('Chôm Chôm Nhãn Tróc Hạt', 52000, 'images/chomchom.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
-              🍒 Chôm Chôm Nhãn
+            <button type="button" onclick="quickPickFruit('Cà Chua Hữu Cơ Đà Lạt', 42000, 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=800&q=80')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🍅 Cà Chua Hữu Cơ Đà Lạt
             </button>
-            <button type="button" onclick="quickPickFruit('Bòn Bon Đất Đỏ Chùm Lớn', 68000, 'images/bonbon.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
-              🟡 Bòn Bon Đất Đỏ
+            <button type="button" onclick="quickPickFruit('Khoai Lang Mật Tà Nung', 39000, 'https://images.unsplash.com/photo-1596097635121-14b63b7a0c19?auto=format&fit=crop&w=800&q=80')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🍠 Khoai Lang Mật Đà Lạt
             </button>
-            <button type="button" onclick="quickPickFruit('Dâu Da Đất Vàng Rừng Vườn', 38000, 'images/dauda.jpg')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
-              🍊 Dâu Da Đất Vàng
+            <button type="button" onclick="quickPickFruit('Bông Cải Xanh & Ớt Chuông Đà Lạt', 48000, 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=800&q=80')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🥦 Bông Cải & Ớt Chuông
+            </button>
+            <button type="button" onclick="quickPickFruit('Xà Lách Thủy Canh & Cải Bó Xôi', 45000, 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🥬 Xà Lách Thủy Canh
+            </button>
+            <button type="button" onclick="quickPickFruit('Bưởi Da Xanh Ruột Hồng Bến Tre', 62000, 'https://images.unsplash.com/photo-1577234286642-fc512a5f8f11?auto=format&fit=crop&w=800&q=80')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🍊 Bưởi Da Xanh Bến Tre
+            </button>
+            <button type="button" onclick="quickPickFruit('Hạt Điều Rang Củi & Macca', 145000, 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80')" class="p-2.5 rounded-xl border border-[#d2f0b6] hover:border-[#3ba117] bg-[#f7fdf3] hover:bg-[#e1f9cf]/60 text-left font-bold text-xs text-[#1f3813] transition">
+              🌰 Hạt Điều & Macca
             </button>
           </div>
           <input type="text" id="f-name" required value="Sầu Riêng Ri6 Chín Rụng Đợt Mới"
@@ -319,8 +328,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261107_v12"></script>
-  <script src="js/supabaseClient.js?v=20261107_v12"></script>
+  <script src="js/config.js?v=20261107_v13"></script>
+  <script src="js/supabaseClient.js?v=20261107_v13"></script>
   <script>
     window.testFarmerRbacBoundary = function () {
       try {

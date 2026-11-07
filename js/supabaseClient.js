@@ -188,6 +188,78 @@ const DEMO_PRODUCTS = [
     description: "Set quà 5.5kg thượng hạng: 1 quả Sầu riêng Ri6 VIP chuẩn đẹp (2.5kg) + 2kg Măng cụt cổ thụ + 1kg Bơ sáp dẻo loại 1. Mua lẻ 473.000 đ, giá combo ưu đãi chỉ 425.000 đ (tiết kiệm 48.000 đ).",
     unit: "combo", weight_kg: 5.5, price_original: 329000, price_sale: 425000, image_url: "images/hero-fruits.jpg", is_available: true,
     certification_badge: "Thượng Hạng VIP • VietGAP"
+  },
+  // ================= RAU CỦ QUẢ SẠCH ĐÀ LẠT & NÔNG SẢN CÁC VÙNG MIỀN MỚI BỔ SUNG =================
+  {
+    id: "p14", name: "Cà Chua Beef & Cà Chua Bi Hữu Cơ Đà Lạt (Lâm Đồng)", category: "RauCuQua",
+    highlights: ["Trồng nhà kính công nghệ cao Đà Lạt", "Quả chín đỏ mọng, thịt dày ít hạt giàu Lycopene", "Ngọt thanh tự nhiên, ăn sống salad hoặc nấu canh"],
+    description: "Cà chua Beef và cà chua bi hữu cơ thu hoạch chín đỏ trên giàn tại nhà kính Đơn Dương - Đà Lạt (Lâm Đồng). Cơm dày mọng nước, vị chua ngọt hài hòa thanh mát, đạt chuẩn VietGAP không dư lượng thuốc bảo vệ thực vật. (Giá thị trường TP.HCM: 50.000 - 65.000 đ/kg).",
+    unit: "kg", weight_kg: 1, price_original: 28000, price_sale: 42000, image_url: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "Hữu Cơ Đà Lạt • Nhà Kính"
+  },
+  {
+    id: "p15", name: "Khoai Lang Mật Tà Nung Đà Lạt (Đã Ủ Xuống Mật Dẻo Quánh)", category: "RauCuQua",
+    highlights: ["Củ thuôn đều, ủ tự nhiên 7 ngày tươm mật", "Nướng hoặc hấp mật chảy vàng óng ngọt lịm", "Giàu chất xơ & tinh bột tốt cho sức khỏe"],
+    description: "Đặc sản khoai lang mật trồng trên vùng đất đỏ bazan Tà Nung - Lâm Đồng. Khoai sau khi thu hoạch được nhà vườn phân loại và ủ xuống đường tự nhiên 7 ngày. Khi nướng hoặc hấp chín, ruột khoai màu cam đỏ dẻo quánh, mật ngọt tươm ra thơm nức mũi.",
+    unit: "kg", weight_kg: 1, price_original: 24000, price_sale: 39000, image_url: "https://images.unsplash.com/photo-1596097635121-14b63b7a0c19?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "VietGAP • Đặc Sản Lâm Đồng"
+  },
+  {
+    id: "p16", name: "Bông Cải Xanh (Súp Lơ) & Ớt Chuông Ba Màu Đà Lạt", category: "RauCuQua",
+    highlights: ["Bông cải xanh baby giòn ngọt, bông khít chắc", "Ớt chuông Đà Lạt dày thịt, giòn tan không hăng", "Cắt sáng sớm vận chuyển xe lạnh về TP.HCM"],
+    description: "Bộ đôi rau củ giàu Vitamin C và khoáng chất bậc nhất từ cao nguyên Lâm Đồng: Bông cải xanh tươi non giòn ngọt kết hợp cùng Ớt chuông Đà Lạt (Đỏ - Vàng - Xanh) dày cùi mọng nước. Thích hợp xào thịt bò, nướng BBQ hoặc làm salad thực dưỡng.",
+    unit: "kg", weight_kg: 1, price_original: 32000, price_sale: 48000, image_url: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "VietGAP • Rau Củ Lạnh 24h"
+  },
+  {
+    id: "p17", name: "Xà Lách Thủy Canh & Cải Bó Xôi Hữu Cơ (Rau Ăn Sống Salad)", category: "RauCuQua",
+    highlights: ["Trồng thủy canh hồi lưu trong nhà màng khép kín", "Lá giòn ngọt mọng nước, 100% không thuốc trừ sâu", "Đóng túi khí sạch, an tâm trộn salad ăn sống"],
+    description: "Tuyển tập xà lách Lô Lô xanh, Romaine giòn ngọt và cải bó xôi (rau chân vịt) trồng theo quy trình thủy canh chuẩn GlobalGAP tại Đà Lạt. Bộ rễ trắng sạch, lá rau non mướt giàu sắt và folate, tuyệt vời cho bữa ăn Eat Clean hoặc sinh tố xanh.",
+    unit: "kg", weight_kg: 1, price_original: 29000, price_sale: 45000, image_url: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "Thủy Canh Hữu Cơ • Eat Clean"
+  },
+  {
+    id: "p18", name: "Cà Rốt Baby Đà Lạt & Khoai Tây Hồng Đất Đỏ (Củ Quả Sạch)", category: "RauCuQua",
+    highlights: ["Cà rốt củ vừa, lõi nhỏ cực kỳ giòn ngọt", "Khoai tây hồng Đà Lạt dẻo bùi thơm bơ", "Không rửa hóa chất, bảo quản tươi lâu 2 tuần"],
+    description: "Combo củ quả thiết yếu cho mọi căn bếp gia đình: Cà rốt Đà Lạt giàu Beta-Carotene ngọt mát ép nước hoặc hầm canh, đi kèm khoai tây hồng đất đỏ dẻo bùi. Thu hoạch trực tiếp tại ruộng và giao thẳng về Hub TP.HCM.",
+    unit: "kg", weight_kg: 1, price_original: 23000, price_sale: 36000, image_url: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "VietGAP • Củ Quả Cao Nguyên"
+  },
+  {
+    id: "p19", name: "Bắp Ngọt Nữ Hoàng & Bí Đỏ Hồ Lô Dẻo Bùi (Đông Nam Bộ)", category: "RauCuQua",
+    highlights: ["Bắp ngọt hạt mọng sữa, ngọt mát ăn sống được", "Bí đỏ hồ lô già đanh, ruột vàng cam dẻo bùi", "Thu hoạch tươi mới mỗi sáng Thứ Sáu"],
+    description: "Bắp ngọt (ngô ngọt) và bí đỏ hồ lô canh tác hữu cơ vi sinh tại các nông trại Đông Nam Bộ & Tây Nguyên. Bắp luộc chỉ 5 phút thơm lừng ngọt thanh, bí đỏ nấu sữa hạt hoặc hầm xương cực kỳ bổ dưỡng cho trẻ nhỏ và người lớn tuổi.",
+    unit: "kg", weight_kg: 1, price_original: 21000, price_sale: 34000, image_url: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "Canh Tác Hữu Cơ Vi Sinh"
+  },
+  {
+    id: "p20", name: "Bưởi Da Xanh Ruột Hồng Cành Già (Chợ Lách - Bến Tre)", category: "TraiCay",
+    highlights: ["Tép bưởi hồng đỏ mọng nước, giòn tan", "Vị ngọt thanh đậm đà, không chua không the", "Trái nặng tay 1.2 - 1.6kg, róc vỏ mỏng"],
+    description: "Bưởi da xanh chính gốc Chợ Lách (Bến Tre) hái từ những vườn cây trên 10 năm tuổi. Vỏ xanh căng bóng, khi bổ ra lộ rõ từng múi bưởi hồng đào căng mọng, tôm bưởi ráo nước giòn ngọt và hoàn toàn không hạt hoặc rất ít hạt.",
+    unit: "kg", weight_kg: 1, price_original: 42000, price_sale: 62000, image_url: "https://images.unsplash.com/photo-1577234286642-fc512a5f8f11?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "VietGAP • Đặc Sản Bến Tre"
+  },
+  {
+    id: "p21", name: "Xoài Cát Hòa Lộc Chín Cây Thơm Lừng (Cái Bè - Tiền Giang)", category: "TraiCay",
+    highlights: ["Thịt xoài vàng ươm dày mịn, hoàn toàn không xơ", "Vị ngọt đậm đà kèm hương thơm nồng nàn", "Hái già 8.5 tuổi, chín tự nhiên không ủ thuốc"],
+    description: "Mệnh danh là 'Nữ hoàng của các loại xoài' miền Tây Nam Bộ. Xoài Cát Hòa Lộc thu hái tại vùng chuyên canh Cái Bè (Tiền Giang), quả thuôn dài, da vàng ươm phấn trắng tự nhiên, hạt mỏng dẹt và phần thịt xoài dẻo mịn ngọt lịm.",
+    unit: "kg", weight_kg: 1, price_original: 52000, price_sale: 75000, image_url: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "VietGAP • Đặc Sản Tiền Giang"
+  },
+  {
+    id: "p22", name: "Hạt Điều Rang Củi Bình Phước & Macca Đắk Lắk (Nông Sản Khô)", category: "NongSanKho",
+    is_fresh: false, is_dry: true,
+    highlights: ["Hạt điều vỏ lụa loại A+ rang củi truyền thống", "Macca Tây Nguyên nứt vỏ tự nhiên béo bùi", "Bảo quản 6 tháng • Giao toàn quốc không lo dập"],
+    description: "Sự kết hợp tinh hoa nông sản khô của Bình Phước và Đắk Lắk: Hạt điều vỏ lụa cồ lớn rang củi muối giòn tan thơm bùi, kết hợp hạt Macca sấy lạnh giàu Omega-3. Đóng hộp hút chân không 500g sang trọng, tiện lợi làm quà biếu hoặc ăn vặt lành mạnh.",
+    unit: "hộp 500g", weight_kg: 0.5, price_original: 105000, price_sale: 145000, image_url: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "OCOP 4 Sao • Nông Sản Khô"
+  },
+  {
+    id: "p23", name: "Combo 7: Thùng Rau Củ Quả Đi Chợ Hàng Tuần (5Kg Rau Củ Đà Lạt Tươi Sạch)", category: "Combo",
+    highlights: ["Trọn bộ 5kg gồm 6 loại rau củ quả Đà Lạt thiết yếu", "Đủ cho gia đình 3-4 người ăn suốt cả tuần", "Tiết kiệm 35.000 đ • Rất hợp đăng ký Định kỳ tuần (-8%)"],
+    description: "Giải pháp đi chợ thảnh thơi cho nhân viên văn phòng và gia đình bận rộn! Thùng 5kg gồm: 1kg Cà chua Beef/Bi hữu cơ + 1kg Bông cải xanh & Ớt chuông + 1kg Xà lách thủy canh & Cải bó xôi + 1kg Khoai lang mật Tà Nung + 1kg Cà rốt & Khoai tây Đà Lạt.",
+    unit: "thùng 5kg", weight_kg: 5, price_original: 158000, price_sale: 219000, image_url: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80", is_available: true,
+    certification_badge: "Combo Rau Củ Tuần • VietGAP"
   }
 ].map(enrichProductMeta);
 
@@ -252,6 +324,26 @@ const HAPPY_HOUR_UGLY_FOOD = [
     image_url: "images/chomchom.jpg",
     is_available: true,
     certification_badge: "⚡ Cứu Hộ Cuối Ngày (-65%)"
+  },
+  {
+    id: "ugly-4",
+    name: "[Cứu Hộ Nông Sản -60%] Túi 3Kg Rau Củ Quả Đà Lạt Ngoằn Ngoèo (Cà Rốt + Khoai Lang + Cà Chua)",
+    category: "UglyFood",
+    is_ugly_food: true,
+    happy_hour_discount_pct: 60,
+    highlights: [
+      "⚡ Happy Hour 17h-19h: Giảm 60% chỉ còn 45.000 đ / 3kg",
+      "Củ quả cong tự nhiên / lệch size, tươi giòn ngọt 100%",
+      "🌱 Tuyệt vời để hầm canh, ép nước, làm súp cho gia đình"
+    ],
+    description: "Túi 3kg gồm Cà rốt, Khoai lang mật, Khoai tây và Cà chua Đà Lạt có hình dáng hơi cong hoặc không đồng đều kích thước nên không đóng khay siêu thị, nhưng vừa thu hoạch sáng nay, độ giòn ngọt và dinh dưỡng nguyên vẹn 100%!",
+    unit: "túi 3kg",
+    weight_kg: 3,
+    price_original: 112000,
+    price_sale: 45000,
+    image_url: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=800&q=80",
+    is_available: true,
+    certification_badge: "⚡ Cứu Hộ Rau Củ (-60%)"
   }
 ].map(enrichProductMeta);
 
@@ -660,13 +752,15 @@ class AgriDB {
   // ================= SẢN PHẨM =================
   async getProducts() {
     const customFarmerItems = this._read(LS.farmerCustomProducts);
+    // Các loại Rau củ quả Đà Lạt, Nông sản khô & Đặc sản mới bổ sung (p14 -> p23) luôn được hợp nhất kể cả ở chế độ Cloud
+    const extraCatalogItems = DEMO_PRODUCTS.filter(p => Number(String(p.id).replace(/\D/g, "")) >= 14);
     if (this.isCloud) {
       try {
         const { data, error } = await this.client
           .from("products").select("*").eq("is_available", true).order("created_at", { ascending: true });
         if (!error && data && data.length > 0) {
           const cloudEnriched = data.map((p, idx) => enrichProductMeta(p, idx));
-          return [...customFarmerItems.map((p, i) => enrichProductMeta(p, i)), ...cloudEnriched, ...HAPPY_HOUR_UGLY_FOOD];
+          return [...customFarmerItems.map((p, i) => enrichProductMeta(p, i)), ...cloudEnriched, ...extraCatalogItems, ...HAPPY_HOUR_UGLY_FOOD];
         }
       } catch (err) {
         console.warn("[AgriConnect] Không tải được từ Supabase, dùng dữ liệu dự phòng:", err);
@@ -679,11 +773,12 @@ class AgriDB {
 
   async getAllProducts() {
     const customFarmerItems = this._read(LS.farmerCustomProducts);
+    const extraCatalogItems = DEMO_PRODUCTS.filter(p => Number(String(p.id).replace(/\D/g, "")) >= 14);
     if (this.isCloud) {
       try {
         const { data, error } = await this.client.from("products").select("*");
         if (!error && data && data.length > 0) {
-          return [...customFarmerItems, ...data, ...HAPPY_HOUR_UGLY_FOOD].map((p, idx) => enrichProductMeta(p, idx));
+          return [...customFarmerItems, ...data, ...extraCatalogItems, ...HAPPY_HOUR_UGLY_FOOD].map((p, idx) => enrichProductMeta(p, idx));
         }
       } catch (err) {
         console.warn("[AgriConnect] Lỗi lấy sản phẩm admin:", err);
