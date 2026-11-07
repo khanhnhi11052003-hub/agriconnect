@@ -214,20 +214,44 @@ function orderKg(o) {
   }, 0);
 }
 
-// ================= TÀI CHÍNH & PHÂN TÍCH UNIT ECONOMICS (CHUẨN CHUYÊN GIA BA, DATA ANALYST & E-COMMERCE) =================
+// ================= TÀI CHÍNH, BÓC TÁCH DÒNG TIỀN (INFLOW / OUTFLOW) & CHẨN ĐOÁN 4 RED FLAGS (DA & BA) =================
+window.applyAllOptimizations = function () {
+  ["opt-multidrop-route", "opt-return-box", "opt-conditional-freeship", "opt-reserve-5pct"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = true;
+  });
+  calculateMetrics();
+};
+
 function calculateMetrics() {
   const F = window.APP_CONFIG.FINANCE || {};
   const orders = activeOrders();
   const targetKg = Number(window.APP_CONFIG?.CAMPAIGN?.TARGET_KG || 60);
+  const mvlKg = Number(F.MIN_VIABLE_LOAD_KG || 35);
+  const targetAov = Number(F.TARGET_AOV || 350000);
+
+  // Trạng thái công tắc 3 nhóm chiến lược tối ưu hóa (Live Simulator)
+  const optMultiDrop = document.getElementById("opt-multidrop-route")?.checked === true;
+  const optReturnBox = document.getElementById("opt-return-box")?.checked === true;
+  const optCondFreeship = document.getElementById("opt-conditional-freeship")?.checked === true;
+  const optReserve5Pct = document.getElementById("opt-reserve-5pct")?.checked === true;
 
   const costMap = {};
   allProducts.forEach(p => { costMap[String(p.id)] = Number(p.price_original || 0); });
 
   let goodsRevenue = 0, shippingCollected = 0, farmCost = 0, totalKg = 0, homeDrops = 0, cashlessCount = 0;
   orders.forEach(o => {
-    const ship = Number(o.shipping_fee || 0);
-    shippingCollected += ship;
-    goodsRevenue += Number(o.total_amount || 0) - ship;
+    const origShip = Number(o.shipping_fee || 0);
+    const ordGoods = Number(o.total_amount || 0) - origShip;
+    goodsRevenue += ordGoods;
+
+    // Nếu bật Giải pháp B (Freeship có điều kiện >= 350k): các đơn HOME < 350k phải đóng tối thiểu 25.000đ phí ship
+    let effectiveShip = origShip;
+    if (optCondFreeship && o.delivery_type === "HOME" && ordGoods < targetAov) {
+      effectiveShip = Math.max(origShip, o.payment_method === "COD" ? 35000 : 25000);
+    }
+    shippingCollected += effectiveShip;
+
     totalKg += orderKg(o);
     if (o.delivery_type === "HOME") homeDrops++;
     if (o.payment_method === "VIETQR") cashlessCount++;
@@ -238,17 +262,24 @@ function calculateMetrics() {
   });
 
   const busCost = orders.length ? Number(F.BUS_COST_PER_TRIP || 120000) : 0;
-  const boxCost = orders.length * Number(F.BOX_COST_PER_ORDER || 5000);
-  const shipperCost = homeDrops * Number(F.SHIPPER_COST_PER_DROP || 25000);
-  const grossLogistics = busCost + boxCost + shipperCost;
-  const netLogistics = Math.max(0, grossLogistics - shippingCollected); // Chi phí vận chuyển sàn thực chịu sau khi trừ ship khách trả
+  const unitBoxCost = optReturnBox ? Number(F.BOX_COST_REUSED_PER_ORDER || 1500) : Number(F.BOX_COST_PER_ORDER || 5000);
+  const unitShipperCost = optMultiDrop ? Number(F.SHIPPER_MULTIDROP_COST || 18000) : Number(F.SHIPPER_COST_PER_DROP || 25000);
 
-  const defectReserve = Math.round(goodsRevenue * Number(F.DEFECT_RESERVE_PCT || 0.03));
+  const boxCost = orders.length * unitBoxCost;
+  const shipperCost = homeDrops * unitShipperCost;
+  const grossLogistics = busCost + boxCost + shipperCost;
+  const netLogistics = Math.max(0, grossLogistics - shippingCollected); // Chi phí vận chuyển sàn thực chịu (Trợ giá phí ship / Bù lỗ cước)
+
+  const reservePct = optReserve5Pct ? 0.05 : 0.03;
+  const defectReserve = Math.round(goodsRevenue * reservePct);
   const marketing = orders.length ? Number(F.MARKETING_PER_TRIP || 0) : 0;
 
+  // Bóc tách dòng tiền Inflow / Outflow khớp 100% toán học
+  const totalCashInflow = goodsRevenue + shippingCollected;
+  const totalCashOutflow = farmCost + grossLogistics + marketing;
   const grossProfit = goodsRevenue - farmCost;
   const grossMarginPct = goodsRevenue > 0 ? (grossProfit / goodsRevenue) * 100 : 0;
-  const netProfit = grossProfit - netLogistics - defectReserve - marketing;
+  const netProfit = totalCashInflow - totalCashOutflow - defectReserve; // = grossProfit - netLogistics - defectReserve - marketing
   const margin = goodsRevenue > 0 ? (netProfit / goodsRevenue) * 100 : 0;
 
   const aov = orders.length > 0 ? Math.round(goodsRevenue / orders.length) : 0;
@@ -259,8 +290,12 @@ function calculateMetrics() {
   const cashlessPct = orders.length > 0 ? Math.round((cashlessCount / orders.length) * 100) : 0;
   const homePct = orders.length > 0 ? Math.round((homeDrops / orders.length) * 100) : 0;
   const shipRecoveryPct = grossLogistics > 0 ? Math.round((shippingCollected / grossLogistics) * 100) : 0;
+  const logisticsToGrossProfitPct = grossProfit > 0 ? (grossLogistics / grossProfit) * 100 : 0;
+  const subsidyPerOrder = orders.length > 0 ? Math.round(netLogistics / orders.length) : 0;
+  const workingCapitalRatio = grossLogistics > 0 ? (farmCost / grossLogistics).toFixed(1) : "0.0";
 
   const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+  const setHTML = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
 
   // 1. Doanh thu hàng & AOV
   setText("metric-revenue", formatVND(goodsRevenue));
@@ -273,24 +308,124 @@ function calculateMetrics() {
 
   // 3. Logistics Sàn Thực Chịu (Minh bạch công thức Tổng cước - Ship thu khách)
   setText("metric-logistics-cost", formatVND(netLogistics));
-  setText("metric-logistics-detail", `Tổng cước ${formatVND(grossLogistics)} - Ship thu khách ${formatVND(shippingCollected)}`);
+  setText("metric-logistics-detail", `Tổng cước ${formatVND(grossLogistics)} - Thu khách ${formatVND(shippingCollected)}`);
 
-  // 4. Quỹ Dự Phòng Đổi Trả (3%)
+  // 4. Quỹ Dự Phòng Đổi Trả (3% hoặc 5%)
   setText("metric-defect-reserve", formatVND(defectReserve));
+  setText("metric-reserve-badge", `${(reservePct * 100).toFixed(0)}% GMV`);
+  setText("metric-reserve-sub", optReserve5Pct ? "An toàn GĐ đầu (5% chống hao hụt)" : "Quỹ bảo hành 1 đổi 1 & hao hụt (3%)");
 
   // 5. Lợi Nhuận Ròng (= 1 - 2 - 3 - 4)
   setText("metric-net-profit", formatVND(netProfit));
   setText("metric-margin", `Biên LN ròng: ${margin.toFixed(1)}% (Khớp 100% công thức)`);
 
-  // 6. Hiệu Suất Tải Xe Lạnh
+  // 6. Hiệu Suất Tải Xe Lạnh & MVL
   setText("metric-total-kg", `${totalKg.toFixed(1)} / ${targetKg} kg`);
   setText("metric-load-pct", `${loadPct}% tải`);
-  setText("metric-bus-per-kg", `Cước xe lạnh: ${formatVND(busCostPerKg)}/kg (Chuẩn 60kg: 2.000 đ/kg)`);
+  setText("metric-bus-per-kg", `Cước xe lạnh: ${formatVND(busCostPerKg)}/kg (Trần MVL ≥ ${mvlKg}kg)`);
   const loadBar = document.getElementById("metric-load-bar");
   if (loadBar) loadBar.style.width = `${Math.max(8, loadPct)}%`;
 
+  // Cập nhật 5 Thẻ Bóc Tách Dòng Tiền (Inflow / Outflow / Risk / Net Profit / Working Capital)
+  setText("cf-total-inflow", formatVND(totalCashInflow));
+  setText("cf-inflow-detail", `Tiền hàng ${formatVND(goodsRevenue)} + Ship thu ${formatVND(shippingCollected)}`);
+  setText("cf-total-outflow", formatVND(totalCashOutflow));
+  setText("cf-outflow-detail", `Giá vốn ${formatVND(farmCost)} + Vận chuyển ${formatVND(grossLogistics)}`);
+  setText("cf-risk-provision", formatVND(defectReserve));
+  setText("cf-risk-detail", `Đang trích ${(reservePct * 100).toFixed(1)}% doanh thu tiền hàng`);
+  setText("cf-net-profit", formatVND(netProfit));
+  setText("cf-net-detail", `Biên LN ròng: ${margin.toFixed(1)}% trên tiền hàng`);
+  setText("cf-working-capital", `+${formatVND(farmCost)}`);
+  setText("cf-working-detail", `Công nợ vườn 3-5 ngày • Đủ trả ${workingCapitalRatio}x Logistics`);
+
+  // Cập nhật Chốt Chặn Mức Trần Gom Đơn MVL (Minimum Viable Load >= 35kg)
+  const mvlBadge = document.getElementById("mvl-dispatch-status");
+  if (mvlBadge) {
+    if (totalKg >= mvlKg) {
+      mvlBadge.className = "text-[11px] font-extrabold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300";
+      mvlBadge.innerText = `✅ Đã vượt trần MVL (${totalKg.toFixed(1)}kg ≥ ${mvlKg}kg): Cho phép xuất xe lạnh!`;
+    } else {
+      mvlBadge.className = "text-[11px] font-extrabold bg-rose-100 text-rose-800 px-3 py-1 rounded-full border border-rose-200";
+      mvlBadge.innerText = `🔒 Chốt chặn MVL: Mới gom ${totalKg.toFixed(1)}/${mvlKg}kg (Chưa đủ tải xuất xe)`;
+    }
+  }
+
+  // Cập nhật 4 Thẻ Chẩn Đoán Báo Động Đỏ (Red Flags)
+  // Red Flag 1: Tỷ lệ Logistics / Lãi gộp
+  const rfCard1 = document.getElementById("rf-card-1");
+  const rfBadge1 = document.getElementById("rf-badge-1");
+  if (logisticsToGrossProfitPct <= 60 && netLogistics <= 90000) {
+    if (rfCard1) rfCard1.className = "p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1.5";
+    if (rfBadge1) {
+      rfBadge1.className = "text-[10px] font-black bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded";
+      rfBadge1.innerText = `${logisticsToGrossProfitPct.toFixed(1)}% (Đã tối ưu)`;
+    }
+  } else {
+    if (rfCard1) rfCard1.className = "p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-1.5";
+    if (rfBadge1) {
+      rfBadge1.className = "text-[10px] font-black bg-rose-200 text-rose-900 px-2 py-0.5 rounded";
+      rfBadge1.innerText = `${logisticsToGrossProfitPct.toFixed(1)}% (Ăn mòn lãi)`;
+    }
+  }
+  setHTML("rf-desc-1", `Lãi gộp <strong>${formatVND(grossProfit)}</strong> • Tổng cước vận chuyển <strong>${formatVND(grossLogistics)} (${logisticsToGrossProfitPct.toFixed(0)}% lãi gộp)</strong>. Sàn thực chịu sau thu ship: <strong>${formatVND(netLogistics)}</strong>.`);
+
+  // Red Flag 2: Trợ giá phí ship (Logistics Subsidy)
+  const rfCard2 = document.getElementById("rf-card-2");
+  const rfBadge2 = document.getElementById("rf-badge-2");
+  if (subsidyPerOrder <= 15000) {
+    if (rfCard2) rfCard2.className = "p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1.5";
+    if (rfBadge2) {
+      rfBadge2.className = "text-[10px] font-black bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded";
+      rfBadge2.innerText = `-${formatVND(subsidyPerOrder)}/đơn (An toàn)`;
+    }
+  } else {
+    if (rfCard2) rfCard2.className = "p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-1.5";
+    if (rfBadge2) {
+      rfBadge2.className = "text-[10px] font-black bg-rose-200 text-rose-900 px-2 py-0.5 rounded";
+      rfBadge2.innerText = `-${formatVND(subsidyPerOrder)}/đơn (Bù lỗ cao)`;
+    }
+  }
+  setHTML("rf-desc-2", `Chi phí thực <strong>${formatVND(grossLogistics)}</strong>, thu khách <strong>${formatVND(shippingCollected)}</strong> ➔ Sàn bù lỗ <strong>${formatVND(netLogistics)}</strong> (TB <strong>${formatVND(subsidyPerOrder)}/đơn</strong>).`);
+
+  // Red Flag 3: Hiệu suất tải trọng & Mức trần gom đơn MVL
+  const rfCard3 = document.getElementById("rf-card-3");
+  const rfBadge3 = document.getElementById("rf-badge-3");
+  if (totalKg >= mvlKg) {
+    if (rfCard3) rfCard3.className = "p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1.5";
+    if (rfBadge3) {
+      rfBadge3.className = "text-[10px] font-black bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded";
+      rfBadge3.innerText = `${totalKg.toFixed(1)}kg (${formatVND(busCostPerKg)}/kg)`;
+    }
+    setHTML("rf-desc-3", `Đã vượt <strong>Mức trần MVL ${mvlKg}kg</strong>! Cước xe lạnh giảm sâu còn <strong>${formatVND(busCostPerKg)}/kg</strong>, tối ưu hóa công suất vận tải liên tỉnh.`);
+  } else {
+    if (rfCard3) rfCard3.className = "p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1.5";
+    if (rfBadge3) {
+      rfBadge3.className = "text-[10px] font-black bg-amber-200 text-amber-950 px-2 py-0.5 rounded";
+      rfBadge3.innerText = `${totalKg.toFixed(1)}kg (${formatVND(busCostPerKg)}/kg)`;
+    }
+    setHTML("rf-desc-3", `Thuê xe 120k chở ${totalKg.toFixed(1)}kg làm cước vọt lên <strong>${formatVND(busCostPerKg)}/kg</strong>. Cần gom đủ <strong>MVL ≥ ${mvlKg}kg</strong> trước khi xuất bến!`);
+  }
+
+  // Red Flag 4: Giá trị đơn trung bình (AOV)
+  const rfCard4 = document.getElementById("rf-card-4");
+  const rfBadge4 = document.getElementById("rf-badge-4");
+  if (aov >= targetAov || profitPerOrder >= 40000) {
+    if (rfCard4) rfCard4.className = "p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1.5";
+    if (rfBadge4) {
+      rfBadge4.className = "text-[10px] font-black bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded";
+      rfBadge4.innerText = `Lãi +${formatVND(profitPerOrder)}/đơn`;
+    }
+  } else {
+    if (rfCard4) rfCard4.className = "p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1.5";
+    if (rfBadge4) {
+      rfBadge4.className = "text-[10px] font-black bg-amber-200 text-amber-950 px-2 py-0.5 rounded";
+      rfBadge4.innerText = `AOV ${formatVND(aov)}`;
+    }
+  }
+  setHTML("rf-desc-4", `AOV hiện tại <strong>${formatVND(aov)}/đơn</strong> • Lãi ròng <strong>+${formatVND(profitPerOrder)}/đơn</strong>. Đã kích hoạt Combo Đi Chợ Tuần & Freeship <strong>≥ 350.000 đ</strong>!`);
+
   // Bảng Phân Tích Chuyên Sâu BA & Data Analyst
-  setText("ba-aov", `${formatVND(aov)}/đơn`);
+  setText("ba-aov", `${formatVND(aov)}/đơn (Mục tiêu ≥ 350.000 đ)`);
   setText("ba-profit-per-order", `${profitPerOrder >= 0 ? "+" : ""}${formatVND(profitPerOrder)}/đơn`);
   setText("ba-profit-per-kg", `${profitPerKg >= 0 ? "+" : ""}${formatVND(profitPerKg)}/kg`);
   setText("ba-cashless-pct", `${cashlessPct}% đơn dùng Ví Escrow (${cashlessCount}/${orders.length} đơn)`);
@@ -301,24 +436,24 @@ function calculateMetrics() {
 
   const healthBadge = document.getElementById("ba-health-badge");
   if (healthBadge) {
-    if (margin >= 15) {
+    if (margin >= 16) {
       healthBadge.className = "text-[11px] font-extrabold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300";
-      healthBadge.innerText = `✓ Hiệu suất Tối ưu: Biên LN ròng đạt +${margin.toFixed(1)}%`;
+      healthBadge.innerText = `✓ Sức khỏe Tài chính Tối ưu: Biên LN ròng đạt +${margin.toFixed(1)}% (${formatVND(netProfit)})`;
     } else if (margin > 0) {
       healthBadge.className = "text-[11px] font-extrabold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-300";
-      healthBadge.innerText = `⚡ Đã vượt điểm hòa vốn (+${margin.toFixed(1)}%) • Cần tăng tải xe lạnh`;
+      healthBadge.innerText = `⚡ Lãi ròng dương (+${margin.toFixed(1)}%) • Hãy bật Gói Tối Ưu (A+B+C) để giảm bù lỗ ship`;
     } else {
       healthBadge.className = "text-[11px] font-extrabold bg-rose-100 text-rose-800 px-3 py-1 rounded-full border border-rose-300";
-      healthBadge.innerText = `⚠️ Chưa đạt điểm hòa vốn chuyến xe (Cần gom tối thiểu 12kg)`;
+      healthBadge.innerText = `⚠️ Chưa đạt điểm hòa vốn chuyến xe (Cần gom tối thiểu ${mvlKg}kg)`;
     }
   }
 
   const recEl = document.getElementById("ba-recommendation-text");
   if (recEl) {
-    if (totalKg < targetKg * 0.75) {
-      recEl.innerHTML = `Hiện sản lượng gom đạt <strong>${totalKg.toFixed(1)} kg (${loadPct}% tải xe lạnh ${targetKg}kg)</strong>, khiến chi phí xe cố định (120.000 đ) đang chiếm <strong>${formatVND(busCostPerKg)}/kg</strong>. Khuyến nghị bấm nút bên dưới để <strong>kích hoạt Đơn Bao Tiêu Mồi +30kg (GTM Quận 1 & 3)</strong> nhằm lấp đầy xe lạnh, kéo cước xe xuống <strong>~2.000 đ/kg</strong> và nâng biên lợi nhuận ròng lên <strong>>18%</strong>!`;
+    if (totalKg < mvlKg) {
+      recEl.innerHTML = `Hiện sản lượng gom đạt <strong>${totalKg.toFixed(1)} kg (Chưa đạt mức trần MVL ${mvlKg}kg)</strong>, khiến chi phí xe cố định (120.000 đ) đang chiếm <strong>${formatVND(busCostPerKg)}/kg</strong>. Khuyến nghị bấm <strong>"Bật Toàn Bộ Gói Tối Ưu (A+B+C)"</strong> kết hợp nút <strong>"Kích Hoạt Đơn Gom Chung +30kg"</strong> bên dưới để vượt trần MVL 35kg, kéo cước xe xuống <strong>~2.553 đ/kg</strong> và nâng biên lợi nhuận ròng lên <strong>>20%</strong>!`;
     } else {
-      recEl.innerHTML = `🎉 Chuyến xe lạnh đã đạt <strong>${totalKg.toFixed(1)} kg (${loadPct}% công suất tải)</strong>! Chi phí vận chuyển cố định trên mỗi kg đã giảm xuống mức tối ưu <strong>${formatVND(busCostPerKg)}/kg</strong>, giúp biên lợi nhuận ròng đạt <strong>${margin.toFixed(1)}%</strong>. Sẵn sàng chốt tuyến shipper giao sáng Thứ Bảy!`;
+      recEl.innerHTML = `🎉 Chuyến xe lạnh đã đạt <strong>${totalKg.toFixed(1)} kg (Vượt trần MVL ${mvlKg}kg • đạt ${loadPct}% công suất)</strong>! Chi phí xe liên tỉnh giảm còn <strong>${formatVND(busCostPerKg)}/kg</strong>, giúp lợi nhuận ròng đạt <strong>${formatVND(netProfit)} (Biên LN ${margin.toFixed(1)}%)</strong>. Đủ điều kiện xuất bến!`;
     }
   }
 }

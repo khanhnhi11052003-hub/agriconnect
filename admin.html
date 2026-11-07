@@ -185,16 +185,16 @@
         <p id="metric-logistics-detail" class="text-[11px] text-slate-500 mt-2 leading-snug">Tổng cước trừ ship khách trả</p>
       </div>
 
-      <!-- 4. Quỹ Dự Phòng Đổi Trả 3% (Tách bạch rõ để công thức Lợi Nhuận Ròng minh bạch tuyệt đối) -->
+      <!-- 4. Quỹ Dự Phòng Đổi Trả (Tách bạch rõ 3% hoặc 5% để công thức Lợi Nhuận Ròng minh bạch tuyệt đối) -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between gap-1 mb-1">
-            <span class="text-[10px] uppercase font-bold text-slate-400">4. Dự Phòng Đổi Trả</span>
-            <span class="text-[9px] font-bold bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded">3% GMV</span>
+            <span class="text-[10px] uppercase font-bold text-slate-400">4. Dự Phòng Rủi Ro</span>
+            <span id="metric-reserve-badge" class="text-[9px] font-bold bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded">3% GMV</span>
           </div>
           <div id="metric-defect-reserve" class="text-lg sm:text-xl font-black text-rose-600">0 đ</div>
         </div>
-        <p class="text-[11px] text-slate-500 mt-2 leading-snug">Quỹ bảo hành 1 đổi 1 & hao hụt</p>
+        <p id="metric-reserve-sub" class="text-[11px] text-slate-500 mt-2 leading-snug">Quỹ bảo hành 1 đổi 1 & hao hụt</p>
       </div>
 
       <!-- 5. Lợi Nhuận Ròng Dự Kiến (= 1 - 2 - 3 - 4) -->
@@ -209,11 +209,11 @@
         <p id="metric-margin" class="text-[11px] font-bold text-emerald-700 mt-2 leading-snug">Biên LN ròng: 0%</p>
       </div>
 
-      <!-- 6. Hiệu Suất Lấp Đầy Xe Lạnh (Cold-Chain Utilization) -->
+      <!-- 6. Hiệu Suất Lấp Đầy Xe Lạnh & Mức Trần Gom Đơn MVL (Cold-Chain Utilization) -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between gap-1 mb-1">
-            <span class="text-[10px] uppercase font-bold text-slate-400">6. Tải Trọng Xe Lạnh</span>
+            <span class="text-[10px] uppercase font-bold text-slate-400">6. Tải Trọng & MVL</span>
             <span id="metric-load-pct" class="text-[9px] font-extrabold bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">0% tải</span>
           </div>
           <div id="metric-total-kg" class="text-lg sm:text-xl font-black text-purple-700">0 / 60 kg</div>
@@ -221,24 +221,157 @@
             <div id="metric-load-bar" class="bg-purple-600 h-full rounded-full transition-all" style="width: 28%"></div>
           </div>
         </div>
-        <p id="metric-bus-per-kg" class="text-[11px] text-slate-500 mt-1.5 leading-snug">Cước xe lạnh: 0 đ/kg</p>
+        <p id="metric-bus-per-kg" class="text-[11px] text-slate-500 mt-1.5 leading-snug">Cước xe lạnh: 0 đ/kg (MVL ≥ 35kg)</p>
       </div>
 
     </div>
 
-    <!-- BẢNG PHÂN TÍCH CHUYÊN SÂU: DATA ANALYST, BUSINESS ANALYST (BA) & E-COMMERCE INSIGHTS -->
-    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
+    <!-- BẢNG KHÁM SỨC KHỎE TÀI CHÍNH, BÓC TÁCH DÒNG TIỀN (INFLOW / OUTFLOW) & CHẨN ĐOÁN 4 RED FLAGS (DA & BA) -->
+    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-5">
       <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">📊</span>
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black">📊</span>
           <div>
-            <h2 class="text-sm font-black text-slate-900">Trung Tâm Phân Tích Dữ Liệu Kinh Doanh (BA & Data Analyst Insights)</h2>
-            <p class="text-[11px] text-slate-500">Đánh giá tự động Unit Economics, Điểm hòa vốn chuyến xe lạnh, Tỷ lệ thanh toán Ví Escrow và Khuyến nghị hành động</p>
+            <h2 class="text-sm sm:text-base font-black text-slate-900">Bản Khám Sức Khỏe Tài Chính & Giải Bài Toán "Đốt Biên Lợi Nhuận Vào Logistics" (DA & BA Audit)</h2>
+            <p class="text-[11px] text-slate-500">Bóc tách dòng tiền thực tế (Inflow / Outflow), chẩn đoán 4 chỉ số báo động đỏ (Red Flags) và mô phỏng 3 nhóm chiến lược tối ưu hóa Scale-up</p>
           </div>
         </div>
-        <span id="ba-health-badge" class="text-[11px] font-extrabold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">
-          ✓ Mô hình có lãi ròng dương (+11.8%)
-        </span>
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="mvl-dispatch-status" class="text-[11px] font-extrabold bg-rose-100 text-rose-800 px-3 py-1 rounded-full border border-rose-200">
+            🔒 Chốt chặn MVL: Chưa đủ 35kg để xuất xe
+          </span>
+          <span id="ba-health-badge" class="text-[11px] font-extrabold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">
+            ✓ Mô hình có lãi ròng dương (+11.8%)
+          </span>
+        </div>
+      </div>
+
+      <!-- PHƯƠNG TRÌNH BÓC TÁCH DÒNG TIỀN THỰC TẾ (CASHFLOW INFLOW vs OUTFLOW vs WORKING CAPITAL) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 bg-slate-900 text-white p-4 rounded-2xl">
+        <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-emerald-300 block">1. Tổng Dòng Tiền Vào (Inflow)</span>
+          <div id="cf-total-inflow" class="text-base sm:text-lg font-black text-white mt-0.5">1.116.000 đ</div>
+          <p id="cf-inflow-detail" class="text-[10px] text-slate-300 mt-1">Tiền hàng 1.036.000 đ + Ship thu 80.000 đ</p>
+        </div>
+        <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-rose-300 block">2. Tổng Dòng Tiền Ra (Outflow)</span>
+          <div id="cf-total-outflow" class="text-base sm:text-lg font-black text-rose-300 mt-0.5">963.000 đ</div>
+          <p id="cf-outflow-detail" class="text-[10px] text-slate-300 mt-1">Giá vốn 718.000 đ + Vận chuyển 245.000 đ</p>
+        </div>
+        <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-amber-300 block">3. Quỹ Dự Phòng Rủi Ro</span>
+          <div id="cf-risk-provision" class="text-base sm:text-lg font-black text-amber-300 mt-0.5">31.080 đ</div>
+          <p id="cf-risk-detail" class="text-[10px] text-slate-300 mt-1">Đang trích 3.0% doanh thu tiền hàng</p>
+        </div>
+        <div class="p-3 rounded-xl bg-emerald-500/20 border border-emerald-400/40">
+          <span class="text-[10px] uppercase font-black text-emerald-200 block">4. Lợi Nhuận Ròng (1 - 2 - 3)</span>
+          <div id="cf-net-profit" class="text-base sm:text-lg font-black text-emerald-300 mt-0.5">121.920 đ</div>
+          <p id="cf-net-detail" class="text-[10px] text-emerald-100 mt-1">Biên LN ròng: 11.8% trên tiền hàng</p>
+        </div>
+        <div class="p-3 rounded-xl bg-indigo-500/20 border border-indigo-400/40">
+          <span class="text-[10px] uppercase font-black text-indigo-200 block">5. Vốn Lưu Động Gối Đầu (3-5 Ngày)</span>
+          <div id="cf-working-capital" class="text-base sm:text-lg font-black text-indigo-200 mt-0.5">+718.000 đ</div>
+          <p id="cf-working-detail" class="text-[10px] text-indigo-100 mt-1">Giữ T+4 nhà vườn • Đủ trả 2.9x Logistics</p>
+        </div>
+      </div>
+
+      <!-- CHẨN ĐOÁN 4 CHỈ SỐ BÁO ĐỘNG ĐỎ (RED FLAGS) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <!-- Red Flag 1: Logistics / Lãi Gộp -->
+        <div id="rf-card-1" class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-rose-800">🚨 Red Flag 1: Logistics / Lãi Gộp</span>
+            <span id="rf-badge-1" class="text-[10px] font-black bg-rose-200 text-rose-900 px-2 py-0.5 rounded">77.0% (Nguy hiểm)</span>
+          </div>
+          <p id="rf-desc-1" class="text-[11px] text-slate-700 leading-relaxed">
+            Lãi gộp <strong>318.000 đ</strong> nhưng tổng cước vận chuyển ngốn <strong>245.000 đ (77%)</strong>. Chuẩn bán lẻ an toàn phải <strong>&lt; 45%</strong>.
+          </p>
+        </div>
+
+        <!-- Red Flag 2: Trợ giá phí ship (Logistics Subsidy) -->
+        <div id="rf-card-2" class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-rose-800">🚨 Red Flag 2: Bù Lỗ Phí Ship</span>
+            <span id="rf-badge-2" class="text-[10px] font-black bg-rose-200 text-rose-900 px-2 py-0.5 rounded">-33.000 đ/đơn</span>
+          </div>
+          <p id="rf-desc-2" class="text-[11px] text-slate-700 leading-relaxed">
+            Chi phí thực <strong>245.000 đ</strong>, thu khách <strong>80.000 đ</strong> ➔ Sàn đang gồng bù lỗ <strong>165.000 đ</strong> (TB <strong>33.000 đ/đơn</strong>).
+          </p>
+        </div>
+
+        <!-- Red Flag 3: Hiệu suất tải trọng thấp (Low Capacity Utilization) -->
+        <div id="rf-card-3" class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-amber-900">⚠️ Red Flag 3: Tải Trọng & MVL</span>
+            <span id="rf-badge-3" class="text-[10px] font-black bg-amber-200 text-amber-950 px-2 py-0.5 rounded">17kg (7.059 đ/kg)</span>
+          </div>
+          <p id="rf-desc-3" class="text-[11px] text-slate-700 leading-relaxed">
+            Thuê xe 120k chở 17kg làm cước vọt lên <strong>7.059 đ/kg</strong>. Bắt buộc đạt <strong>Mức trần gom đơn MVL ≥ 35kg</strong> mới xuất bến!
+          </p>
+        </div>
+
+        <!-- Red Flag 4: Giá trị đơn trung bình (AOV) thấp -->
+        <div id="rf-card-4" class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-amber-900">⚠️ Red Flag 4: Biên AOV Mỏng</span>
+            <span id="rf-badge-4" class="text-[10px] font-black bg-amber-200 text-amber-950 px-2 py-0.5 rounded">AOV 207.200 đ</span>
+          </div>
+          <p id="rf-desc-4" class="text-[11px] text-slate-700 leading-relaxed">
+            Lãi ròng chỉ <strong>~24.384 đ/đơn</strong> (1 đơn hoàn/dập là mất trắng lãi 4 đơn). Đã nâng chuẩn <strong>Freeship ≥ 350.000 đ</strong>!
+          </p>
+        </div>
+      </div>
+
+      <!-- BẢNG ĐIỀU KHIỂN TƯƠNG TÁC: 3 NHÓM CHIẾN LƯỢC TỐI ƯU HÓA DÒNG TIỀN (BẬT/TẮT TRỰC TIẾP) -->
+      <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-black text-emerald-950 uppercase">🛠️ Bảng Điều Khiển Thực Thi 3 Nhóm Chiến Lược Tối Ưu Hóa (Live Simulator)</span>
+            <p class="text-[11px] text-emerald-800">Tích chọn các giải pháp bên dưới để kiểm chứng ngay tác động giảm dòng tiền ra & tăng biên lợi nhuận ròng trên dữ liệu thực:</p>
+          </div>
+          <button type="button" onclick="applyAllOptimizations()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Bật Toàn Bộ Gói Tối Ưu (A + B + C)</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <!-- Giải pháp A1: Gom tuyến đa điểm Shipper (-28%) -->
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-emerald-200 cursor-pointer hover:border-emerald-400 transition">
+            <input type="checkbox" id="opt-multidrop-route" onchange="calculateMetrics()" class="mt-0.5 w-4 h-4 accent-emerald-600 rounded">
+            <span class="text-[11px] text-slate-700 leading-snug">
+              <strong class="text-slate-900 block">A1. Gom Tuyến Shipper Đa Điểm</strong>
+              Giao 1 tài xế đi 1 vòng đa điểm: giảm cước chặng cuối từ <strong>25.000 đ ➔ 18.000 đ/đơn (-28%)</strong>.
+            </span>
+          </label>
+
+          <!-- Giải pháp A2: Thu hồi & tái sử dụng thùng xốp -->
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-emerald-200 cursor-pointer hover:border-emerald-400 transition">
+            <input type="checkbox" id="opt-return-box" onchange="calculateMetrics()" class="mt-0.5 w-4 h-4 accent-emerald-600 rounded">
+            <span class="text-[11px] text-slate-700 leading-snug">
+              <strong class="text-slate-900 block">A2. Thu Hồi Thùng Trống Tái Sử Dụng</strong>
+              Shipper thu hồi thùng xốp/nhựa đơn sau: giảm phí bao bì từ <strong>5.000 đ ➔ 1.500 đ/đơn (-70%)</strong>.
+            </span>
+          </label>
+
+          <!-- Giải pháp B: Freeship có điều kiện >= 350.000 đ -->
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-emerald-200 cursor-pointer hover:border-emerald-400 transition">
+            <input type="checkbox" id="opt-conditional-freeship" onchange="calculateMetrics()" class="mt-0.5 w-4 h-4 accent-emerald-600 rounded">
+            <span class="text-[11px] text-slate-700 leading-snug">
+              <strong class="text-slate-900 block">B. Freeship Có Điều Kiện ≥ 350k</strong>
+              Đơn &lt; 350k thu đồng giá <strong>25.000 đ/đơn</strong> (Xóa bỏ bù lỗ cước, thu hồi <strong>125.000 đ</strong> phí ship).
+            </span>
+          </label>
+
+          <!-- Giải pháp C: Quỹ Dự Phòng Hao Hụt 5.0% Giai Đoạn Đầu -->
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-emerald-200 cursor-pointer hover:border-emerald-400 transition">
+            <input type="checkbox" id="opt-reserve-5pct" onchange="calculateMetrics()" class="mt-0.5 w-4 h-4 accent-emerald-600 rounded">
+            <span class="text-[11px] text-slate-700 leading-snug">
+              <strong class="text-slate-900 block">C. Quỹ Dự Phòng An Toàn 5.0%</strong>
+              Nâng dự phòng từ <strong>3% ➔ 5%</strong> giai đoạn đầu để chống "lãi giả, lỗ thật" do hao hụt nông sản.
+            </span>
+          </label>
+        </div>
       </div>
 
       <div class="grid md:grid-cols-3 gap-4 text-xs">
@@ -251,7 +384,7 @@
           <div class="space-y-1.5 text-[11px] text-slate-600">
             <div class="flex justify-between">
               <span>Giá trị đơn trung bình (AOV):</span>
-              <strong id="ba-aov" class="text-slate-900">207.200 đ/đơn</strong>
+              <strong id="ba-aov" class="text-slate-900">207.200 đ/đơn (Mục tiêu ≥ 350k)</strong>
             </div>
             <div class="flex justify-between">
               <span>Lợi nhuận ròng / mỗi đơn hàng:</span>
@@ -262,8 +395,8 @@
               <strong id="ba-profit-per-kg" class="text-emerald-700">+7.172 đ/kg</strong>
             </div>
             <div class="flex justify-between pt-1 border-t border-slate-200">
-              <span>Điểm hòa vốn chuyến xe lạnh (Break-even):</span>
-              <strong id="ba-breakeven-kg" class="text-amber-700">11.5 kg (~3 đơn)</strong>
+              <span>Mức trần Gom đơn xuất bến (MVL):</span>
+              <strong id="ba-breakeven-kg" class="text-amber-700">Tối thiểu 35.0 kg / chuyến</strong>
             </div>
           </div>
         </div>
@@ -271,8 +404,8 @@
         <!-- Cột 2: Phân tích Hành vi Thanh toán & Kênh Giao nhận (E-commerce & Data Analyst) -->
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
           <div class="flex items-center justify-between">
-            <span class="font-extrabold text-slate-800 uppercase text-[11px]">💳 Cấu Trúc Thanh Toán & Giao Nhận</span>
-            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Data Mix</span>
+            <span class="font-extrabold text-slate-800 uppercase text-[11px]">💳 Cấu Trúc Thanh Toán & Công Nợ Vườn</span>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Cashflow Mix</span>
           </div>
           <div class="space-y-2 text-[11px]">
             <div>
@@ -290,7 +423,7 @@
             </div>
             <div class="flex justify-between text-slate-600">
               <span>Phí ship thu từ khách bù đắp cước:</span>
-              <strong id="ba-ship-recovery" class="text-blue-700">Bù đắp 32.7% tổng Logistics</strong>
+              <strong id="ba-ship-recovery" class="text-blue-700">Khách trả 80.000 đ / 245.000 đ (32.7%)</strong>
             </div>
           </div>
         </div>
@@ -299,16 +432,16 @@
         <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between space-y-2.5">
           <div class="space-y-1.5">
             <div class="flex items-center justify-between">
-              <span class="font-extrabold text-amber-950 uppercase text-[11px]">💡 Khuyến Nghị Từ Chuyên Gia BA</span>
-              <span class="text-[10px] font-black text-amber-800 bg-amber-200/70 px-2 py-0.5 rounded">Tối ưu biên LN</span>
+              <span class="font-extrabold text-amber-950 uppercase text-[11px]">💡 Khuyến Nghị Giải Cứu Biên Lợi Nhuận</span>
+              <span class="text-[10px] font-black text-amber-800 bg-amber-200/70 px-2 py-0.5 rounded">Scale-up Action</span>
             </div>
             <p id="ba-recommendation-text" class="text-[11px] text-amber-900 leading-relaxed">
-              Hiện sản lượng gom đạt <strong>17.0 kg (28% tải xe lạnh 60kg)</strong>, khiến chi phí xe cố định (120.000 đ) đang chiếm <strong>7.059 đ/kg</strong>. Nếu gom đủ <strong>47–60 kg</strong>, chi phí xe giảm còn <strong>2.000 đ/kg</strong> và biên lợi nhuận ròng sẽ tăng vọt từ <strong>11.8% lên ~18.5%</strong>!
+              Hiện sản lượng gom đạt <strong>17.0 kg (Chưa đạt mức trần MVL 35kg)</strong>, khiến cước xe lạnh chiếm <strong>7.059 đ/kg</strong>. Bấm nút bên dưới để <strong>Gom thêm Đơn Bao Tiêu +30kg (Đạt 47kg &gt; MVL 35kg)</strong>, kéo cước xe xuống <strong>2.553 đ/kg</strong>!
             </p>
           </div>
           <button type="button" onclick="triggerGtmSeedOrder()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[11px] py-2 px-3 rounded-xl shadow-xs transition flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-rocket"></i>
-            <span>Kích Hoạt Đơn Bao Tiêu Mồi +30kg (Tối Ưu Tải Xe)</span>
+            <span>Kích Hoạt Đơn Gom Chung +30kg (Vượt Trần MVL 35kg)</span>
           </button>
         </div>
       </div>
@@ -544,8 +677,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/config.js?v=20261107_v10"></script>
-  <script src="js/supabaseClient.js?v=20261107_v10"></script>
-  <script src="js/admin.js?v=20261107_v10"></script>
+  <script src="js/config.js?v=20261107_v11"></script>
+  <script src="js/supabaseClient.js?v=20261107_v11"></script>
+  <script src="js/admin.js?v=20261107_v11"></script>
 </body>
 </html>

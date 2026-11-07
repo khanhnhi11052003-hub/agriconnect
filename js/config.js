@@ -30,31 +30,35 @@ window.APP_CONFIG = {
     TEMPLATE: "compact2"
   },
 
-  // ---------------- Phí giao hàng & Ưu đãi ra mắt ----------------
-  // Khách chi trả phí giao tận nhà (chuẩn chi phí shipper thực tế hiện nay tại TP.HCM: 25.000 đ)
-  // Ưu đãi ra mắt: Đơn từ 250.000 đ được TẶNG 100% PHÍ SHIP TẬN NHÀ (FREESHIP)!
+  // ---------------- Phí giao hàng & Điều kiện Freeship (Chuẩn Tối Ưu Biên Lợi Nhuận) ----------------
+  // - Đơn dưới 350.000 đ: Thu phí đồng giá 25.000 đ (Thanh toán trước Ví Escrow) hoặc 35.000 đ (COD) để chống bù lỗ cước ship
+  // - Đơn từ 350.000 đ trở lên: TẶNG 100% PHÍ SHIP TẬN NHÀ (FREESHIP) vì lãi gộp đơn >=350k đủ cover toàn bộ chi phí Logistics!
   SHIPPING: {
     CAMPUS_FEE: 0,
     HOME_DELIVERY_FEE: 25000,
-    FREESHIP_THRESHOLD: 250000
+    COD_DELIVERY_FEE: 35000,
+    FREESHIP_THRESHOLD: 350000
   },
 
-  // ---------------- Khuyến mãi khi mới ra mắt ----------------
+  // ---------------- Khuyến mãi & Thu hồi vật tư (Circular Packaging) ----------------
   PROMOTION: {
     LAUNCH_CODE: "AGRICONNECT",
     DISCOUNT_AMOUNT: 10000,
-    GIFT_NOTE: "Tặng kèm 0.5kg Dâu da đất hoặc Chôm chôm nhãn cho 50 đơn hàng đầu tiên!",
+    RETURN_BOX_VOUCHER: 10000,       // Đổi thùng trống đợt trước nhận ngay voucher giảm 10.000 đ (tiết kiệm chi phí thùng)
+    GIFT_NOTE: "Tặng kèm 0.5kg Dâu da đất hoặc Chôm chôm nhãn cho đơn đạt mốc Freeship 350k!",
     WARRANTY_NOTE: "Bao ăn 1 đổi 1 tận nơi nếu sượng, hư hỏng 100% miễn phí"
   },
 
-  // ---------------- Giả định tài chính (dùng cho bảng tính ở trang Admin) ----------------
-  // Đây là GIẢ ĐỊNH, cần cập nhật theo chi phí thực tế sau mỗi chuyến.
+  // ---------------- Cấu hình Tài chính, Điểm Hòa Vốn & Công Nợ (Unit Economics) ----------------
   FINANCE: {
-    BUS_COST_PER_TRIP: 120000,       // Cước xe khách QL13 / chuyến
-    BOX_COST_PER_ORDER: 5000,        // Thùng carton + tem / đơn
-    SHIPPER_COST_PER_DROP: 25000,    // Chi phí shipper thực trả / điểm giao tận nhà (ước tính)
-    DEFECT_RESERVE_PCT: 0.03,        // Quỹ dự phòng đổi trả (3% doanh thu hàng)
-    MARKETING_PER_TRIP: 0            // Chi phí quảng cáo / chuyến (nếu có)
+    BUS_COST_PER_TRIP: 120000,       // Cước xe lạnh/xe khách liên tỉnh cố định / chuyến
+    BOX_COST_PER_ORDER: 5000,        // Chi phí thùng carton/xốp + tem QR / đơn (giảm còn 1.500đ nếu thu hồi thùng)
+    SHIPPER_COST_PER_DROP: 20000,    // Cước shipper chặng cuối (25.000đ cuốc lẻ; giảm 20-25% còn 18.000đ-20.000đ khi Gom Tuyến Đa Điểm)
+    DEFECT_RESERVE_PCT: 0.05,        // Quỹ dự phòng hao hụt tự nhiên & đổi trả 5% giai đoạn đầu (tránh "lãi giả, lỗ thật")
+    MARKETING_PER_TRIP: 0,           // Chi phí quảng cáo / chuyến
+    MIN_VIABLE_LOAD_KG: 35.0,        // Mức trần gom đơn tối thiểu (MVL): Phải đạt >= 35kg mới xuất xe
+    TARGET_AOV: 350000,              // Mục tiêu Giá trị đơn trung bình (AOV > 350.000 đ)
+    FARM_CREDIT_DAYS: 4              // Chính sách gối đầu công nợ nhà vườn 3-5 ngày (giữ dòng tiền lưu động trả cước xe)
   },
 
   // ---------------- Gom tuyến giao hàng ----------------

@@ -633,10 +633,12 @@ function updateStickyCartBar() {
     if (countEl) countEl.innerText = `${totalCount} món (${priced.total_kg.toFixed(1)} kg)`;
     if (totalEl) totalEl.innerText = formatVND(priced.total_amount);
     if (promoEl) {
+      const freeshipThreshold = Number(window.APP_CONFIG?.SHIPPING?.FREESHIP_THRESHOLD ?? 350000);
       if (priced.is_freeship) {
-        promoEl.innerHTML = `<span class="text-[#fef08a] font-bold">🎉 Đã kích hoạt FREESHIP + Bảo vệ Ví Tạm Giữ Escrow 12h!</span>`;
+        promoEl.innerHTML = `<span class="text-[#fef08a] font-bold">🎉 Đã đạt chuẩn FREESHIP (Đơn ≥ 350k) + Bảo vệ Ví Escrow!</span>`;
       } else {
-        promoEl.innerText = `Chọn VietQR Escrow để được Freeship + Giảm thêm 5%!`;
+        const lack = Math.max(0, freeshipThreshold - priced.subtotal);
+        promoEl.innerText = `Mua thêm ${formatVND(lack)} để được FREESHIP 0đ (Chuẩn AOV ≥ 350k)!`;
       }
     }
   } else {
@@ -644,6 +646,16 @@ function updateStickyCartBar() {
     bar.classList.remove("translate-y-0", "opacity-100", "pointer-events-auto");
   }
 }
+
+window.quickBoostAovCombo = function () {
+  // Thêm ngay Combo Đi Chợ Tuần (p9: 389k) hoặc Combo Văn Phòng (p10: 359k) để đạt AOV > 350.000 đ & mở khóa Freeship 0đ
+  const combo = currentProducts.find(p => String(p.id) === "p9" || String(p.id) === "p10") || currentProducts[0];
+  if (!combo) return;
+  const pid = String(combo.id);
+  cart[pid] = Math.min(Number(combo.stock || 20), (cart[pid] || 0) + 1);
+  updateCartUI();
+  showToast(`🎁 Đã thêm "${combo.name}" • Mở khóa ngay FREESHIP 0đ (Đơn ≥ 350.000 đ)!`);
+};
 
 window.focusCheckoutForm = function () {
   const form = document.getElementById("preorder");
@@ -723,26 +735,32 @@ function priceCart() {
   });
 
   const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || "VIETQR";
-  const freeshipThreshold = Number(window.APP_CONFIG?.SHIPPING?.FREESHIP_THRESHOLD ?? 250000);
+  const freeshipThreshold = Number(window.APP_CONFIG?.SHIPPING?.FREESHIP_THRESHOLD ?? 350000);
+  const stdHomeFee = Number(window.APP_CONFIG?.SHIPPING?.HOME_DELIVERY_FEE ?? 25000);
+  const codHomeFee = Number(window.APP_CONFIG?.SHIPPING?.COD_DELIVERY_FEE ?? 35000);
 
-  // Logic Tài chính Chuyên gia:
-  // - Chọn Thanh toán trước (VIETQR / Ví Escrow): Được Freeship (0đ) + Giảm thêm 5% tiền hàng
-  // - Chọn COD: Tính phí ship cao nhất (30.000 đ) trừ khi đơn >= 250k, và yêu cầu cọc 20%
+  // Logic Tài chính Chuyên gia (Chống đốt biên lợi nhuận vào Logistics):
+  // - Freeship có điều kiện: Chỉ miễn phí vận chuyển (0đ) khi đơn hàng đạt chuẩn AOV >= 350.000 đ
+  // - Đơn dưới 350.000 đ: Thu đồng giá 25.000 đ (VietQR Escrow) hoặc 35.000 đ (COD hàng tươi sống) để xóa bỏ bù lỗ ship 33k/đơn
   let shippingFee = 0;
   if (items.length > 0 && selectedDeliveryType === "HOME") {
-    if (paymentMethod === "VIETQR" || subtotal >= freeshipThreshold) {
+    if (subtotal >= freeshipThreshold) {
       shippingFee = 0;
+    } else if (paymentMethod === "VIETQR") {
+      shippingFee = stdHomeFee; // 25.000 đ cho đơn dưới 350k thanh toán qua Ví Escrow
     } else {
-      shippingFee = 30000; // Phí ship cao nhất cho đơn COD hàng tươi sống
+      shippingFee = codHomeFee; // 35.000 đ cho đơn dưới 350k chọn COD
     }
   }
 
-  // Tính tổng ưu đãi: Mã giảm giá (10k) + Ưu đãi thanh toán trước Ví Escrow (5%) + Ưu đãi Subscription định kỳ hàng tuần (8%)
+  // Tính tổng ưu đãi: Mã giảm giá (10k) + Ưu đãi thanh toán trước Ví Escrow (5%) + Ưu đãi Subscription định kỳ hàng tuần (8%) + Thu hồi thùng trống (10k)
   let cashlessDiscount = (paymentMethod === "VIETQR" && subtotal > 0) ? Math.round(subtotal * 0.05) : 0;
   let subscriptionDiscount = (selectedOrderMode === "SUBSCRIPTION_WEEKLY" && subtotal > 0) ? Math.round(subtotal * 0.08) : 0;
   const promoDiscount = (appliedDiscount > 0 && subtotal > 0) ? appliedDiscount : 0;
+  const returnBox = document.getElementById("order-return-box-check")?.checked === true;
+  const boxReturnVoucher = (returnBox && subtotal > 0) ? Number(window.APP_CONFIG?.SHIPPING?.RETURN_BOX_VOUCHER ?? 10000) : 0;
 
-  const totalDiscount = Math.min(subtotal, promoDiscount + cashlessDiscount + subscriptionDiscount);
+  const totalDiscount = Math.min(subtotal, promoDiscount + cashlessDiscount + subscriptionDiscount + boxReturnVoucher);
   const wantInsurance = document.getElementById("order-insurance-check")?.checked !== false;
   const insuranceFee = (items.length > 0 && wantInsurance) ? 1000 : 0;
   const totalAmount = Math.max(0, subtotal + shippingFee - totalDiscount + insuranceFee);
@@ -765,6 +783,7 @@ function priceCart() {
     discount: totalDiscount,
     cashless_discount: cashlessDiscount,
     subscription_discount: subscriptionDiscount,
+    box_return_discount: boxReturnVoucher,
     insurance_fee: insuranceFee,
     total_amount: totalAmount,
     payable_now: payableNow,
@@ -772,6 +791,7 @@ function priceCart() {
     total_kg: totalKg,
     payment_method: paymentMethod,
     order_mode: selectedOrderMode,
+    freeship_threshold: freeshipThreshold,
     is_freeship: (selectedDeliveryType === "HOME" && shippingFee === 0 && items.length > 0)
   };
 }
@@ -782,14 +802,39 @@ function updateOrderSummary() {
 
   setText("summary-subtotal", formatVND(priced.subtotal));
 
+  // Cập nhật Thanh Tiến Trình Upsell AOV 350.000 đ (Freeship có điều kiện)
+  const aovTextEl = document.getElementById("aov-upsell-text");
+  const aovBarEl = document.getElementById("aov-upsell-bar");
+  const aovBtnEl = document.getElementById("aov-upsell-btn");
+  const threshold = priced.freeship_threshold || 350000;
+  if (aovBarEl) {
+    const pct = Math.min(100, Math.round((priced.subtotal / threshold) * 100));
+    aovBarEl.style.width = `${pct}%`;
+  }
+  if (aovTextEl) {
+    if (priced.subtotal >= threshold) {
+      aovTextEl.innerHTML = `<span class="text-[#1f5610] font-black">🎉 Tuyệt vời! Đơn hàng (${formatVND(priced.subtotal)}) đã đạt chuẩn AOV ≥ 350.000 đ — Mở khóa FREESHIP 0đ tận nhà!</span>`;
+      if (aovBtnEl) aovBtnEl.classList.add("hidden");
+    } else if (priced.subtotal > 0) {
+      const lack = threshold - priced.subtotal;
+      aovTextEl.innerHTML = `💡 Mua thêm <strong class="text-rose-700">${formatVND(lack)}</strong> nữa để đạt mốc <strong>350.000 đ</strong> và được <strong>FREESHIP 0đ tận nhà</strong> (Tiết kiệm 25.000 đ phí ship)!`;
+      if (aovBtnEl) aovBtnEl.classList.remove("hidden");
+    } else {
+      aovTextEl.innerHTML = `💡 Chọn <strong>Combo Đi Chợ Tuần (359k - 389k)</strong> hoặc gom đơn từ <strong>350.000 đ</strong> để được <strong>FREESHIP 0đ tận nhà</strong>!`;
+      if (aovBtnEl) aovBtnEl.classList.remove("hidden");
+    }
+  }
+
   const shipEl = document.getElementById("summary-shipping");
   if (shipEl) {
     if (selectedDeliveryType === "CAMPUS") {
       shipEl.innerText = "Miễn phí 0 đ (Nhận tại Hub Xe Lạnh / Trường)";
     } else if (priced.is_freeship) {
-      shipEl.innerText = "Miễn phí 0 đ (Ưu đãi Ví Escrow / Đơn ≥250k)";
+      shipEl.innerText = "Miễn phí 0 đ (Đạt chuẩn AOV ≥ 350.000 đ)";
+    } else if (priced.payment_method === "VIETQR") {
+      shipEl.innerText = `${formatVND(priced.shipping_fee)} (Đồng giá đơn < 350k • Ví Escrow)`;
     } else {
-      shipEl.innerText = "30.000 đ (Phí COD bảo toàn hàng tươi)";
+      shipEl.innerText = `${formatVND(priced.shipping_fee)} (Phí COD hàng tươi đơn < 350k)`;
     }
   }
 
@@ -797,9 +842,11 @@ function updateOrderSummary() {
   if (rowDiscount) {
     if (priced.discount > 0) {
       rowDiscount.classList.remove("hidden");
-      const parts = ["Mã 10k"];
+      const parts = [];
+      if (appliedDiscount > 0) parts.push("Mã 10k");
       if (priced.cashless_discount > 0) parts.push("Ví Escrow -5%");
       if (priced.subscription_discount > 0) parts.push("Định kỳ tuần -8%");
+      if (priced.box_return_discount > 0) parts.push("Đổi thùng trống -10k");
       setText("label-discount-type", `Tổng ưu đãi (${parts.join(" + ")}):`);
       setText("summary-discount", `-${formatVND(priced.discount)}`);
     } else {
@@ -839,10 +886,10 @@ function updateOrderSummary() {
   const labelHome = document.getElementById("label-shipping-home");
   if (labelHome) {
     if (priced.is_freeship) {
-      labelHome.innerText = "FREESHIP 0 đ";
+      labelHome.innerText = "FREESHIP 0 đ (≥350k)";
       labelHome.className = "text-xs bg-[#e1f9cf] text-[#256314] px-2 py-0.5 rounded-md font-extrabold";
     } else {
-      labelHome.innerText = "+30.000 đ (COD)";
+      labelHome.innerText = `+${formatVND(priced.shipping_fee || 25000)} (<350k)`;
       labelHome.className = "text-xs bg-black/20 text-white px-2 py-0.5 rounded-md font-extrabold";
     }
   }
