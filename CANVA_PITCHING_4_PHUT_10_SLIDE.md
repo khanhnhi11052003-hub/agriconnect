@@ -5,22 +5,22 @@
 
 ---
 
-## MA TRẬN 10 TÍNH NĂNG ĐỔI MỚI SÁNG TẠO ĐÃ ĐƯA VÀO SLIDE
+## MA TRẬN TÍNH NĂNG ĐỔI MỚI SÁNG TẠO & MÙA VỤ TRÊN WEB
 
-| Nhóm Đổi Mới Sáng Tạo | Tính năng thực tế trên Web AgriConnect | Vị trí xuất hiện trong Slide Pitching |
+| Nhóm Đổi Mới Sáng Tạo | Tính năng thực tế trên Web AgriConnect | Vị trí xuất hiện trong Slide |
 | :--- | :--- | :---: |
-| **1. Đổi mới Công nghệ Nông học** | • Đo độ ngọt **Brix (°Bx)** bằng khúc xạ kế.<br>• Cách ly an toàn **PHI ≥ 14 ngày (0% tồn dư)**.<br>• Thuật toán giỏ hàng tự tách **khí Ethylene & phân khoang lạnh**. | **Slide 4 & Slide 5** |
-| **2. Đổi mới Công nghệ & Web3** | • Mã băm **Merkle Root Hash (SHA-256)** trên Polygon Layer-2.<br>• Bấm nút mở popup đối soát minh bạch lô thu hoạch. | **Slide 4 & Slide 5** |
-| **3. Đổi mới Thanh toán (Fintech)** | • Cơ chế **Ví Escrow tạm giữ** (chỉ thanh toán cho nông dân khi khách hài lòng).<br>• VietQR động đối soát tự động. | **Slide 2, 4 & 5** |
-| **4. Đổi mới Trải nghiệm (Gamification)** | • **Vườn ảo mini-farm** 4 cấp độ (tưới nước, thăng cấp cây, nhận voucher thật).<br>• **Vòng quay may mắn Canvas** trúng mã freeship & quà tặng.<br>• **Âm thanh ASMR sinh học Native** (tiếng giọt nước, chime 528Hz, win).<br>• **Checklist 4 Nhiệm Vụ Ngày (Daily Quests)** thưởng +50 Hạt mầm. | **Slide 5 & Slide 7** |
-| **5. Đổi mới Dữ liệu & Lưu trữ** | • Động cơ lưu trữ kép (**LocalStorage + Supabase Realtime Sync**): F5 hay đổi thiết bị không bao giờ mất giỏ hàng & hạt mầm. | **Slide 7** |
-| **6. Đổi mới Mô hình Giao vận (Logistics)** | • **B2B2C Office Drop-point** (Viettel Q10, Landmark 81, Bitexco, ĐHQG).<br>• **Geo-fencing bán kính 20km** tự chuyển sang Hub xe lạnh. | **Slide 3 & Slide 6** |
-| **7. Đổi mới Tuần hoàn & ESG** | • Phụ phẩm vỏ sầu riêng chuyển giao trại **Ruồi Lính Đen (BSF)** làm phân bón.<br>• Trích **2% lập Quỹ Bảo hiểm Nông dân**. | **Slide 8** |
-| **8. Đổi mới Truy cập Ứng dụng** | • Cài đặt **PWA 1 chạm ("Cài App Web")** không phụ thuộc App Store. | **Slide 7** |
+| **1. Nông Sản Theo Mùa Vụ & Lịch 12 Tháng** | • Danh mục trái cây **Chính Vụ Thu - Đông** (Cam Sành Tam Bình, Hồng Giòn Đà Lạt, Quýt Đường Lai Vung, Bưởi Da Xanh, Vú Sữa Lò Rèn).<br>• Tiện ích **"Lịch Mùa Vụ 12 Tháng & Dự Báo Giá Vườn"** tra cứu chu kỳ thu hoạch. | **Slide 4, 5 & 7** |
+| **2. Công nghệ Nông học & Chuỗi Lạnh** | • Đo độ ngọt **Brix (°Bx)** bằng khúc xạ kế.<br>• Cách ly an toàn **PHI ≥ 14 ngày (0% tồn dư)**.<br>• Thuật toán giỏ hàng tự tách **khí Ethylene & phân khoang lạnh**. | **Slide 4 & Slide 5** |
+| **3. Minh bạch Web3 & Blockchain** | • Mã băm **Merkle Root Hash (SHA-256)** trên Polygon Layer-2.<br>• Bấm nút mở popup đối soát minh bạch lô thu hoạch. | **Slide 4 & Slide 5** |
+| **4. Thanh toán Fintech Bảo vệ kép** | • Cơ chế **Ví Escrow tạm giữ** (chỉ thanh toán cho nông dân khi khách hài lòng 100%).<br>• VietQR động đối soát tự động. | **Slide 2, 4 & 5** |
+| **5. Gamification & Tương tác khách hàng** | • **Vườn ảo mini-farm** 4 cấp độ chăm cây đổi voucher thật.<br>• **Vòng quay may mắn Canvas** trúng mã freeship & quà tặng.<br>• **Âm thanh ASMR sinh học Native** (tiếng giọt nước, chime 528Hz, win).<br>• **Checklist 4 Nhiệm Vụ Ngày (Daily Quests)** thưởng +50 Hạt mầm. | **Slide 5 & Slide 7** |
+| **6. Đột phá Logistics & Đơn giá** | • **B2B2C Office Drop-point** (Viettel Q10, Landmark 81, Bitexco, ĐHQG) gom 30 đơn/điểm, **giảm 75% phí ship**.<br>• Thuật toán **Geo-fencing bán kính 20km** chuyển đơn vào Hub lạnh. | **Slide 3 & Slide 6** |
+| **7. Kinh tế tuần hoàn & ESG** | • Phụ phẩm vỏ sầu riêng chuyển giao trại **Ruồi Lính Đen (BSF)** làm phân bón.<br>• Trích **2% lập Quỹ Bảo hiểm Nông dân**. | **Slide 8** |
+| **8. Công nghệ PWA & Lưu trữ bền vững** | • Cài đặt **PWA 1 chạm ("Cài App Web")** không phụ thuộc App Store.<br>• Động cơ lưu trữ kép (**LocalStorage + Supabase Realtime**) F5 không mất dữ liệu. | **Slide 7** |
 
 ---
 
-## KỊCH BẢN CHI TIẾT 10 SLIDE CANVA & LỜI THOẠI 4 PHÚT
+## KỊCH BẢN CHI TIẾT 10 SLIDE CANVA & LỜI THOẠI 4 PHÚT (240 GIÂY)
 
 ---
 
@@ -33,85 +33,85 @@
   - **Key Visual:** Logo AgriConnect lục - vàng, ảnh mockup giao diện Web App trên điện thoại và laptop.
 * ⏱️ **Thời lượng:** `15 giây` (~35 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"Kính thưa Ban Giám Khảo! Em là [Tên bạn], đại diện nhóm AgriConnect. Chúng em mang đến giải pháp thương mại điện tử nông sản sinh thái ứng dụng mô hình gom đơn hàng tuần, tích hợp cơ chế bảo chứng thanh toán Ví Escrow và gamification vườn ảo để giải bài toán nông sản chín cây Việt Nam."*
+  > *"Kính thưa Ban Giám Khảo! Em là [Tên bạn], đại diện nhóm AgriConnect. Chúng em mang đến giải pháp thương mại điện tử nông sản sinh thái ứng dụng mô hình gom đơn hàng tuần, tích hợp cơ chế bảo chứng thanh toán Ví Escrow và danh mục đặc sản theo mùa vụ để giải bài toán nông sản chín cây Việt Nam."*
 
 ---
 
 ### SLIDE 2: VẤN ĐỀ THỰC TIỄN & NHU CẦU CẦN GIẢI QUYẾT
 * **Nội dung Canva (3 Cột đối chiếu nỗi đau):**
   - **Nông Dân Bế Tắc:** Bị thương lái ép giá; thất thoát sau thu hoạch lên tới 25–30%; trái chín cây ngon nhất lại khó vận chuyển xa.
-  - **Khách Hàng Lo Sợ:** Giá lẻ đội lên gấp 2–3 lần qua 4–5 tầng trung gian; nơm nớp sợ trái cây ngâm hóa chất ép chín.
+  - **Khách Hàng Lo Sợ:** Mua trái cây trái mùa bị ngâm thuốc kích chín; giá bán lẻ đội lên gấp 2–3 lần qua 4–5 tầng trung gian.
   - **Rào Cản Mua Online:** 82% người tiêu dùng sợ nhận hàng dập sượng, sượng nước mà không được đền bù tiền bạc.
 * ⏱️ **Thời lượng:** `25 giây` (~60 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"Mỗi mùa thu hoạch, nông dân bán sầu riêng già chín cây tại vườn chỉ 50.000đ nhưng người dân đô thị phải mua 120.000đ mà vẫn lo sợ hóa chất kích chín và trái dập hỏng. 4-5 tầng trung gian truyền thống đang nuốt trọn lợi nhuận của nông dân và phá vỡ niềm tin của người tiêu dùng khi mua nông sản online."*
+  > *"Mỗi mùa thu hoạch, nông dân bán nông sản tại vườn giá rất rẻ nhưng người tiêu dùng đô thị phải mua đắt gấp 2-3 lần mà vẫn nơm nớp lo sợ hóa chất kích chín và trái dập hỏng. 4-5 tầng trung gian truyền thống đang nuốt trọn lợi nhuận của nông dân và phá vỡ niềm tin của người tiêu dùng khi mua nông sản online."*
 
 ---
 
 ### SLIDE 3: KHÁCH HÀNG MỤC TIÊU & INSIGHT CHÍNH
 * **Nội dung Canva:**
   - **Khách hàng mục tiêu:**
-    1. *Nhân viên văn phòng & Gen Z (22–32 tuổi):* Đặt chung đơn tại tòa nhà công ty để nhận **Freeship 0đ**.
-    2. *Gia đình trẻ (28–45 tuổi):* Chú trọng dinh dưỡng an toàn, kiểm tra chỉ số độ ngọt Brix và cách ly PHI.
-  - **Insight cốt lõi:** *"Tôi sẵn sàng đặt trước đặc sản chín cây tận vườn, miễn là có kiểm định khoa học rõ ràng và được bảo hiểm hoàn tiền nếu hàng không như cam kết!"*
+    1. *Nhân viên văn phòng & Gen Z (22–32 tuổi):* Đặt chung đơn Combo Mùa Vụ tại tòa nhà công ty để nhận **Freeship 0đ**.
+    2. *Gia đình trẻ (28–45 tuổi):* Chú trọng dinh dưỡng an toàn, mua trái cây đúng mùa vụ theo chỉ số kiểm định Brix và PHI.
+  - **Insight cốt lõi:** *"Tôi muốn ăn trái cây chín cây đúng mùa vụ tự nhiên với giá tận vườn, có kiểm định khoa học và được hoàn tiền nếu hàng không đúng cam kết!"*
 * ⏱️ **Thời lượng:** `25 giây` (~60 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"Khảo sát của nhóm trên 300 khách hàng đô thị cho thấy: Người tiêu dùng trẻ không chỉ tìm kiếm rau quả rẻ, mà họ khao khát sự minh bạch. Dân văn phòng và các gia đình trẻ sẵn sàng đặt trước theo tuần nếu được đảm bảo 100% chín cây, có điểm nhận hàng thuận tiện ngay tòa nhà công ty và được bảo hộ đổi trả sòng phẳng."*
+  > *"Khảo sát của nhóm trên 300 khách hàng đô thị cho thấy: Người tiêu dùng trẻ chuộng ăn trái cây đúng mùa vì ngon ngọt tự nhiên và không sợ chất bảo quản. Họ sẵn sàng đặt trước theo tuần nếu được đảm bảo 100% chín cây, có điểm nhận hàng thuận tiện ngay tòa nhà công ty và được bảo hộ đổi trả sòng phẳng."*
 
 ---
 
 ### SLIDE 4: GIẢI PHÁP & CƠ CHẾ HOẠT ĐỘNG TRÊN WEB AGRICONNECT
 * **Nội dung Canva (Sơ đồ luồng 4 bước công nghệ):**
-  - **1. Gom Đơn (T2–T5):** Khách đặt trước trên Web App -> Minh bạch **Độ ngọt Brix**, cách ly PHI & mã băm **Merkle Hash Blockchain**.
+  - **1. Gom Đơn Theo Mùa (T2–T5):** Khách tra cứu **Lịch Mùa Vụ 12 Tháng**, chọn trái cây đang rộ vụ (Cam sành, Hồng giòn, Quýt Lai Vung, Bưởi da xanh) -> Minh bạch độ ngọt Brix & mã băm **Merkle Hash Blockchain**.
   - **2. Thu Hoạch Đủ Lượng (T6):** Nhà vườn chỉ cắt đúng sản lượng đã chốt -> Xe lạnh chạy thẳng trong đêm về thành phố.
   - **3. Phân Phối Tươi (Sáng T7):** Giao tận nhà hoặc nhận tại **B2B2C Office Drop-point** (Viettel Q10, Landmark 81, Bitexco).
   - **4. Bảo Chứng Ví Escrow:** Tiền tạm giữ an toàn, chỉ giải ngân cho nông dân khi khách kiểm tra thùng hàng hài lòng 100%.
 * ⏱️ **Thời lượng:** `30 giây` (~75 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"AgriConnect giải quyết bài toán bằng mô hình Harvest-on-Demand kết hợp công nghệ độc quyền trên website: Từ Thứ 2 đến Thứ 5, khách hàng gom đơn trên web. Thứ 6, nông dân mới ra vườn thu hoạch đúng số lượng đã bán. Xe lạnh chạy thẳng trong đêm về giao sáng Thứ 7. Tiền thanh toán được Ví Escrow tạm giữ, chỉ giải ngân cho nông dân khi người mua mở thùng hàng và hài lòng 100%."*
+  > *"AgriConnect giải quyết bài toán bằng mô hình Harvest-on-Demand theo mùa vụ kết hợp công nghệ web: Từ Thứ 2 đến Thứ 5, khách hàng tra cứu Lịch mùa vụ 12 tháng và gom đơn các loại quả đang rộ mùa trên web. Thứ 6, nông dân mới ra vườn thu hoạch đúng số lượng đã bán. Xe lạnh chạy thẳng trong đêm về giao sáng Thứ 7. Tiền thanh toán được Ví Escrow tạm giữ, chỉ giải ngân khi người mua mở thùng hàng và hài lòng 100%."*
 
 ---
 
-### SLIDE 5: GIÁ TRỊ ĐỀ XUẤT & ĐIỂM KHÁC BIỆT CẠNH TRANH (INNOVATION)
+### SLIDE 5: GIÁ TRỊ ĐỀ XUẤT & ĐIỂM KHÁC BIỆT CẠNH TRANH (USP)
 * **Nội dung Canva (4 Trụ cột Đổi Mới Sáng Tạo đã vận hành trên Web):**
-  - 🍈 **Nông Học Chính Xác:** Khúc xạ kế đo độ ngọt **Brix (°Bx)**, cách ly an toàn **PHI ≥ 14 ngày**, thuật toán tự tách **khí Ethylene** trong giỏ hàng.
+  - 🍈 **Ăn Đúng Mùa — Nông Học Chính Xác:** Khúc xạ kế đo độ ngọt **Brix (°Bx)**, cách ly an toàn **PHI ≥ 14 ngày**, thuật toán giỏ hàng tự tách **khí Ethylene**.
   - ⛓️ **Minh Bạch Web3:** Mã băm **Merkle Root Hash (SHA-256)** trên Polygon Layer-2 chứng thực lô thu hoạch bất biến.
-  - 🛡️ **Bảo Chứng Ví Escrow:** Đổi trả 1-đổi-1 hoặc hoàn tiền tức thì không tranh cãi.
+  - 🛡️ **Bảo Chứng Ví Escrow:** Chính sách *Bảo hành tận ruột*, đổi 1-đổi-1 hoặc hoàn tiền tức thì không tranh cãi.
   - 🎮 **Gamification & ASMR:** Vườn ảo chăm cây, quay thưởng may mắn, âm thanh ASMR sinh học Native, 4 Nhiệm vụ ngày tích hạt mầm đổi voucher thật.
 * ⏱️ **Thời lượng:** `30 giây` (~75 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"Điểm đổi mới sáng tạo cốt lõi của website AgriConnect nằm ở 4 trụ cột: Thứ nhất, chuẩn hóa nông học với chỉ số độ ngọt Brix, PHI và thuật toán giỏ hàng tự tách khí Ethylene. Thứ hai, mã băm Merkle Hash trên Blockchain chống gian lận nguồn gốc. Thứ ba, bảo chứng Ví Escrow xóa tan 100% rủi ro mua hàng online. Và thứ tư, khu giải trí vườn ảo cùng âm thanh ASMR sinh học tạo thói quen ghé thăm mỗi ngày."*
+  > *"Điểm đổi mới sáng tạo cốt lõi của website AgriConnect nằm ở 4 trụ cột: Thứ nhất, chuẩn hóa nông sản đúng mùa vụ với chỉ số độ ngọt Brix, PHI và thuật toán tự tách khí Ethylene trong giỏ hàng. Thứ hai, mã băm Merkle Hash trên Blockchain chống gian lận nguồn gốc. Thứ ba, bảo chứng Ví Escrow xóa tan 100% rủi ro mua hàng online. Và thứ tư, khu giải trí vườn ảo cùng âm thanh ASMR sinh học tạo thói quen ghé thăm mỗi ngày."*
 
 ---
 
 ### SLIDE 6: MÔ HÌNH KINH DOANH, ĐƠN GIÁ & KÊNH TIẾP CẬN
 * **Nội dung Canva:**
   - **Dòng doanh thu:** Phí sàn (Take-rate **15% – 20%** trên mỗi đơn hàng).
-  - **Giá trị đơn hàng trung bình (AOV):** **350.000đ – 450.000đ** (Combo Đi Chợ Tuần đạt chuẩn Freeship).
+  - **Giá trị đơn hàng trung bình (AOV):** **350.000đ – 450.000đ** (Combo Mùa Vụ Thu Đông 179k + Rau củ đạt chuẩn Freeship).
   - **Đột phá kênh B2B2C Office Drop-point:** Gom 20–30 đơn tại một điểm tòa nhà (Viettel, Landmark 81, ĐHQG), **cắt giảm 75% chi phí ship chặng cuối** (từ 25k xuống chỉ còn 6k/đơn).
   - **Thuật toán Geo-fencing 20km:** Tự động điều hướng hàng tươi sống vào Hub lạnh, triệt tiêu rủi ro héo úa.
 * ⏱️ **Thời lượng:** `30 giây` (~75 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"Về mô hình tài chính: AgriConnect thu phí sàn 15-20% giá trị giao dịch. Bằng chiến lược Combo Đi Chợ Tuần đạt AOV từ 350.000đ và mô hình Office Drop-point tại các tòa nhà văn phòng lớn, một chuyến xe có thể giao 30 đơn cùng một điểm, giúp chúng em tiết kiệm tới 75% chi phí giao hàng chặng cuối so với việc đi giao lẻ từng nhà."*
+  > *"Về mô hình tài chính: AgriConnect thu phí sàn 15-20% giá trị giao dịch. Bằng chiến lược Combo Mùa Vụ đạt AOV từ 350.000đ và mô hình Office Drop-point tại các tòa nhà văn phòng lớn, một chuyến xe có thể giao 30 đơn cùng một điểm, giúp chúng em tiết kiệm tới 75% chi phí giao hàng chặng cuối so với việc đi giao lẻ từng nhà."*
 
 ---
 
 ### SLIDE 7: MINH CHỨNG SỐNG ĐỘNG TRÊN WEBSITE (TRACTION & DEMO SỐNG)
 * **Nội dung Canva (Số liệu thực tế & Chụp màn hình Web Live):**
   - 🌐 **Nền tảng đã vận hành thực tế:** `https://agriconnect-yagt.vercel.app/`
+  - 🍁 **Danh mục 29+ Sản phẩm:** Cập nhật trọn bộ trái cây rộ vụ Thu - Đông (Hồng giòn Đà Lạt, Cam sành, Quýt Lai Vung, Vú sữa) kèm **Lịch Mùa Vụ 12 Tháng**.
   - 📦 **120+ Đơn hàng thành công** trong 2 đợt gom thử nghiệm tại TP.HCM.
-  - ⭐ **92% Đánh giá 5 sao:** Khách hàng khen nức nở sầu riêng già béo ngậy, rau Đà Lạt tươi giòn.
+  - ⭐ **92% Đánh giá 5 sao:** Khách khen ngợi độ giòn ngọt mọng nước của trái cây đúng mùa.
   - 🔄 **41% Tỷ lệ tái đặt hàng (Retention):** Nhờ cơ chế điểm danh, chăm cây ảo và đổi voucher thật.
-  - 📱 **Ứng dụng PWA:** Cài đặt 1 chạm trực tiếp trên điện thoại, đồng bộ dữ liệu vĩnh viễn không mất dữ liệu.
 * ⏱️ **Thời lượng:** `25 giây` (~60 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**
-  > *"Dự án của chúng em không nằm trên giấy mà đã có website hoàn thiện chạy thực tế tại agriconnect-yagt.vercel.app. Qua 2 đợt gom thử nghiệm, nhóm đã xử lý hơn 120 đơn hàng thực tế, đạt doanh thu hơn 45 triệu đồng, tỷ lệ hài lòng 92% và có đến 41% khách hàng tiếp tục đặt hàng ở đợt tiếp theo nhờ cơ chế chăm cây ảo và đổi voucher giảm giá thực tế."*
+  > *"Dự án của chúng em không nằm trên giấy mà đã có website hoàn thiện chạy thực tế tại agriconnect-yagt.vercel.app. Trên web, chúng em đã cập nhật danh mục 29 sản phẩm đúng mùa vụ Thu - Đông kèm Lịch mùa vụ 12 tháng. Qua 2 đợt gom thử nghiệm, nhóm đã xử lý hơn 120 đơn hàng thực tế, đạt doanh thu hơn 45 triệu đồng, tỷ lệ hài lòng 92% và 41% khách tiếp tục quay lại."*
 
 ---
 
 ### SLIDE 8: TÁC ĐỘNG XÃ HỘI, MÔI TRƯỜNG & MỤC TIÊU BỀN VỮNG (SDGs)
 * **Nội dung Canva:**
-  - 🌾 **Tăng 25–35% Thu nhập:** Cho nông dân canh tác sạch, không còn bị thương lái ép giá.
+  - 🌾 **Tăng 25–35% Thu nhập:** Cho nông dân canh tác sạch, không còn cảnh được mùa mất giá nhờ gom đơn đúng vụ.
   - 🪰 **Kinh Tế Tuần Hoàn (Circular Economy):** Vỏ sầu riêng & phụ phẩm được chuyển giao trại **Ruồi Lính Đen (BSF)** sản xuất phân bón sinh học và thức ăn giàu đạm.
   - 🛡️ **Quỹ An Sinh Mùa Vụ:** Trích **2% doanh thu** bảo hiểm cho nhà vườn khi rủi ro thời tiết.
   - 🎯 **Cam kết SDGs:** Mục tiêu 2 (Nông nghiệp bền vững), Mục tiêu 8 (Việc làm bền vững) và Mục tiêu 12 (Sản xuất & Tiêu dùng có trách nhiệm).
@@ -124,7 +124,7 @@
 ### SLIDE 9: KẾ HOẠCH TRIỂN KHAI & ĐỐI TÁC CHIẾN LƯỢC
 * **Nội dung Canva (Lộ trình 3 giai đoạn 2026 – 2028):**
   - **Giai đoạn 1 (Q1–Q2/2026):** Mở 50 Office Drop-point tại TP.HCM, đạt 500 đơn/tuần, hòa vốn vận hành.
-  - **Giai đoạn 2 (Q3–Q4/2026):** Mở rộng sang Bình Dương, Đồng Nai; chuẩn hóa cảm biến IoT giám sát chuỗi lạnh.
+  - **Giai đoạn 2 (Q3–Q4/2026):** Mở rộng mạng lưới mùa vụ sang Bình Dương, Đồng Nai; chuẩn hóa cảm biến IoT giám sát chuỗi lạnh.
   - **Giai đoạn 3 (2027–2028):** Mở rộng ra Hà Nội và các đô thị lớn; xuất khẩu ủy thác đặc sản OCOP chính ngạch.
 * ⏱️ **Thời lượng:** `20 giây` (~50 từ)
 * 🎙️ **Lời thoại thuyết trình (MC):**

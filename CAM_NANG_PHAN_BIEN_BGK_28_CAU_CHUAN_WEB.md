@@ -30,9 +30,9 @@
 
 ### CÂU 3: BGK hỏi: "Lỡ Thứ Sáu mưa bão lớn, nhà vườn không hái được thì xử lý thế nào?"
 * **Câu trả lời chuẩn web:**
-  > *"Hệ thống kiểm soát rủi ro thời tiết chủ động và có cơ chế hoàn tiền tức thì qua Ví Escrow kèm voucher đền bù."*
+  > *"Hệ thống kiểm soát rủi ro thời tiết chủ động qua Lịch mùa vụ 12 tháng đa vùng trồng và có cơ chế hoàn tiền tức thì qua Ví Escrow kèm voucher đền bù."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
-  1. **Cổng Nông Dân theo dõi mùa vụ:** Trên trang [`farmer.html`](https://agriconnect-yagt.vercel.app/farmer.html), nông dân cập nhật trạng thái thu hái từ Thứ Năm. Nếu phát hiện bão, hệ thống chuyển sang nhà vườn dự phòng ở tỉnh lân cận.
+  1. **Lịch mùa vụ đa vùng trồng:** Trên web có tiện ích **"Lịch Mùa Vụ Nông Sản 12 Tháng"** kết nối đa dạng từ Tây Nguyên (Sầu riêng, Bơ), Đà Lạt (Hồng giòn, Rau củ) đến Miền Tây (Cam sành, Bưởi da xanh). Nếu Bình Phước mưa bão, hệ thống lập tức điều hướng sang nguồn hàng vụ Thu Đông tại Bến Tre, Vĩnh Long và Lâm Đồng.
   2. **Tự động hoàn tiền qua Ví Escrow:** Trên trang [`trace.html`](https://agriconnect-yagt.vercel.app/trace.html), trạng thái đơn hàng sẽ tự động chuyển sang hoàn tiền 100% cho khách hàng.
   3. **Voucher đền bù tự động:** Khách được tặng ngay mã giảm giá 30.000đ hiển thị trực tiếp trong mục **"Mã giảm giá đang có của bạn"** trên Web để giữ chân cho đợt sau.
 
@@ -52,7 +52,7 @@
 * **Câu trả lời chuẩn web:**
   > *"Kính mời Ban Giám khảo mở điện thoại vào ngay `agriconnect-yagt.vercel.app` — toàn bộ sản phẩm, ví escrow, hệ thống phân quyền và các cổng tương tác đang chạy trực tiếp trên máy chủ đám mây!"*
 * **Bằng chứng trên Web để chỉ cho BGK:**
-  1. **Cổng Khách Hàng:** [`index.html`](https://agriconnect-yagt.vercel.app/) có giỏ hàng, đo độ ngọt Brix, Merkle Hash, game Vườn ảo chăm cây và âm thanh ASMR sinh học.
+  1. **Cổng Khách Hàng:** [`index.html`](https://agriconnect-yagt.vercel.app/) có 29+ sản phẩm theo mùa vụ Thu - Đông, đo độ ngọt Brix, Merkle Hash, game Vườn ảo chăm cây và âm thanh ASMR sinh học.
   2. **Cổng Quản Trị:** Bấm nút **"Cổng Quản Trị"** góc phải trên dẫn sang [`admin.html`](https://agriconnect-yagt.vercel.app/admin.html) (Mã PIN: `123456`) xem quản lý đơn hàng, kho vận và giải ngân tiền Escrow.
   3. **Cổng Nhà Vườn:** Bấm nút **"🌾 Cổng Nông Dân"** dẫn sang [`farmer.html`](https://agriconnect-yagt.vercel.app/farmer.html) (Mã PIN: `AGRI2026`) xem sản lượng thu hoạch của Bác Năm.
   4. **Cổng Tra cứu:** Trang [`trace.html`](https://agriconnect-yagt.vercel.app/trace.html) tra cứu chuỗi cung ứng lạnh và ví bảo chứng.
@@ -64,7 +64,7 @@
   > *"Dạ không. Dự án đã hoàn thiện sản phẩm ở mức độ TRL 7 (chạy thật), liên kết 3 Hợp tác xã lớn và mô hình không mua xe lạnh nên chỉ cần 1.200 đơn/tuần là đã đạt điểm hòa vốn."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
   1. Đã có nền tảng hoàn thiện không tốn chi phí thuê ngoài (Outsource).
-  2. Giá trị đơn hàng trung bình (AOV) trên web luôn được thiết kế đạt chuẩn **≥ 350.000đ** (thanh thông báo Upsell Freeship 350k).
+  2. Giá trị đơn hàng trung bình (AOV) trên web luôn được thiết kế đạt chuẩn **≥ 350.000đ** (nhờ các gói Combo Mùa Vụ 179k + Rau củ tuần 219k).
   3. Biên lợi nhuận phí sàn 15–20% đảm bảo dòng tiền dương sau 6 tháng.
 
 ---
@@ -89,10 +89,10 @@
 
 ### CÂU 10: BGK hỏi: "Nếu GrabMart hoặc Bách Hóa Xanh làm mô hình này thì sao?"
 * **Câu trả lời chuẩn web:**
-  > *"Siêu thị không thể bỏ mặt bằng đắt đỏ để bán gom tuần, còn shipper xe máy của Grab không chở được xe lạnh liên tỉnh bảo quản quả chín cây."*
+  > *"Siêu thị bán quả bảo quản lâu ngày và hái non, còn AgriConnect chuyên bán quả chín cây đúng mùa vụ đạt đỉnh độ ngọt Brix và vận chuyển xe lạnh liên tỉnh."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
-  1. Siêu thị phải bán hàng tồn mỗi ngày, trái cây phải hái non để lâu. AgriConnect chỉ bán **trái chín cây già trĩu cành** (thể hiện qua chỉ số Brix cao từ 16.5° - 18.0° đo trên từng thẻ sản phẩm).
-  2. GrabMart chỉ giao hàng nội thành bán kính 5–7km; AgriConnect kết nối chuỗi cung ứng lạnh 200km từ vùng trồng Bình Phước, Lâm Đồng về tận sảnh công ty.
+  1. Siêu thị phải bán hàng tồn mỗi ngày, trái cây phải hái non để lâu. AgriConnect chỉ bán **trái chín cây già trĩu cành theo Lịch mùa vụ 12 tháng** (Cam sành Brix 12°, Hồng giòn Brix 17°, Sầu riêng Brix 28° đo bằng khúc xạ kế trên từng thẻ sản phẩm).
+  2. GrabMart chỉ giao hàng nội thành bán kính 5–7km; AgriConnect kết nối chuỗi cung ứng lạnh 200km từ vùng trồng Bình Phước, Lâm Đồng, Bến Tre về tận sảnh công ty.
 
 ---
 
@@ -126,10 +126,11 @@
 
 ### CÂU 16: BGK hỏi: "Điểm khác biệt với tem VietGAP tĩnh tại siêu thị là gì?"
 * **Câu trả lời chuẩn web:**
-  > *"Tem siêu thị chỉ là giấy tĩnh dán lên quả, còn AgriConnect cung cấp Nhật ký số tương tác kết hợp chỉ số Nông học chính xác."*
+  > *"Tem siêu thị chỉ là giấy tĩnh dán lên quả, còn AgriConnect cung cấp Nhật ký số tương tác kết hợp Lịch mùa vụ 12 tháng và chỉ số Nông học chính xác."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
   1. Bấm nút **"Nhật ký & Nhà vườn"** trên mỗi thẻ sản phẩm để xem: Lịch bón phân hữu cơ, nguồn nước tưới, ngày hái.
-  2. Hiển thị trực tiếp hai thông số độc quyền:
+  2. Bấm nút **"Xem Lịch Mùa Vụ 12 Tháng"** để biết quả này đang ở độ chín rộ nhất trong năm hay đầu vụ.
+  3. Hiển thị trực tiếp hai thông số độc quyền:
      - `🍯 Brix: 16.5° - 18.0°`: Độ ngọt kiểm định bằng khúc xạ kế.
      - `🧪 Cách ly PHI: 14 ngày (0% tồn dư)`: Cam kết an toàn thực phẩm.
 
@@ -146,7 +147,7 @@
 
 ### CÂU 18: BGK hỏi: "Lợi thế cạnh tranh khi đối thủ sao chép ứng dụng là gì?"
 * **Câu trả lời chuẩn web:**
-  > *"Đối thủ có thể sao chép giao diện web trong 1 tuần, nhưng không thể sao chép được 'Con hào kinh tế' (Moat) gồm mạng lưới liên kết HTX độc quyền, quy trình đo độ ngọt chuẩn hóa và tệp khách hàng Vườn ảo trung thành."*
+  > *"Đối thủ có thể sao chép giao diện web trong 1 tuần, nhưng không thể sao chép được 'Con hào kinh tế' (Moat) gồm mạng lưới liên kết HTX độc quyền, chuỗi cung ứng mùa vụ 12 tháng và tệp khách hàng Vườn ảo trung thành."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
   1. Sự gắn kết của khách hàng qua hệ thống **Vườn Ảo tích lũy hạt mầm** và **Chuỗi điểm danh Streak liên tục**. Khách đã tích lũy điểm mầm và thăng cấp cây lên Cấp 4 sẽ không bỏ sang nền tảng khác.
 
@@ -154,11 +155,12 @@
 
 ### CÂU 19: BGK hỏi: "Làm thế nào để cạnh tranh với chợ truyền thống và siêu thị lớn?"
 * **Câu trả lời chuẩn web:**
-  > *"Chợ thì rẻ nhưng không rõ nguồn gốc; Siêu thị thì đắt và mất công đi lại; AgriConnect mang lại sự an tâm tuyệt đối với giá tận vườn và giao tận cửa."*
+  > *"Chợ thì rẻ nhưng không rõ nguồn gốc; Siêu thị thì đắt và mất công đi lại; AgriConnect mang lại sự an tâm tuyệt đối với trái cây đúng mùa giá tận vườn và giao tận cửa."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
   1. Bảng giá so sánh công khai trên web ([`index.html#campaign`](https://agriconnect-yagt.vercel.app/#campaign)):
-     - Sầu riêng Ri6: AgriConnect 98.000 đ/kg (Thị trường 120.000 – 140.000 đ/kg).
-     - Măng cụt cổ thụ: AgriConnect 95.000 đ/kg (Thị trường 115.000 đ/kg).
+     - Cam sành Tam Bình: 28.000 đ/kg (Thị trường 40.000 đ/kg).
+     - Hồng giòn Đà Lạt: 48.000 đ/kg (Thị trường 65.000 – 70.000 đ/kg).
+     - Sầu riêng Ri6: 98.000 đ/kg (Thị trường 120.000 – 140.000 đ/kg).
   2. Tiết kiệm 2 giờ đi chợ mỗi tuần cho các gia đình đô thị.
 
 ---
@@ -178,27 +180,22 @@
 
 ### CÂU 21: BGK hỏi: "Cách thích ứng với bối cảnh kinh tế suy thoái / sức mua giảm?"
 * **Câu trả lời chuẩn web:**
-  > *"Chia nhỏ giỏ hàng theo Combo Tiết Kiệm Tuần với mức giá vừa túi tiền và kích hoạt hệ thống nhiệm vụ tích hạt mầm đổi mã giảm giá."*
+  > *"Kích thích tiêu dùng thông minh bằng việc mua trái cây ĐÚNG MÙA VỤ giá rẻ hơn 20-30% và thiết kế Combo Tiết Kiệm Tuần."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
-  1. Các gói **Combo Đi Chợ Tuần** trên web có giá chỉ từ 250.000đ – 359.000đ đủ rau, củ, quả sạch cho cả tuần.
-  2. Khách hàng làm nhiệm vụ ngày trên web nhận ngay voucher 15k, 25k, 50k áp dụng trực tiếp vào giỏ hàng.
+  1. Bấm tab **"🍁 Đang Rộ Vụ Thu - Đông"** trên web hiển thị Cam sành chỉ 28k/kg, Quýt đường 45k/kg, Hồng giòn 48k/kg — rẻ hơn nhiều so với việc mua trái cây nhập khẩu hay trái vụ đắt đỏ.
+  2. Combo 8 Mâm Quả Thu Đông 4.5kg chỉ 179.000đ đủ hoa quả cho cả nhà ăn suốt tuần.
 
 ---
 
 ### CÂU 22: BGK hỏi: "Cách giữ chân khách hàng sau lần đặt hàng đầu tiên?"
 * **Câu trả lời chuẩn web:**
-  > *"Áp dụng vòng lặp Gamification Vườn Ảo Mini-Farm kết hợp âm thanh ASMR sinh học và Checklist 4 Nhiệm vụ ngày."*
+  > *"Khách hàng quay lại theo chu kỳ mùa vụ mới (Seasonal Repeat Loop) kết hợp Gamification Vườn Ảo Mini-Farm và Checklist 4 Nhiệm vụ ngày."*
 * **Bằng chứng trên Web để chỉ cho BGK:**
-  1. **Khu Vườn Ảo trên Web ([`#interactive-hub`](https://agriconnect-yagt.vercel.app/#interactive-hub)):**
+  1. **Chu kỳ mùa vụ kích thích vị giác:** Mỗi quý AgriConnect lại có một mùa trái mới (Hè ăn Sầu riêng, Măng cụt; Thu Đông ăn Cam sành, Hồng giòn; Xuân ăn Xoài cát, Vú sữa).
+  2. **Khu Vườn Ảo trên Web ([`#interactive-hub`](https://agriconnect-yagt.vercel.app/#interactive-hub)):**
      - Cây có 4 cấp độ: *Cấp 1 Mầm xanh -> Cấp 2 Cây non -> Cấp 3 Đơm hoa -> Cấp 4 Trái chín thu hoạch tặng Voucher 30.000đ*.
      - Bấm tưới nước phát ra **tiếng giọt nước ASMR** êm dịu, tăng +25 EXP.
-  2. **4 Nhiệm Vụ Ngày:**
-     - ⚪ 1. Điểm danh (+20 Hạt)
-     - ⚪ 2. Tưới nước (+25 EXP)
-     - ⚪ 3. Quay vòng quay may mắn
-     - ⚪ 4. Thả tim món ngon góc bếp (+5 Hạt)
-     -> Làm xong 4/4 tự động bật hộp thông báo thưởng nóng **+50 Hạt Mầm Xanh**.
-  3. **Bảng Vinh Danh "Cộng Đồng Xanh":** Hiển thị Top khách hàng chăm chỉ chăm cây và gom đơn tuần.
+  3. **4 Nhiệm Vụ Ngày:** Tích hạt mầm đổi voucher 15k, 25k, 50k áp dụng vào đơn tuần tiếp theo.
 
 ---
 
