@@ -212,7 +212,7 @@ function computeDeterministicHashHex(input) {
 }
 
 function resolveAccurateProductImage(p) {
-  // Nếu người dùng / nhà vườn đã chỉnh sửa hoặc tải lên hình ảnh tùy chỉnh thì ưu tiên tuyệt đối ảnh đó
+  // 1. Nếu người dùng / nhà vườn đã chỉnh sửa hoặc tải lên hình ảnh tùy chỉnh thì ưu tiên tuyệt đối ảnh đó
   if (p?.custom_image_url) return p.custom_image_url;
   if (p?.is_custom_media && p?.image_url) return p.image_url;
   if (p?.is_custom_media && Array.isArray(p?.media_gallery)) {
@@ -220,8 +220,13 @@ function resolveAccurateProductImage(p) {
     if (firstImg) return firstImg.url;
   }
 
+  // 2. Nếu sản phẩm đã được khai báo đường dẫn ảnh cụ thể (URL trực tuyến hoặc file ảnh riêng trong images/)
+  if (p?.image_url && typeof p.image_url === "string" && p.image_url.trim() && p.image_url !== "images/hero-fruits.jpg") {
+    return p.image_url.trim();
+  }
+
   const name = String(p?.name || "").toLowerCase();
-  // Ưu tiên khớp chính xác các Combo trước
+  // 3. Dự phòng khớp ảnh theo từ khóa nếu sản phẩm chưa có ảnh hoặc là ảnh mặc định hero-fruits
   if (name.includes("combo 7") || name.includes("thùng rau củ")) return "images/combo-rau-cu-tuan.jpg";
   if (name.includes("combo 1")) return "images/mangosteen-harvest.jpg";
   if (name.includes("combo 2")) return "images/durian-pile.jpg";
@@ -1581,6 +1586,14 @@ class AgriDB {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
       console.warn("LocalStorage write error:", e);
+      if (e.name === "QuotaExceededError" || /quota/i.test(e.message)) {
+        console.error("[AgriConnect] Bộ nhớ LocalStorage đầy do ảnh tải lên quá lớn.");
+        try {
+          if (typeof window !== "undefined" && typeof window.showToast === "function") {
+            window.showToast("⚠️ Bộ nhớ tạm trình duyệt đã đầy. Khuyên dùng link ảnh trực tuyến để tối ưu!");
+          }
+        } catch (_) {}
+      }
     }
   }
 
@@ -1651,8 +1664,8 @@ class AgriDB {
     return this._applyProductCustomizations([...customFarmerItems, ...base]);
   }
 
-  // Nén ảnh tải lên từ thiết bị thành Base64 DataURL gọn nhẹ để lưu LocalStorage mượt mà
-  async compressImageToDataUrl(file, maxWidth = 900, quality = 0.82) {
+  // Nén ảnh tải lên từ thiết bị thành Base64 DataURL gọn nhẹ (<80KB) để lưu LocalStorage mượt mà, tránh đầy bộ nhớ
+  async compressImageToDataUrl(file, maxWidth = 720, quality = 0.72) {
     return new Promise((resolve, reject) => {
       if (!file) return reject(new Error("Không có file"));
       const reader = new FileReader();
