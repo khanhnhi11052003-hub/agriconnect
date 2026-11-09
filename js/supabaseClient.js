@@ -185,6 +185,56 @@ function getAgronomyBioProfile(p) {
       shelfLife: "10–14 ngày nơi thoáng mát"
     };
   }
+  if (name.includes("hồng giòn")) {
+    return {
+      tempZone: "COOL_8_12C",
+      tempLabel: "🌡️ Khoang Mát 8–12°C (Ủ Hơi Sạch)",
+      ethyleneRole: "PRODUCER",
+      ethyleneLabel: "Quả hô hấp tự nhiên",
+      phiDays: 14,
+      qualityMetric: "Ủ hơi tự nhiên • Brix 16–17.5°",
+      shelfLife: "7–10 ngày nơi thoáng mát",
+      brix: "16.0° - 17.5°"
+    };
+  }
+  if (name.includes("cam sành") || name.includes("quýt đường") || name.includes("bưởi")) {
+    const isBuoi = name.includes("bưởi");
+    const isQuyt = name.includes("quýt");
+    return {
+      tempZone: "TROPICAL_12_15C",
+      tempLabel: "🍃 Khoang Mát 12–15°C (Tươi Mọng)",
+      ethyleneRole: "NEUTRAL",
+      ethyleneLabel: "Không sinh Ethylene mạnh",
+      phiDays: 14,
+      qualityMetric: isBuoi ? "Bưởi Chợ Lách • Brix 12–13.5°" : isQuyt ? "Quýt Lai Vung • Brix 12.5–14°" : "Cam Tam Bình • Brix 11.5–13°",
+      shelfLife: "10–14 ngày nơi thoáng mát",
+      brix: isBuoi ? "12.0° - 13.5°" : isQuyt ? "12.5° - 14.0°" : "11.5° - 13.0°"
+    };
+  }
+  if (name.includes("vú sữa")) {
+    return {
+      tempZone: "TROPICAL_12_15C",
+      tempLabel: "🍃 Khoang Mát 12–15°C (Chống Dập)",
+      ethyleneRole: "SENSITIVE",
+      ethyleneLabel: "Vỏ mỏng nhạy va đập • Xếp lót bọt khí",
+      phiDays: 14,
+      qualityMetric: "Chín cây Vĩnh Kim • Brix 14–15.5°",
+      shelfLife: "4–6 ngày",
+      brix: "14.0° - 15.5°"
+    };
+  }
+  if (name.includes("thanh long")) {
+    return {
+      tempZone: "COOL_8_12C",
+      tempLabel: "🌡️ Khoang Mát 8–12°C (Giữ Tai Xanh)",
+      ethyleneRole: "NEUTRAL",
+      ethyleneLabel: "Không sinh Ethylene mạnh",
+      phiDays: 14,
+      qualityMetric: "Ruột đỏ Chợ Gạo • Brix 13.5–15°",
+      shelfLife: "7–10 ngày",
+      brix: "13.5° - 15.0°"
+    };
+  }
   // Mặc định: Trái cây đặc sản nhiệt đới (Sầu riêng, Măng cụt, Bơ sáp, Xoài, Chôm chôm...)
   return {
     tempZone: "TROPICAL_12_15C",
@@ -246,6 +296,12 @@ function resolveAccurateProductImage(p) {
   if (name.includes("bưởi da xanh") || name.includes("bưởi")) return "images/buoi-da-xanh.jpg";
   if (name.includes("xoài cát") || name.includes("xoài")) return "images/xoai-cat-hoa-loc.jpg";
   if (name.includes("hạt điều") || name.includes("macca")) return "images/hat-dieu-macca.jpg";
+  if (name.includes("hồng giòn")) return "https://images.unsplash.com/photo-1574856344991-aaa31b6f4ce3?auto=format&fit=crop&w=800&q=80";
+  if (name.includes("cam sành")) return "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=800&q=80";
+  if (name.includes("quýt đường") || name.includes("quýt lai vung")) return "https://images.unsplash.com/photo-1557800636-894a64c1696f?auto=format&fit=crop&w=800&q=80";
+  if (name.includes("vú sữa")) return "https://images.unsplash.com/photo-1596363505729-4190a9506133?auto=format&fit=crop&w=800&q=80";
+  if (name.includes("thanh long")) return "https://images.unsplash.com/photo-1527325678964-54921661f888?auto=format&fit=crop&w=800&q=80";
+  if (name.includes("combo 8") || name.includes("mâm quả")) return "images/hero-fruits.jpg";
   if (name.includes("sầu riêng")) return "images/durian-open.jpg";
   if (name.includes("măng cụt") && !name.includes("bơ sáp")) return "images/mangosteen-basket.jpg";
   if (name.includes("chôm chôm")) return "images/chomchom.jpg";
@@ -503,7 +559,106 @@ const DEMO_PRODUCTS = [
     highlights: ["Trọn bộ 5kg gồm 6 loại rau củ quả Đà Lạt thiết yếu", "Đủ cho gia đình 3-4 người ăn suốt cả tuần", "Tiết kiệm 35.000 đ • Rất hợp đăng ký Định kỳ tuần (-8%)"],
     description: "Giải pháp đi chợ thảnh thơi cho nhân viên văn phòng và gia đình bận rộn! Thùng 5kg gồm: 1kg Cà chua Beef/Bi hữu cơ + 1kg Bông cải xanh & Ớt chuông + 1kg Xà lách thủy canh & Cải bó xôi + 1kg Khoai lang mật Tà Nung + 1kg Cà rốt & Khoai tây Đà Lạt.",
     unit: "thùng 5kg", weight_kg: 5, price_original: 158000, price_sale: 219000, image_url: "images/combo-rau-cu-tuan.jpg", is_available: true,
-    certification_badge: "Combo Rau Củ Tuần • VietGAP"
+    certification_badge: "Combo Rau Củ Tuần • VietGAP",
+    season_badge: "🥬 Quanh Năm Công Nghệ Cao",
+    season_tag: "ALL_YEAR"
+  },
+  // ================= NÔNG SẢN ĐẶC SẢN ĐANG RỘ MÙA VỤ THU - ĐÔNG (MỚI CẬP NHẬT) =================
+  {
+    id: "p24",
+    name: "Hồng Giòn Chín Cây Đà Lạt (Ủ Hơi Tự Nhiên - Giòn Ngọt Không Chát)",
+    category: "TraiCay",
+    season_tag: "SEASON_NOW",
+    season_badge: "🍁 Rộ Mùa Thu - Đông",
+    highlights: ["Chính vụ Thu - Đông Đà Lạt", "Ủ hơi tự nhiên giòn rụm không chát", "Ngọt thanh mát lành, 0% hóa chất"],
+    description: "Đặc sản chính vụ Thu - Đông trứ danh vùng Trại Mát & Cầu Đất (Đà Lạt). Hồng già chín vàng cam thu hái từ cây, được ủ hơi truyền thống hoàn toàn bằng nhiệt tự nhiên và túi khí sạch 5-7 ngày. Trái giòn tan rôm rốp, ngọt đậm thơm ngát. (Giá thị trường: 55.000 - 70.000 đ/kg).",
+    unit: "kg",
+    weight_kg: 1,
+    price_original: 32000,
+    price_sale: 48000,
+    image_url: "https://images.unsplash.com/photo-1574856344991-aaa31b6f4ce3?auto=format&fit=crop&w=800&q=80",
+    is_available: true,
+    certification_badge: "VietGAP • Rộ Mùa Đà Lạt"
+  },
+  {
+    id: "p25",
+    name: "Cam Sành Mọng Nước Bến Tre & Tam Bình (Vắt Nước Vàng Óng Ngọt Lịm)",
+    category: "TraiCay",
+    season_tag: "SEASON_NOW",
+    season_badge: "🍁 Rộ Mùa Thu - Đông",
+    highlights: ["Chính vụ Đông Xuân tép mọng vàng tươi", "Vắt nước ngọt đậm đà, giàu Vitamin C", "Vỏ sần sùi dày dầu thơm, không chất bảo quản"],
+    description: "Cam sành hái già chín cây từ vùng đất phù sa Tam Bình (Vĩnh Long) và Chợ Lách (Bến Tre). Trái to tròn cầm nặng trĩu tay (3-4 trái/kg), bổ ra tép cam mọng nước vàng óng, vị ngọt thanh tự nhiên xen chua nhẹ cực kỳ sảng khoái và tăng đề kháng cho gia đình.",
+    unit: "kg",
+    weight_kg: 1,
+    price_original: 18000,
+    price_sale: 28000,
+    image_url: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=800&q=80",
+    is_available: true,
+    certification_badge: "VietGAP • Đặc Sản Miền Tây"
+  },
+  {
+    id: "p26",
+    name: "Quýt Đường Lai Vung Mọng Nước (Đặc Sản Trứ Danh Đồng Tháp)",
+    category: "TraiCay",
+    season_tag: "SEASON_NOW",
+    season_badge: "🍁 Rộ Mùa Thu - Đông",
+    highlights: ["Đặc sản nức tiếng đất sen hồng Lai Vung", "Vỏ mỏng dính róc vỏ, tôm ngọt đậm đà", "Hái sớm tươi rói cuống lá xanh mướt"],
+    description: "Vương quốc quýt Lai Vung (Đồng Tháp) nức tiếng miền Tây. Trái quýt đường vỏ mỏng mượt ngả vàng tự nhiên, bóc nhẹ lộ múi quýt óng ả tươm nước, vị ngọt lịm tan chảy nơi đầu lưỡi và hậu vị đằm thắm khó quên.",
+    unit: "kg",
+    weight_kg: 1,
+    price_original: 30000,
+    price_sale: 45000,
+    image_url: "https://images.unsplash.com/photo-1557800636-894a64c1696f?auto=format&fit=crop&w=800&q=80",
+    is_available: true,
+    certification_badge: "VietGAP • Lai Vung Đồng Tháp"
+  },
+  {
+    id: "p27",
+    name: "Vú Sữa Lò Rèn Vĩnh Kim Chín Cây (Ngọt Ngào Dòng Sữa Mẹ - Tiền Giang)",
+    category: "TraiCay",
+    season_tag: "SEASON_NOW",
+    season_badge: "🍁 Chớm Vụ Mùa Đông",
+    highlights: ["Vỏ mỏng bóng láng, dòng sữa trắng ngần", "Ngọt ngào thanh mát, hương thơm quyến rũ", "Trái tuyển chọn cành già 8.5 tuổi"],
+    description: "Vú sữa Lò Rèn Vĩnh Kim (Châu Thành - Tiền Giang) chuẩn gốc cổ thụ đầu mùa đông. Vỏ mỏng màu xanh phớt hồng, khi bóp nhẹ quanh thân trái tiết ra dòng sữa trắng đục ngát hương như dòng sữa mẹ ngọt lành bổ dưỡng.",
+    unit: "kg",
+    weight_kg: 1,
+    price_original: 45000,
+    price_sale: 65000,
+    image_url: "https://images.unsplash.com/photo-1596363505729-4190a9506133?auto=format&fit=crop&w=800&q=80",
+    is_available: true,
+    certification_badge: "VietGAP • Vĩnh Kim Tiền Giang"
+  },
+  {
+    id: "p28",
+    name: "Thanh Long Ruột Đỏ Chợ Gạo (Ngọt Lịm Mọng Nước - Tiền Giang)",
+    category: "TraiCay",
+    season_tag: "SEASON_NOW",
+    season_badge: "🍁 Đang Rộ Mùa",
+    highlights: ["Ruột đỏ thẫm giàu Anthocyanin chống lão hóa", "Vị ngọt lịm đậm đà hơn thanh long trắng", "Tai quả xanh tươi, vỏ mỏng căng bóng"],
+    description: "Thanh long ruột đỏ thu hái tại vương quốc thanh long Chợ Gạo (Tiền Giang). Quả to chắc nịch (500g - 700g/quả), cơm đỏ thẫm sánh mịn nhiều nước, độ ngọt Brix đạt 14–15° tự nhiên và cực kỳ tốt cho hệ tiêu hóa & tim mạch.",
+    unit: "kg",
+    weight_kg: 1,
+    price_original: 22000,
+    price_sale: 35000,
+    image_url: "https://images.unsplash.com/photo-1527325678964-54921661f888?auto=format&fit=crop&w=800&q=80",
+    is_available: true,
+    certification_badge: "VietGAP • Tiêu Chuẩn Xuất Khẩu"
+  },
+  {
+    id: "p29",
+    name: "Combo 8: Mâm Quả Thu Đông Mọng Nước (Cam Sành + Bưởi Da Xanh + Hồng Giòn + Quýt Đường - 4.5Kg)",
+    category: "Combo",
+    season_tag: "SEASON_NOW",
+    season_badge: "🍁 Combo Đặc Sản Mùa Vụ",
+    highlights: ["4.5kg tuyển trọn 4 đặc sản mùa vụ rộ nhất", "Cung cấp trọn vẹn Vitamin & Năng lượng cả tuần", "Tiết kiệm 39.000 đ so với mua lẻ"],
+    description: "Mâm quả mùa vụ đỉnh cao dịp cuối năm gồm: 1 quả Bưởi da xanh ruột hồng (1.3kg) + 1.5kg Cam sành mọng nước + 1kg Hồng giòn Đà Lạt + 1kg Quýt đường Lai Vung. Mua lẻ 218.000 đ, đặt theo Combo Mùa Vụ chỉ 179.000 đ!",
+    unit: "combo 4.5kg",
+    weight_kg: 4.5,
+    price_original: 135000,
+    price_sale: 179000,
+    image_url: "images/hero-fruits.jpg",
+    is_available: true,
+    certification_badge: "Combo Mùa Vụ • VietGAP"
   }
 ].map(enrichProductMeta);
 
@@ -1642,7 +1797,8 @@ class AgriDB {
       }
     }
     const local = this._read(LS.products);
-    const base = (local && local.length > 0) ? local.filter(p => p.is_available !== false) : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
+    const hasSeasonNow = local && local.some(p => p.id === "p24");
+    const base = (local && local.length > 0 && hasSeasonNow) ? local.filter(p => p.is_available !== false) : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
     return this._applyProductCustomizations([...customFarmerItems, ...base]);
   }
 
@@ -1660,7 +1816,8 @@ class AgriDB {
       }
     }
     const local = this._read(LS.products);
-    const base = (local && local.length > 0) ? local : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
+    const hasSeasonNow = local && local.some(p => p.id === "p24");
+    const base = (local && local.length > 0 && hasSeasonNow) ? local : [...DEMO_PRODUCTS, ...HAPPY_HOUR_UGLY_FOOD];
     return this._applyProductCustomizations([...customFarmerItems, ...base]);
   }
 

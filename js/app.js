@@ -342,6 +342,8 @@ function renderProductGrid() {
   let items = [...currentProducts];
   if (selectedCategory === "VERIFIED") {
     items = items.filter(p => p.verified !== false);
+  } else if (selectedCategory === "SEASON_NOW") {
+    items = items.filter(p => p.season_tag === "SEASON_NOW" || (p.season_badge && (p.season_badge.includes("Rộ Mùa") || p.season_badge.includes("Thu - Đông") || p.season_badge.includes("Chính Vụ"))));
   } else if (selectedCategory !== "ALL") {
     items = items.filter(p => p.category === selectedCategory);
   }
@@ -455,6 +457,11 @@ function renderProductGrid() {
           <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${isCombo ? "bg-amber-500" : "bg-[#3ba117]"} text-white shadow-md inline-flex items-center gap-1">
             <i class="fa-solid fa-certificate"></i> ${certBadge}
           </span>
+          ${p.season_badge ? `
+          <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-600 text-[#fef08a] shadow-xs inline-flex items-center gap-1 w-fit border border-amber-300">
+            ${escapeHTML(p.season_badge)}
+          </span>
+          ` : ""}
           <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-sky-900/90 text-sky-100 backdrop-blur-xs inline-flex items-center gap-1 w-fit">
             ${escapeHTML(bio.tempLabel)}
           </span>
@@ -2436,6 +2443,26 @@ window.openBlockchainHashVerifyModal = function (hash) {
 window.closeBlockchainHashVerifyModal = function () {
   const modal = document.getElementById("blockchain-verify-modal");
   if (modal) modal.classList.add("hidden");
+};
+
+// ================= LỊCH MÙA VỤ NÔNG SẢN 12 THÁNG (SEASONAL HARVEST CALENDAR) =================
+window.openSeasonalCalendarModal = function () {
+  const modal = document.getElementById("seasonal-calendar-modal");
+  if (modal) modal.classList.remove("hidden");
+  if (typeof playAgriSound === "function") playAgriSound("chime");
+};
+
+window.closeSeasonalCalendarModal = function () {
+  const modal = document.getElementById("seasonal-calendar-modal");
+  if (modal) modal.classList.add("hidden");
+};
+
+window.selectSeasonFromCalendar = function (seasonKey) {
+  closeSeasonalCalendarModal();
+  if (typeof filterCategory === "function") {
+    filterCategory(seasonKey);
+  }
+  document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
 };
 
 function loadGardenState() {
