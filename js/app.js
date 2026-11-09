@@ -516,28 +516,31 @@ function renderProductGrid() {
   const canEdit = Boolean(window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized());
 
   items.forEach(p => {
-    const isCombo = p.category === "Combo";
-    const name = escapeHTML(p.name);
-    const desc = escapeHTML(p.description);
-    const img = escapeHTML(p.image_url);
-    const unit = escapeHTML(p.unit);
-    const pid = escapeHTML(p.id);
-    const qty = cart[p.id] || 0;
-    const { variants, activeVariant, unitPrice } = getProductVariantInfo(p);
-    const priceFormatted = formatVND(unitPrice);
-    const certBadge = escapeHTML(p.certification_badge || "VietGAP • Hữu Cơ");
-    const bio = p.bio_profile || {
-      tempLabel: p.is_dry ? "🌰 Khoang Khô Chân Không" : "🌡️ Khoang Mát 12–15°C",
-      ethyleneRole: "NEUTRAL",
-      phiDays: 14,
-      qualityMetric: "Đạt chuẩn VietGAP"
-    };
-    const merkleShort = escapeHTML((p.merkle_root || "0x8a91f4c2b9e0").slice(0, 12) + "...");
-    const farm = p.farm_info || {
-      farmer_name: "Liên Minh Vườn Bác Năm & HTX Vùng Miền",
-      farm_region: "Đông Nam Bộ • Đà Lạt • Miền Tây",
-      farming_method: "Canh tác VietGAP • Chín tự nhiên 100%"
-    };
+    try {
+      const isCombo = p.category === "Combo";
+      const name = escapeHTML(p.name);
+      const desc = escapeHTML(p.description);
+      const img = escapeHTML(p.image_url);
+      const unit = escapeHTML(p.unit);
+      const pid = escapeHTML(p.id);
+      const qty = cart[p.id] || 0;
+      const { variants, activeVariant, unitPrice } = getProductVariantInfo(p);
+      const priceFormatted = formatVND(unitPrice);
+      const certBadge = escapeHTML(p.certification_badge || "VietGAP • Hữu Cơ");
+      const bio = p.bio_profile || {
+        tempLabel: p.is_dry ? "🌰 Khoang Khô Chân Không" : "🌡️ Khoang Mát 12–15°C",
+        ethyleneRole: "NEUTRAL",
+        phiDays: 14,
+        qualityMetric: "Đạt chuẩn VietGAP"
+      };
+      const rawMerkle = p.merkle_root || "0x8a91f4c2b9e08173fa60";
+      const merkleHash = escapeHTML(rawMerkle);
+      const merkleShort = escapeHTML(rawMerkle.slice(0, 12) + "...");
+      const farm = p.farm_info || {
+        farmer_name: "Liên Minh Vườn Bác Năm & HTX Vùng Miền",
+        farm_region: "Đông Nam Bộ • Đà Lạt • Miền Tây",
+        farming_method: "Canh tác VietGAP • Chín tự nhiên 100%"
+      };
     const gallery = Array.isArray(p.media_gallery) && p.media_gallery.length > 0
       ? p.media_gallery
       : [{ id: "m0", type: "image", url: p.image_url || "images/hero-fruits.jpg" }];
@@ -690,6 +693,9 @@ function renderProductGrid() {
       </div>
     `;
     productListEl.appendChild(card);
+    } catch (cardErr) {
+      console.error("[AgriConnect] Lỗi hiển thị thẻ nông sản:", p?.id, cardErr);
+    }
   });
 }
 
