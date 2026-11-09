@@ -78,14 +78,14 @@
     <div class="max-w-7xl mx-auto px-2.5 sm:px-5 lg:px-6 h-14 sm:h-[72px] flex items-center justify-between gap-1.5 sm:gap-2">
       
       <!-- Brand Logo Độc Quyền (Gọn gàng trên Mobile để không bao giờ đẩy tràn nút 3 gạch góc phải) -->
-      <a href="index.html" class="flex items-center gap-2 sm:gap-3 min-w-0 group">
+      <a href="index.html" class="flex items-center gap-2 sm:gap-3 shrink-0 group">
         <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-gradient-to-tr from-[#1e6b16] via-[#3eb31b] to-[#facc15] shadow-md shadow-[#3ba117]/25 group-hover:scale-105 transition-all duration-300 shrink-0">
           <img src="images/logo-agriconnect.svg" alt="AgriConnect Logo" class="w-full h-full object-contain rounded-[14px]">
           <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#fef08a] border-2 border-[#173f0c] flex items-center justify-center">
             <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#3ba117]"></span>
           </span>
         </div>
-        <div class="min-w-0">
+        <div class="shrink-0">
           <div class="flex items-center gap-1.5 leading-none">
             <span class="text-base sm:text-xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#22720d] via-[#3ba117] to-[#ca8a04]">Connect</span></span>
             <span class="hidden sm:inline-block text-[9px] uppercase tracking-wider font-extrabold bg-gradient-to-r from-[#e1f9cf] to-[#fef9c3] text-[#1c560e] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">ĐẶC SẢN VÙNG MIỀN</span>
@@ -94,38 +94,41 @@
         </div>
       </a>
 
-      <!-- Desktop Quick Navigation -->
-      <nav class="hidden xl:flex items-center gap-1 text-xs font-bold text-[#1f3813] whitespace-nowrap">
-        <a href="#campaign" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all">Đợt Gom</a>
-        <a href="#products" class="px-3 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-black text-[#256314] bg-[#e1f9cf]/70 border border-[#b8ee99]">
+      <!-- Desktop Quick Navigation (Chống tràn, chống rớt dòng 100%) -->
+      <nav class="hidden xl:flex items-center gap-1 2xl:gap-1.5 text-xs font-bold text-[#1f3813] whitespace-nowrap shrink-0">
+        <a href="#campaign" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 whitespace-nowrap shrink-0">
+          <i class="fa-solid fa-clock-rotate-left text-[#3ba117]"></i>
+          <span>Đợt Gom</span>
+        </a>
+        <a href="#products" class="px-3 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-black text-[#256314] bg-[#e1f9cf]/70 border border-[#b8ee99] whitespace-nowrap shrink-0">
           <i class="fa-solid fa-basket-shopping text-[#3ba117]"></i> <span>Menu Đặt Hàng</span>
         </a>
-        <a href="#interactive-hub" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-extrabold text-amber-950 bg-[#fefce8] border border-amber-300">
+        <a href="#interactive-hub" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-extrabold text-amber-950 bg-[#fefce8] border border-amber-300 whitespace-nowrap shrink-0">
           <span>🎮 Vườn Ảo & Quà</span>
         </a>
-        <a href="trace.html" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1">
+        <a href="trace.html" class="hidden 2xl:flex px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all items-center gap-1 whitespace-nowrap shrink-0">
           <i class="fa-solid fa-qrcode text-[#3ba117]"></i> <span>Ví Escrow</span>
         </a>
-        <a href="farmer.html" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-all flex items-center gap-1 font-extrabold">
+        <a href="farmer.html" class="px-2.5 2xl:px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-all flex items-center gap-1 font-extrabold whitespace-nowrap shrink-0">
           <span>🌾 Cổng Nông Dân</span>
         </a>
       </nav>
 
-      <!-- Right Actions: Nút Đặt Ngay + Cổng Quản Trị + Biểu Tượng 3 Gạch (Vừa vặn 100% trên màn hình Mobile) -->
+      <!-- Right Actions: Nút Đặt Ngay + Cổng Quản Trị + Biểu Tượng 3 Gạch (Vừa vặn 100% trên màn hình Mobile & Desktop) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap shrink-0">
           <i class="fa-solid fa-basket-shopping text-[11px]"></i>
           <span>Đặt Ngay</span>
         </a>
-        <a href="admin.html" title="Chuyển nhanh sang Cổng Quản Trị Nhóm" class="hidden md:flex items-center gap-1.5 px-3 py-2 text-xs font-extrabold text-[#fef08a] bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700 whitespace-nowrap shadow-xs">
+        <a href="admin.html" title="Chuyển nhanh sang Cổng Quản Trị Nhóm" class="hidden md:flex items-center gap-1.5 px-2.5 2xl:px-3 py-2 text-xs font-extrabold text-[#fef08a] bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700 whitespace-nowrap shadow-xs shrink-0">
           <i class="fa-solid fa-sliders text-emerald-400"></i>
           <span>Cổng Quản Trị</span>
         </a>
-        <!-- Biểu tượng 3 gạch góc phải bên trên (Hiển thị rõ nét trên cả Điện thoại & Máy tính) -->
-        <button id="top-right-menu-btn" type="button" onclick="toggleMobileNav()" aria-label="Mở Menu 3 Gạch" class="px-2.5 sm:px-3.5 py-2 text-[#0f240d] bg-[#fef08a] hover:bg-[#fde047] border-2 border-[#3ba117] rounded-xl flex items-center gap-1.5 font-black text-xs transition-all shadow-md active:scale-95 shrink-0">
+        <!-- Biểu tượng 3 gạch góc phải bên trên -->
+        <button id="top-right-menu-btn" type="button" onclick="toggleMobileNav()" aria-label="Mở Menu 3 Gạch" class="px-2.5 sm:px-3 py-2 text-[#0f240d] bg-[#fef08a] hover:bg-[#fde047] border-2 border-[#3ba117] rounded-xl flex items-center gap-1.5 font-black text-xs transition-all shadow-md active:scale-95 shrink-0">
           <i id="top-right-menu-icon" class="fa-solid fa-bars text-base sm:text-lg text-[#1c560e]"></i>
-          <span class="sm:hidden">Menu</span>
-          <span class="hidden sm:inline">Menu & Tìm Nhanh</span>
+          <span class="xl:hidden">Menu</span>
+          <span class="hidden xl:inline">Menu & Tìm Nhanh</span>
         </button>
       </div>
     </div>
