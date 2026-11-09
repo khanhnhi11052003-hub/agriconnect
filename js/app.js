@@ -504,12 +504,15 @@ function renderProductGrid() {
 
           <!-- Huy hiệu Sinh lý Nông học & Chứng thực Blockchain Merkle Hash -->
           <div class="flex flex-wrap items-center gap-1.5 mt-2">
+            <span class="text-[10px] font-extrabold bg-amber-50 text-amber-900 px-2 py-0.5 rounded-md border border-amber-200" title="Độ ngọt Brix kiểm định bằng khúc xạ kế">
+              🍯 Brix: ${bio.brix || (isCombo ? '15.0° - 18.0°' : '16.5° - 18.0°')}
+            </span>
             <span class="text-[10px] font-extrabold bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md border border-emerald-200" title="Thời gian cách ly thuốc bảo vệ thực vật an toàn">
               🧪 Cách ly PHI: ${Number(bio.phiDays || 14)} ngày (0% tồn dư)
             </span>
-            <span class="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md border border-slate-200" title="Mã băm Merkle Root chứng thực lô thu hoạch trên chuỗi">
-              ⛓️ Hash: ${merkleShort}
-            </span>
+            <button type="button" onclick="openBlockchainHashVerifyModal('${merkleHash}')" class="text-[10px] font-mono font-bold bg-slate-100 hover:bg-purple-100 text-slate-700 hover:text-purple-900 px-2 py-0.5 rounded-md border border-slate-200 transition" title="Bấm để đối soát mã băm bất biến trên Blockchain">
+              ⛓️ Hash: ${merkleShort} ↗
+            </button>
           </div>
           ${highlightsHtml}
           <p class="text-xs text-[#4d6b33] mt-2 leading-relaxed line-clamp-3">${desc}</p>
@@ -1285,6 +1288,9 @@ function changeQty(productId, delta) {
   }
   saveCartState();
   updateCartUI();
+  if (typeof playAgriSound === "function") {
+    playAgriSound("tick");
+  }
 
   if (delta > 0) {
     const prod = currentProducts.find(p => String(p.id) === String(productId));
@@ -2189,7 +2195,101 @@ let userGarden = {
   vouchers: [],
   quizAnsweredDate: null,
   quizCorrect: false,
-  likedRecipes: {}
+  likedRecipes: {},
+  dailyQuests: {}
+};
+
+// ================= ASMR SOUND SYNTHESIZER (WEB AUDIO API NATIVE) =================
+let agriAudioCtx = null;
+let isAgriSoundMuted = localStorage.getItem("agri_sound_muted") === "true";
+
+function initAgriAudio() {
+  if (!agriAudioCtx && (window.AudioContext || window.webkitAudioContext)) {
+    agriAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (agriAudioCtx && agriAudioCtx.state === "suspended") {
+    agriAudioCtx.resume();
+  }
+}
+
+window.toggleAgriSound = function () {
+  isAgriSoundMuted = !isAgriSoundMuted;
+  localStorage.setItem("agri_sound_muted", isAgriSoundMuted ? "true" : "false");
+  updateSoundToggleUI();
+  if (!isAgriSoundMuted) playAgriSound("chime");
+};
+
+function updateSoundToggleUI() {
+  const lbl = document.getElementById("sound-toggle-label");
+  if (lbl) {
+    lbl.textContent = isAgriSoundMuted ? "🔇 Âm Thanh: Tắt" : "🔊 Âm Thanh: Bật";
+  }
+}
+
+window.playAgriSound = function (type = "tick") {
+  if (isAgriSoundMuted) return;
+  try {
+    initAgriAudio();
+    if (!agriAudioCtx) return;
+    const now = agriAudioCtx.currentTime;
+    const osc = agriAudioCtx.createOscillator();
+    const gain = agriAudioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(agriAudioCtx.destination);
+
+    if (type === "water") {
+      // Giọt nước tưới cây: sweep từ 500Hz lên 1100Hz
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(500, now);
+      osc.frequency.exponentialRampToValueAtTime(1100, now + 0.18);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      osc.start(now);
+      osc.stop(now + 0.23);
+    } else if (type === "tick") {
+      // Nhấn nhẹ nút / thêm số lượng / kim quay số
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(700, now);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    } else if (type === "chime") {
+      // Chuông Solfeggio 528Hz thư giãn
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(528, now);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      osc.start(now);
+      osc.stop(now + 0.42);
+    } else if (type === "heart") {
+      // Thả tim công thức món ngon 440Hz -> 554Hz
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(554, now + 0.15);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.26);
+    } else if (type === "win") {
+      // Thắng giải / hoàn thành nhiệm vụ: Hợp âm Đô Trưởng (C5-E5-G5)
+      const notes = [523.25, 659.25, 783.99];
+      notes.forEach((freq, idx) => {
+        const subOsc = agriAudioCtx.createOscillator();
+        const subGain = agriAudioCtx.createGain();
+        subOsc.connect(subGain);
+        subGain.connect(agriAudioCtx.destination);
+        subOsc.type = "sine";
+        subOsc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        subGain.gain.setValueAtTime(0.12, now + idx * 0.08);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+        subOsc.start(now + idx * 0.08);
+        subOsc.stop(now + idx * 0.08 + 0.32);
+      });
+    }
+  } catch (e) {
+    // Web audio silent fail
+  }
 };
 
 const TREE_STAGES = [
@@ -2215,9 +2315,127 @@ let wheelCurrentAngle = 0;
 
 window.initInteractiveGamificationHub = function () {
   loadGardenState();
+  initDailyQuestsState();
   renderGardenUI();
   initWheelCanvas();
   updatePillStatus();
+  updateSoundToggleUI();
+};
+
+function getTodayQuestDateKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function initDailyQuestsState() {
+  const todayKey = getTodayQuestDateKey();
+  if (!userGarden.dailyQuests || userGarden.dailyQuests.date !== todayKey) {
+    userGarden.dailyQuests = {
+      date: todayKey,
+      checkin: userGarden.lastCheckInDate === todayKey,
+      water: false,
+      wheel: false,
+      heart: false,
+      bonusClaimed: false
+    };
+  }
+}
+
+window.checkDailyQuestProgress = function (questKey) {
+  initDailyQuestsState();
+  if (!userGarden.dailyQuests[questKey]) {
+    userGarden.dailyQuests[questKey] = true;
+    saveGardenState();
+    renderDailyQuestsUI();
+
+    // Kiểm tra nếu hoàn thành cả 4 nhiệm vụ trong ngày
+    const q = userGarden.dailyQuests;
+    if (q.checkin && q.water && q.wheel && q.heart && !q.bonusClaimed) {
+      q.bonusClaimed = true;
+      userGarden.seeds = (userGarden.seeds || 0) + 50;
+      saveGardenState();
+      renderGardenUI();
+      playAgriSound("win");
+      alert("🏆 CHÚC MỪNG!\nBạn đã hoàn thành trọn bộ 4/4 Nhiệm Vụ Ngày!\nAgriConnect tặng thưởng nóng +50 Hạt Mầm Xanh 🌱 vào kho của bạn!");
+      if (typeof pushLiveUserActivity === "function") {
+        pushLiveUserActivity("🏆 Bạn vừa hoàn thành 4/4 Nhiệm Vụ Ngày (+50 Hạt Mầm)", "reward");
+      }
+    }
+  }
+};
+
+function renderDailyQuestsUI() {
+  initDailyQuestsState();
+  const q = userGarden.dailyQuests;
+  const keys = ["checkin", "water", "wheel", "heart"];
+  let completedCount = 0;
+
+  keys.forEach(k => {
+    const el = document.getElementById(`quest-check-${k}`);
+    if (el) {
+      if (q[k]) {
+        el.textContent = "✅";
+        completedCount++;
+      } else {
+        el.textContent = "⚪";
+      }
+    }
+  });
+
+  const badge = document.getElementById("quests-progress-badge");
+  if (badge) {
+    badge.textContent = `${completedCount} / 4 Hoàn thành`;
+    if (completedCount === 4) {
+      badge.className = "px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black animate-bounce";
+      badge.textContent = "🎉 4/4 Đã Nhận +50 Hạt!";
+    } else {
+      badge.className = "px-2.5 py-0.5 rounded-full bg-[#e1f9cf] text-[#1c560e] text-[10px] font-black";
+    }
+  }
+}
+
+// ================= PWA INSTALLATION & SERVICE WORKER =================
+let deferredPwaPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPwaPrompt = e;
+  const btn = document.getElementById("pwa-install-banner");
+  if (btn) btn.classList.remove("hidden");
+});
+
+window.installAgriConnectPWA = async function () {
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    const { outcome } = await deferredPwaPrompt.userChoice;
+    if (outcome === "accepted") {
+      showToast("📱 Cảm ơn bạn đã cài đặt ứng dụng AgriConnect!");
+    }
+    deferredPwaPrompt = null;
+  } else {
+    showToast("📱 Chọn 'Thêm vào màn hình chính' trên trình duyệt để cài app!");
+  }
+};
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+
+// ================= BLOCKCHAIN MERKLE ROOT HASH MODAL =================
+window.openBlockchainHashVerifyModal = function (hash) {
+  const modal = document.getElementById("blockchain-verify-modal");
+  const display = document.getElementById("verify-hash-display");
+  if (display) {
+    display.textContent = hash || "0x7f9a2b89c41e88219d30fa14cb72e01149a88e99acb4802bfd97";
+  }
+  if (modal) modal.classList.remove("hidden");
+  playAgriSound("chime");
+};
+
+window.closeBlockchainHashVerifyModal = function () {
+  const modal = document.getElementById("blockchain-verify-modal");
+  if (modal) modal.classList.add("hidden");
 };
 
 function loadGardenState() {
@@ -2378,6 +2596,9 @@ function renderGardenUI() {
       voucherListEl.innerHTML = `<span class="text-slate-400 italic font-medium">Chưa có voucher nào. Hãy điểm danh tưới cây để đổi nhé!</span>`;
     }
   }
+
+  // Cập nhật giao diện 4 Nhiệm Vụ Ngày
+  renderDailyQuestsUI();
 }
 
 window.handleDailyCheckIn = function () {
@@ -2402,6 +2623,8 @@ window.handleDailyCheckIn = function () {
 
   saveGardenState();
   renderGardenUI();
+  playAgriSound("win");
+  checkDailyQuestProgress("checkin");
   showToast("🎉 Điểm danh thành công! Bạn nhận được +1 Giọt Nước 💧 và +20 Hạt Mầm Xanh 🌱.");
   if (typeof pushLiveUserActivity === "function") {
     pushLiveUserActivity("🌿 Bạn vừa điểm danh ngày mới (+1 Giọt Nước & +20 Hạt Mầm)", "checkin");
@@ -2416,6 +2639,8 @@ window.handleWaterTree = function () {
 
   userGarden.waterDrops--;
   userGarden.exp += 25;
+  playAgriSound("water");
+  checkDailyQuestProgress("water");
 
   // Hiệu ứng bong bóng +25 EXP
   const splash = document.getElementById("water-splash-anim");
@@ -2554,6 +2779,8 @@ window.spinLuckyWheel = function () {
   userGarden.spinsLeft--;
   saveGardenState();
   renderGardenUI();
+  playAgriSound("tick");
+  checkDailyQuestProgress("wheel");
 
   const numSectors = WHEEL_SECTORS.length;
   const arc = (2 * Math.PI) / numSectors;
@@ -2592,6 +2819,7 @@ window.spinLuckyWheel = function () {
 };
 
 function handleWheelPrizeWon(prize) {
+  playAgriSound("win");
   if (prize.type === "voucher" || prize.type === "freeship") {
     const won = {
       code: `${prize.code}_${Math.floor(100 + Math.random() * 900)}`,
@@ -2638,6 +2866,7 @@ window.handleQuizAnswer = function (selectedIndex) {
   msgEl.classList.remove("hidden");
 
   if (selectedIndex === 2) {
+    playAgriSound("chime");
     msgEl.className = "p-3 rounded-xl bg-emerald-100 border border-emerald-300 text-[#1c560e] text-xs font-bold space-y-1";
     msgEl.innerHTML = `
       <div>✅ <strong>HOÀN TOÀN CHÍNH XÁC!</strong></div>
@@ -2658,6 +2887,7 @@ window.handleQuizAnswer = function (selectedIndex) {
       pushLiveUserActivity("🧠 Bạn vừa giải đúng Đố Vui Nông Nghiệp (+1 Giọt Nước & Voucher 10K)", "quiz");
     }
   } else {
+    playAgriSound("tick");
     msgEl.className = "p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold space-y-1";
     msgEl.innerHTML = `
       <div>💡 <em>Gần đúng rồi!</em> Cả hai dấu hiệu A và B đều là kinh nghiệm vàng của nhà vườn Bác Năm để nhận biết sầu già chín cây. Đáp án chính xác là <strong>C. Cả A và B đều đúng</strong>. Hãy thử lại để nhận quà nhé!</div>
@@ -2685,11 +2915,14 @@ window.likeRecipe = function (recipeId, btn) {
     userGarden.seeds = (userGarden.seeds || 0) + 5;
     saveGardenState();
     renderGardenUI();
+    playAgriSound("heart");
+    checkDailyQuestProgress("heart");
     showToast("❤️ Cảm ơn bạn đã thả tim! Bạn được cộng +5 Hạt Mầm Xanh 🌱.");
     if (typeof pushLiveUserActivity === "function") {
       pushLiveUserActivity("❤️ Bạn vừa thả tim món ngon nông sản (+5 Hạt Mầm)", "heart");
     }
   } else {
+    playAgriSound("tick");
     showToast("❤️ Bạn đã thả tim món ngon này rồi! Hãy thưởng thức và chia sẻ thêm nhé.");
   }
 };

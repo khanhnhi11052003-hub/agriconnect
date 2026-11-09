@@ -1,0 +1,18 @@
+{
+  "name": "AgriConnect - Nông Sản Chín Cây Tận Vườn",
+  "short_name": "AgriConnect",
+  "description": "Nền tảng mua chung nông sản đặc sản chín cây trực tiếp từ nhà vườn qua tuyến xe lạnh liên tỉnh.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f7fdf3",
+  "theme_color": "#256314",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "images/logo-agriconnect.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

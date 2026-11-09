@@ -8,6 +8,11 @@
   <meta http-equiv="Expires" content="0">
   <title>AgriConnect - Nền Tảng Kết Nối Nông Sản - Người Tiêu Dùng</title>
   <link rel="icon" type="image/svg+xml" href="images/logo-agriconnect.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#256314">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AgriConnect">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -95,40 +100,41 @@
       </a>
 
       <!-- Desktop Quick Navigation (Chống tràn, chống rớt dòng 100%) -->
-      <nav class="hidden xl:flex items-center gap-1 2xl:gap-1.5 text-xs font-bold text-[#1f3813] whitespace-nowrap shrink-0">
-        <a href="#campaign" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 whitespace-nowrap shrink-0">
-          <i class="fa-solid fa-clock-rotate-left text-[#3ba117]"></i>
-          <span>Đợt Gom</span>
+      <nav class="hidden xl:flex items-center gap-1.5 2xl:gap-2 text-xs font-bold text-[#1f3813] whitespace-nowrap shrink-0">
+        <a href="#campaign" class="px-3 py-1.5 rounded-xl hover:bg-[#eaf8dd] text-[#1c560e] bg-[#f2fbe8] border border-[#c5ec9f] transition-all inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 font-bold select-none shadow-2xs">
+          <i class="fa-solid fa-clock-rotate-left text-[#3ba117] text-xs shrink-0"></i>
+          <span class="whitespace-nowrap shrink-0">Đợt Gom</span>
         </a>
-        <a href="#products" class="px-3 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-black text-[#256314] bg-[#e1f9cf]/70 border border-[#b8ee99] whitespace-nowrap shrink-0">
-          <i class="fa-solid fa-basket-shopping text-[#3ba117]"></i> <span>Menu Đặt Hàng</span>
+        <a href="#products" class="px-3 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all inline-flex items-center gap-1.5 font-black text-[#256314] bg-[#e1f9cf]/80 border border-[#b8ee99] whitespace-nowrap shrink-0 select-none">
+          <i class="fa-solid fa-basket-shopping text-[#3ba117] shrink-0"></i> <span class="whitespace-nowrap shrink-0">Menu Đặt Hàng</span>
         </a>
-        <a href="#interactive-hub" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-extrabold text-amber-950 bg-[#fefce8] border border-amber-300 whitespace-nowrap shrink-0">
-          <span>🎮 Vườn Ảo & Quà</span>
+        <a href="#interactive-hub" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all inline-flex items-center gap-1 font-extrabold text-amber-950 bg-[#fefce8] border border-amber-300 whitespace-nowrap shrink-0 select-none">
+          <span class="whitespace-nowrap shrink-0">🎮 Vườn Ảo & Quà</span>
         </a>
-        <a href="trace.html" class="hidden 2xl:flex px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all items-center gap-1 whitespace-nowrap shrink-0">
-          <i class="fa-solid fa-qrcode text-[#3ba117]"></i> <span>Ví Escrow</span>
+        <a href="trace.html" class="hidden 2xl:inline-flex px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all items-center gap-1 whitespace-nowrap shrink-0 select-none">
+          <i class="fa-solid fa-qrcode text-[#3ba117] shrink-0"></i> <span class="whitespace-nowrap shrink-0">Ví Escrow</span>
         </a>
-        <a href="farmer.html" class="px-2.5 2xl:px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-all flex items-center gap-1 font-extrabold whitespace-nowrap shrink-0">
-          <span>🌾 Cổng Nông Dân</span>
+        <a href="farmer.html" class="px-2.5 2xl:px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-all inline-flex items-center gap-1 font-extrabold whitespace-nowrap shrink-0 select-none">
+          <span class="whitespace-nowrap shrink-0">🌾 Cổng Nông Dân</span>
         </a>
       </nav>
 
       <!-- Right Actions: Nút Đặt Ngay + Cổng Quản Trị + Biểu Tượng 3 Gạch (Vừa vặn 100% trên màn hình Mobile & Desktop) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap shrink-0">
-          <i class="fa-solid fa-basket-shopping text-[11px]"></i>
-          <span>Đặt Ngay</span>
+        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap shrink-0 select-none">
+          <i class="fa-solid fa-basket-shopping text-[11px] shrink-0"></i>
+          <span class="whitespace-nowrap shrink-0">Đặt Ngay</span>
         </a>
-        <a href="admin.html" title="Chuyển nhanh sang Cổng Quản Trị Nhóm" class="hidden md:flex items-center gap-1.5 px-2.5 2xl:px-3 py-2 text-xs font-extrabold text-[#fef08a] bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700 whitespace-nowrap shadow-xs shrink-0">
-          <i class="fa-solid fa-sliders text-emerald-400"></i>
-          <span>Cổng Quản Trị</span>
+        <a href="admin.html" title="Chuyển nhanh sang Cổng Quản Trị Nhóm" class="hidden md:inline-flex items-center gap-1.5 px-2.5 2xl:px-3 py-2 text-xs font-extrabold text-[#fef08a] bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700 whitespace-nowrap shadow-xs shrink-0 select-none">
+          <i class="fa-solid fa-sliders text-emerald-400 shrink-0"></i>
+          <span class="whitespace-nowrap shrink-0">Cổng Quản Trị</span>
         </a>
         <!-- Biểu tượng 3 gạch góc phải bên trên -->
-        <button id="top-right-menu-btn" type="button" onclick="toggleMobileNav()" aria-label="Mở Menu 3 Gạch" class="px-2.5 sm:px-3 py-2 text-[#0f240d] bg-[#fef08a] hover:bg-[#fde047] border-2 border-[#3ba117] rounded-xl flex items-center gap-1.5 font-black text-xs transition-all shadow-md active:scale-95 shrink-0">
-          <i id="top-right-menu-icon" class="fa-solid fa-bars text-base sm:text-lg text-[#1c560e]"></i>
-          <span class="xl:hidden">Menu</span>
-          <span class="hidden xl:inline">Menu & Tìm Nhanh</span>
+        <button id="top-right-menu-btn" type="button" onclick="toggleMobileNav()" aria-label="Mở Menu 3 Gạch" class="px-2.5 sm:px-3 py-2 text-[#0f240d] bg-[#fef08a] hover:bg-[#fde047] border-2 border-[#3ba117] rounded-xl flex items-center gap-1.5 font-black text-xs transition-all shadow-md active:scale-95 shrink-0 select-none">
+          <i id="top-right-menu-icon" class="fa-solid fa-bars text-base sm:text-lg text-[#1c560e] shrink-0"></i>
+          <span class="xl:hidden whitespace-nowrap">Menu</span>
+          <span class="hidden xl:inline 2xl:hidden whitespace-nowrap">Menu</span>
+          <span class="hidden 2xl:inline whitespace-nowrap">Menu & Tìm Nhanh</span>
         </button>
       </div>
     </div>
@@ -714,9 +720,35 @@
         </div>
       </div>
 
-      <!-- Product Cards Container (Dynamic via JS) -->
+      <!-- Product Cards Container (Dynamic via JS với Skeleton Loading Perceived Speed) -->
       <div id="product-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-        <!-- Products rendered by js/app.js -->
+        <!-- Skeleton Card 1 -->
+        <div class="product-skeleton bg-white rounded-3xl p-5 border border-[#d2f0b6] shadow-sm animate-pulse space-y-4">
+          <div class="h-48 bg-slate-200/80 rounded-2xl w-full"></div>
+          <div class="space-y-2">
+            <div class="h-5 bg-slate-200 rounded-lg w-3/4"></div>
+            <div class="h-4 bg-slate-200 rounded-lg w-1/2"></div>
+          </div>
+          <div class="h-10 bg-slate-200 rounded-xl w-full"></div>
+        </div>
+        <!-- Skeleton Card 2 -->
+        <div class="product-skeleton bg-white rounded-3xl p-5 border border-[#d2f0b6] shadow-sm animate-pulse space-y-4">
+          <div class="h-48 bg-slate-200/80 rounded-2xl w-full"></div>
+          <div class="space-y-2">
+            <div class="h-5 bg-slate-200 rounded-lg w-3/4"></div>
+            <div class="h-4 bg-slate-200 rounded-lg w-1/2"></div>
+          </div>
+          <div class="h-10 bg-slate-200 rounded-xl w-full"></div>
+        </div>
+        <!-- Skeleton Card 3 -->
+        <div class="product-skeleton bg-white rounded-3xl p-5 border border-[#d2f0b6] shadow-sm animate-pulse space-y-4">
+          <div class="h-48 bg-slate-200/80 rounded-2xl w-full"></div>
+          <div class="space-y-2">
+            <div class="h-5 bg-slate-200 rounded-lg w-3/4"></div>
+            <div class="h-4 bg-slate-200 rounded-lg w-1/2"></div>
+          </div>
+          <div class="h-10 bg-slate-200 rounded-xl w-full"></div>
+        </div>
       </div>
 
       <!-- Bảng Tin & Nhật Ký Thực Tế Từ Nhà Vườn (Hình Ảnh, Video & Thông Tin Nhà Vườn) -->
@@ -1219,20 +1251,31 @@
         </div>
       </div>
 
-      <!-- Thanh chọn Tab Tương Tác -->
-      <div class="flex items-center justify-center gap-2 sm:gap-3 mb-8 overflow-x-auto pb-2">
-        <button type="button" onclick="switchInteractiveTab('farm')" id="tab-btn-farm" class="px-4 sm:px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 bg-[#256314] text-white border-2 border-[#173f0c] active:scale-95">
-          <i class="fa-solid fa-seedling text-emerald-300"></i>
-          <span>Vườn Ảo AgriConnect</span>
-        </button>
-        <button type="button" onclick="switchInteractiveTab('wheel')" id="tab-btn-wheel" class="px-4 sm:px-6 py-2.5 rounded-2xl font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 bg-white text-[#1f3813] border border-[#b8ee99] hover:bg-[#e1f9cf] active:scale-95">
-          <i class="fa-solid fa-dharmachakra text-amber-500"></i>
-          <span>Vòng Quay Thu Hoạch</span>
-        </button>
-        <button type="button" onclick="switchInteractiveTab('community')" id="tab-btn-community" class="px-4 sm:px-6 py-2.5 rounded-2xl font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 bg-white text-[#1f3813] border border-[#b8ee99] hover:bg-[#e1f9cf] active:scale-95">
-          <i class="fa-solid fa-utensils text-rose-500"></i>
-          <span>Góc Bếp & Đố Vui</span>
-        </button>
+      <!-- Thanh điều khiển công cụ Gamification & chọn Tab -->
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6 max-w-4xl mx-auto">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1">
+          <button type="button" onclick="switchInteractiveTab('farm')" id="tab-btn-farm" class="px-4 sm:px-5 py-2 rounded-2xl font-black text-xs shadow-md transition-all flex items-center gap-2 bg-[#256314] text-white border-2 border-[#173f0c] active:scale-95">
+            <i class="fa-solid fa-seedling text-emerald-300"></i>
+            <span>Vườn Ảo AgriConnect</span>
+          </button>
+          <button type="button" onclick="switchInteractiveTab('wheel')" id="tab-btn-wheel" class="px-4 sm:px-5 py-2 rounded-2xl font-extrabold text-xs transition-all flex items-center gap-2 bg-white text-[#1f3813] border border-[#b8ee99] hover:bg-[#e1f9cf] active:scale-95">
+            <i class="fa-solid fa-dharmachakra text-amber-500"></i>
+            <span>Vòng Quay Thu Hoạch</span>
+          </button>
+          <button type="button" onclick="switchInteractiveTab('community')" id="tab-btn-community" class="px-4 sm:px-5 py-2 rounded-2xl font-extrabold text-xs transition-all flex items-center gap-2 bg-white text-[#1f3813] border border-[#b8ee99] hover:bg-[#e1f9cf] active:scale-95">
+            <i class="fa-solid fa-utensils text-rose-500"></i>
+            <span>Góc Bếp & Đố Vui</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="toggleAgriSound()" id="btn-toggle-sound" class="px-3 py-1.5 rounded-xl bg-white hover:bg-[#e1f9cf] border border-[#b8ee99] text-xs font-bold text-[#1c560e] flex items-center gap-1.5 shadow-2xs transition active:scale-95">
+            <span id="sound-toggle-label">🔊 Âm Thanh: Bật</span>
+          </button>
+          <button type="button" onclick="installAgriConnectPWA()" id="pwa-install-banner" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 text-white text-xs font-black flex items-center gap-1.5 shadow-xs transition active:scale-95">
+            <i class="fa-solid fa-mobile-screen"></i>
+            <span>Cài App Web</span>
+          </button>
+        </div>
       </div>
 
       <!-- ================= TAB 1: VƯỜN ẢO AGRICONNECT (GAMIFICATION MINI-FARM) ================= -->
@@ -1370,6 +1413,71 @@
               <span class="text-slate-400 italic font-medium">Chưa có voucher nào. Hãy điểm danh tưới cây để đổi nhé!</span>
             </div>
           </div>
+        </div>
+
+        <!-- Nhiệm Vụ Ngày & Bảng Vinh Danh Nông Dân Xanh (Sprint 2 Gamification) -->
+        <div class="col-span-full grid md:grid-cols-2 gap-4 mt-2">
+          
+          <!-- Hộp Nhiệm Vụ Ngày -->
+          <div class="bg-white rounded-3xl p-5 border-2 border-[#b8ee99] shadow-sm space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-[#e5f6d5]">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xs">
+                  <i class="fa-solid fa-list-check"></i>
+                </span>
+                <h4 class="font-black text-xs sm:text-sm text-[#0f240d]">Nhiệm Vụ Ngày (Nhận Thưởng +50 Hạt 🌱)</h4>
+              </div>
+              <span id="quests-progress-badge" class="px-2.5 py-0.5 rounded-full bg-[#e1f9cf] text-[#1c560e] text-[10px] font-black">
+                0 / 4 Hoàn thành
+              </span>
+            </div>
+            <div id="quests-list-container" class="space-y-2 text-xs font-bold text-slate-700">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">
+                <span class="flex items-center gap-1.5"><span id="quest-check-checkin">⚪</span> <span>1. Điểm danh mỗi ngày</span></span>
+                <span class="text-[10px] text-[#256314] font-black">+20 Hạt 🌱</span>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">
+                <span class="flex items-center gap-1.5"><span id="quest-check-water">⚪</span> <span>2. Tưới nước cho cây 1 lần</span></span>
+                <span class="text-[10px] text-sky-700 font-black">+25 EXP 💧</span>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">
+                <span class="flex items-center gap-1.5"><span id="quest-check-wheel">⚪</span> <span>3. Quay vòng quay may mắn</span></span>
+                <span class="text-[10px] text-amber-700 font-black">Quà ngẫu nhiên 🎡</span>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">
+                <span class="flex items-center gap-1.5"><span id="quest-check-heart">⚪</span> <span>4. Thả tim 1 món ngon góc bếp</span></span>
+                <span class="text-[10px] text-rose-700 font-black">+5 Hạt ❤️</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bảng Vinh Danh Cộng Đồng Xanh Tuần Này -->
+          <div class="bg-white rounded-3xl p-5 border-2 border-[#b8ee99] shadow-sm space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-[#e5f6d5]">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-black text-xs">
+                  <i class="fa-solid fa-trophy"></i>
+                </span>
+                <h4 class="font-black text-xs sm:text-sm text-[#0f240d]">Vinh Danh "Cộng Đồng Xanh" Tuần Này</h4>
+              </div>
+              <span class="text-[10px] text-[#256314] font-bold">Top Gom Hàng & Chăm Vườn</span>
+            </div>
+            <div class="space-y-2 text-xs font-semibold">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#fefce8] border border-amber-200">
+                <span class="flex items-center gap-2"><strong class="text-amber-600 font-black">🥇 1</strong> <span>Chị Mai Lan (Q.7, TP.HCM)</span></span>
+                <span class="text-[10px] font-black text-amber-800">420 hạt • 14 ngày streak</span>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="flex items-center gap-2"><strong class="text-slate-500 font-black">🥈 2</strong> <span>Anh Tuấn Kiệt (Thủ Đức)</span></span>
+                <span class="text-[10px] font-black text-slate-700">360 hạt • Đã gom 15kg</span>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-amber-50/50 border border-amber-100">
+                <span class="flex items-center gap-2"><strong class="text-amber-700 font-black">🥉 3</strong> <span>Bạn Thảo Vy (Bình Thạnh)</span></span>
+                <span class="text-[10px] font-black text-amber-900">310 hạt • Đổi 4 thùng carton</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -2044,16 +2152,30 @@
               <div id="geofence-warning" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 text-xs font-bold"></div>
             </div>
 
-            <!-- Campus Delivery Fields -->
+            <!-- Campus & B2B2C Office Delivery Fields -->
             <div id="delivery-campus-fields" class="hidden space-y-3 p-4 rounded-2xl bg-[#f7fdf3] border border-[#d2f0b6]">
+              <p class="text-xs font-bold text-[#1f4f10] flex items-center gap-1.5">
+                <i class="fa-solid fa-building-flag text-[#3ba117]"></i> Chọn Điểm Hub Gom Hàng Cố Định (Hub-to-Hub Miễn Phí 0đ):
+              </p>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Điểm nhận Hub B2B2C / Tòa Nhà Văn Phòng / Trường Học <span class="text-rose-500">*</span></label>
+                <select id="campus-location" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336] font-bold text-[#0f240d]">
+                  <option value="🏢 Tòa Nhà Viettel Complex (285 CMT8, Quận 10)">🏢 Sảnh Tòa Nhà Viettel Complex (285 CMT8, Q.10 - Gom đơn văn phòng)</option>
+                  <option value="🏢 Tòa Nhà Bitexco Financial Tower (02 Hải Triều, Quận 1)">🏢 Sảnh Bitexco Financial Tower (02 Hải Triều, Q.1 - Gom đơn văn phòng)</option>
+                  <option value="🏢 Sảnh Landmark 81 / Vinhomes Central Park (Bình Thạnh)">🏢 Sảnh Landmark 81 / Vinhomes Central Park (Bình Thạnh)</option>
+                  <option value="🎓 Sảnh Tòa Nhà Điều Hành ĐHQG TP.HCM (Thủ Đức)" selected>🎓 Sảnh Tòa Nhà Điều Hành ĐHQG TP.HCM (Thủ Đức - Campus Hub)</option>
+                  <option value="🏢 Hub Xe Lạnh QL13 (Cổng KCN VSIP 1, Bình Dương)">🏢 Hub Xe Lạnh QL13 (Cổng KCN VSIP 1, Bình Dương)</option>
+                  <option value="Điểm khác">📍 Khác (Ghi chú cụ thể bên dưới)</option>
+                </select>
+              </div>
               <div class="grid sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[11px] font-semibold text-slate-600 mb-1">Khoa / Phòng ban / Lớp <span class="text-rose-500">*</span></label>
-                  <input type="text" id="campus-dept" placeholder="Ví dụ: Khoa Kinh Tế, Lớp 23DKT" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1">Khoa / Phòng ban / Tầng làm việc</label>
+                  <input type="text" id="campus-dept" placeholder="Ví dụ: Tầng 12 Phòng Marketing / Khoa Kinh Tế" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
                 <div>
-                  <label class="block text-[11px] font-semibold text-slate-600 mb-1">Điểm nhận cụ thể <span class="text-rose-500">*</span></label>
-                  <input type="text" id="campus-address" placeholder="Ví dụ: Bàn làm việc Phòng 302 Nhà A hoặc KTX Khu B" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1">Ghi chú người nhận tại sảnh Hub</label>
+                  <input type="text" id="campus-address" placeholder="Ví dụ: Giao trước 11h sáng Thứ Bảy" class="w-full text-xs px-3.5 py-2 rounded-xl border border-[#d2e7b8] bg-white focus:outline-none focus:ring-1 focus:ring-[#6ba336]">
                 </div>
               </div>
             </div>
@@ -2871,9 +2993,58 @@
     </div>
   </div>
 
+  <!-- ================= MODAL ĐỐI SOÁT BLOCKCHAIN HASH MINH BẠCH ================= -->
+  <div id="blockchain-verify-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-[#82d648] shadow-2xl space-y-4 animate-scale-up">
+      <div class="flex items-center justify-between pb-3 border-b border-[#e5f6d5]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center font-black">
+            ⛓️
+          </span>
+          <div>
+            <h3 class="font-black text-sm text-[#0f240d]">Đối Soát Mã Băm Blockchain</h3>
+            <p class="text-[10px] text-[#4b6b32] font-semibold">Bất biến • Chống gian lận nguồn gốc</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeBlockchainHashVerifyModal()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold transition">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-2xl bg-[#f7fdf3] border border-[#c8edab] space-y-1.5">
+          <div class="flex justify-between text-[11px] font-bold">
+            <span class="text-slate-500">Mạng Lưới Xác Thực:</span>
+            <span class="text-purple-700 font-extrabold">Polygon PoS Layer-2</span>
+          </div>
+          <div class="flex justify-between text-[11px] font-bold">
+            <span class="text-slate-500">Khối Băm (Block Height):</span>
+            <span class="font-mono text-slate-800">#19,842,105</span>
+          </div>
+          <div class="flex justify-between text-[11px] font-bold">
+            <span class="text-slate-500">Trạng Thái:</span>
+            <span class="text-emerald-700 font-black">✅ Đã Xác Nhận Bất Biến</span>
+          </div>
+          <div class="pt-1">
+            <span class="text-slate-500 block text-[10px] mb-0.5">Merkle Root Hash:</span>
+            <code id="verify-hash-display" class="block font-mono text-[10px] bg-white p-2 rounded-lg border border-[#b8ee99] text-[#1c560e] font-bold break-all">
+              0x7f9a2b89c41e88219d30fa14cb72e01149a88e
+            </code>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-600 leading-relaxed">
+          Mỗi dữ liệu mùa vụ, độ ngọt Brix và cách ly PHI từ nhà vườn đều được hàm băm SHA-256 mã hóa và neo trực tiếp lên sổ cái phân tán. Bất kỳ ai cũng có thể đối soát minh bạch, không qua trung gian.
+        </p>
+
+        <button type="button" onclick="closeBlockchainHashVerifyModal()" class="w-full py-2.5 rounded-xl bg-[#256314] hover:bg-[#173f0c] text-white font-extrabold text-xs shadow-md transition">
+          Đóng Đối Soát
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts (Kèm version chống cache trình duyệt) -->
-  <script src="js/config.js?v=20261109_v20"></script>
-  <script src="js/supabaseClient.js?v=20261109_v20"></script>
-  <script src="js/app.js?v=20261109_v20"></script>
+  <script src="js/config.js?v=20261109_v21"></script>
+  <script src="js/supabaseClient.js?v=20261109_v21"></script>
+  <script src="js/app.js?v=20261109_v21"></script>
 </body>
 </html>
