@@ -55,6 +55,7 @@ async function initApp() {
   renderEsgCircularSection();
   syncEditorAuthUI();
   updateOrderSummary();
+  initInteractiveGamificationHub();
 }
 
 function showPageError(message) {
@@ -2007,3 +2008,464 @@ window.openTosLegalModal = function () {
 window.closeTosLegalModal = function () {
   document.getElementById("tos-legal-modal")?.classList.add("hidden");
 };
+
+// =========================================================================
+// 🎮 KHU TƯƠNG TÁC GAMIFICATION & GIỮ CHÂN KHÁCH HÀNG (VƯỜN ẢO, QUAY THƯỞNG, QUIZ, RECIPES)
+// =========================================================================
+
+const GARDEN_STORAGE_KEY = "agri_garden_state_v1";
+
+let userGarden = {
+  waterDrops: 1,
+  seeds: 40,
+  exp: 25,
+  level: 1,
+  streak: 1,
+  lastCheckInDate: null,
+  spinsLeft: 1,
+  vouchers: []
+};
+
+const TREE_STAGES = [
+  { level: 1, icon: "🌱", label: "Cấp 1: Mầm Xanh Mới Nhú", sub: "Giai đoạn: Cây non đang đâm chồi lá" },
+  { level: 2, icon: "🌿", label: "Cấp 2: Cây Non Đang Lớn", sub: "Giai đoạn: Cành lá xum xuê đón nắng" },
+  { level: 3, icon: "🌸", label: "Cấp 3: Cây Đơm Hoa Kết Nụ", sub: "Giai đoạn: Hoa thụ phấn chuẩn bị đậu trái" },
+  { level: 4, icon: "🍈", label: "Cấp 4: Trái Chín Cây Thu Hoạch!", sub: "Giai đoạn: Trái chín thơm lừng sẵn sàng thu hái" }
+];
+
+const WHEEL_SECTORS = [
+  { label: "Voucher 50K", color: "#fde047", code: "LUCKY50K", value: 50000, type: "voucher" },
+  { label: "Freeship 0đ", color: "#e1f9cf", code: "FREESHIP_SPIN", value: 25000, type: "freeship" },
+  { label: "+50 Hạt 🌱", color: "#bbf099", code: null, value: 50, type: "seeds" },
+  { label: "1kg Măng Cụt", color: "#fed7aa", code: "FREE_1KG_MC", value: 95000, type: "gift" },
+  { label: "Voucher 20K", color: "#fef08a", code: "LUCKY20K", value: 20000, type: "voucher" },
+  { label: "Giảm 15% Combo", color: "#c8edab", code: "COMBO15", value: 35000, type: "voucher" },
+  { label: "Hộp Quà Bí Mật", color: "#a7f3d0", code: "SECRET_GIFT", value: 30000, type: "gift" },
+  { label: "Chúc May Mắn", color: "#f1f5f9", code: null, value: 0, type: "none" }
+];
+
+let isWheelSpinning = false;
+let wheelCurrentAngle = 0;
+
+window.initInteractiveGamificationHub = function () {
+  loadGardenState();
+  renderGardenUI();
+  initWheelCanvas();
+  updatePillStatus();
+};
+
+function loadGardenState() {
+  try {
+    const raw = localStorage.getItem(GARDEN_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      userGarden = { ...userGarden, ...parsed };
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc trạng thái vườn ảo:", e);
+  }
+
+  // Tự động kiểm tra reset lượt quay miễn phí hằng ngày
+  const todayStr = new Date().toISOString().slice(0, 10);
+  if (userGarden.lastCheckInDate !== todayStr) {
+    userGarden.spinsLeft = Math.max(userGarden.spinsLeft || 0, 1);
+  }
+}
+
+function saveGardenState() {
+  try {
+    localStorage.setItem(GARDEN_STORAGE_KEY, JSON.stringify(userGarden));
+  } catch (e) {
+    console.warn("Lỗi lưu trạng thái vườn ảo:", e);
+  }
+  updatePillStatus();
+}
+
+function updatePillStatus() {
+  const pillStatus = document.getElementById("pill-water-status");
+  if (!pillStatus) return;
+  const todayStr = new Date().toISOString().slice(0, 10);
+  if (userGarden.lastCheckInDate === todayStr) {
+    pillStatus.textContent = `💧 Còn ${userGarden.waterDrops} giọt | 🌱 ${userGarden.seeds} hạt`;
+  } else {
+    pillStatus.textContent = "Điểm danh nhận +1 giọt nước & +20 hạt!";
+  }
+}
+
+window.jumpToInteractiveHub = function () {
+  const el = document.getElementById("interactive-hub");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
+window.switchInteractiveTab = function (tabId) {
+  const tabs = ["farm", "wheel", "community"];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`tab-btn-${t}`);
+    const content = document.getElementById(`tab-content-${t}`);
+    if (t === tabId) {
+      btn?.classList.remove("bg-white", "text-[#1f3813]", "border-[#b8ee99]");
+      btn?.classList.add("bg-[#256314]", "text-white", "border-2", "border-[#173f0c]", "shadow-md");
+      content?.classList.remove("hidden");
+    } else {
+      btn?.classList.remove("bg-[#256314]", "text-white", "border-2", "border-[#173f0c]", "shadow-md");
+      btn?.classList.add("bg-white", "text-[#1f3813]", "border", "border-[#b8ee99]");
+      content?.classList.add("hidden");
+    }
+  });
+
+  if (tabId === "wheel") {
+    setTimeout(drawLuckyWheel, 50);
+  }
+};
+
+function renderGardenUI() {
+  const stage = TREE_STAGES.find(s => s.level === userGarden.level) || TREE_STAGES[0];
+
+  const iconEl = document.getElementById("tree-visual-icon");
+  if (iconEl) iconEl.textContent = stage.icon;
+
+  const stageBadge = document.getElementById("tree-stage-badge");
+  if (stageBadge) stageBadge.textContent = stage.sub;
+
+  const levelLabel = document.getElementById("tree-level-label");
+  if (levelLabel) levelLabel.textContent = stage.label;
+
+  const expText = document.getElementById("tree-exp-text");
+  if (expText) expText.textContent = `${userGarden.exp} / 100 EXP`;
+
+  const expBar = document.getElementById("tree-exp-bar");
+  if (expBar) expBar.style.width = `${Math.min(userGarden.exp, 100)}%`;
+
+  const dropsNeeded = Math.max(0, Math.ceil((100 - userGarden.exp) / 25));
+  const dropsNeededEl = document.getElementById("drops-needed-text");
+  if (dropsNeededEl) dropsNeededEl.textContent = `${dropsNeeded} lần tưới`;
+
+  const userDrops = document.getElementById("user-water-drops");
+  if (userDrops) userDrops.textContent = userGarden.waterDrops;
+
+  const userSeeds = document.getElementById("user-seeds-display");
+  if (userSeeds) userSeeds.textContent = `${userGarden.seeds} Hạt Mầm`;
+
+  const streakDisplay = document.getElementById("streak-days-display");
+  if (streakDisplay) streakDisplay.textContent = `Chuỗi: ${userGarden.streak} ngày`;
+
+  const spinsCount = document.getElementById("user-spins-count");
+  if (spinsCount) spinsCount.textContent = `${userGarden.spinsLeft} lượt`;
+
+  // Kiểm tra trạng thái nút điểm danh hôm nay
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const checkInBtn = document.getElementById("btn-daily-checkin");
+  const checkInLabel = document.getElementById("checkin-btn-label");
+  if (checkInBtn && checkInLabel) {
+    if (userGarden.lastCheckInDate === todayStr) {
+      checkInBtn.classList.replace("from-[#389e18]", "from-slate-400");
+      checkInBtn.classList.replace("to-[#59c228]", "to-slate-500");
+      checkInLabel.textContent = "✓ Đã Điểm Danh Hôm Nay";
+    } else {
+      checkInBtn.classList.replace("from-slate-400", "from-[#389e18]");
+      checkInBtn.classList.replace("to-slate-500", "to-[#59c228]");
+      checkInLabel.textContent = "Điểm Danh (+1 Giọt & +20 Hạt)";
+    }
+  }
+
+  // Render danh sách voucher đã có
+  const voucherListEl = document.getElementById("vouchers-list-display");
+  if (voucherListEl) {
+    if (Array.isArray(userGarden.vouchers) && userGarden.vouchers.length > 0) {
+      voucherListEl.innerHTML = userGarden.vouchers.map(v => `
+        <span onclick="applyPromoCodeDirect('${v.code}')" class="cursor-pointer px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 shadow-2xs flex items-center gap-1 transition" title="Bấm để áp dụng ngay vào đơn hàng">
+          <span>🏷️ ${v.code} (-${formatVND(v.amount)})</span>
+          <i class="fa-solid fa-arrow-down text-[9px] text-amber-700"></i>
+        </span>
+      `).join("");
+    } else {
+      voucherListEl.innerHTML = `<span class="text-slate-400 italic font-medium">Chưa có voucher nào. Hãy điểm danh tưới cây để đổi nhé!</span>`;
+    }
+  }
+}
+
+window.handleDailyCheckIn = function () {
+  const todayStr = new Date().toISOString().slice(0, 10);
+  if (userGarden.lastCheckInDate === todayStr) {
+    showToast("🌿 Hôm nay bạn đã điểm danh rồi! Hãy quay lại vào ngày mai nhé.");
+    return;
+  }
+
+  // Kiểm tra chuỗi liên tiếp (nếu hôm qua điểm danh thì streak + 1, ngược lại reset về 1)
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (userGarden.lastCheckInDate === yesterday) {
+    userGarden.streak = (userGarden.streak || 1) + 1;
+  } else {
+    userGarden.streak = 1;
+  }
+
+  userGarden.lastCheckInDate = todayStr;
+  userGarden.waterDrops = (userGarden.waterDrops || 0) + 1;
+  userGarden.seeds = (userGarden.seeds || 0) + 20;
+  userGarden.spinsLeft = Math.max(userGarden.spinsLeft || 0, 1);
+
+  saveGardenState();
+  renderGardenUI();
+  showToast("🎉 Điểm danh thành công! Bạn nhận được +1 Giọt Nước 💧 và +20 Hạt Mầm Xanh 🌱.");
+};
+
+window.handleWaterTree = function () {
+  if (userGarden.waterDrops <= 0) {
+    alert("💧 Bạn đã hết giọt nước tưới! Hãy điểm danh hằng ngày hoặc trả lời câu đố vui bên dưới để nhận thêm nước nhé.");
+    return;
+  }
+
+  userGarden.waterDrops--;
+  userGarden.exp += 25;
+
+  // Hiệu ứng bong bóng +25 EXP
+  const splash = document.getElementById("water-splash-anim");
+  const treeContainer = document.getElementById("virtual-tree-container");
+  if (splash) {
+    splash.classList.remove("hidden");
+    setTimeout(() => splash.classList.add("hidden"), 1200);
+  }
+  if (treeContainer) {
+    treeContainer.classList.add("scale-110");
+    setTimeout(() => treeContainer.classList.remove("scale-110"), 300);
+  }
+
+  // Kiểm tra thăng cấp cây
+  if (userGarden.exp >= 100) {
+    userGarden.exp = 0;
+    if (userGarden.level < 4) {
+      userGarden.level++;
+      showToast(`🌟 Tuyệt vời! Cây của bạn đã thăng lên ${TREE_STAGES[userGarden.level - 1].label}!`);
+    } else {
+      // Cấp 4 thu hoạch -> Thưởng Voucher lớn và reset về Cấp 1 vụ mới
+      userGarden.level = 1;
+      const harvestVoucher = {
+        code: "HARVEST30K_" + Math.floor(1000 + Math.random() * 9000),
+        amount: 30000,
+        name: "Quà Thu Hoạch Vườn Ảo 30.000 đ"
+      };
+      userGarden.vouchers.push(harvestVoucher);
+      alert("🏆 CHÚC MỪNG BẠN THU HOẠCH THÀNH CÔNG!\nCây Sầu Riêng của bạn đã chín trĩu cành. AgriConnect tặng bạn 1 Voucher Giảm 30.000 đ (" + harvestVoucher.code + ") cho đợt hàng Thứ Bảy tuần này!\nVụ mùa mới đã bắt đầu nảy mầm!");
+    }
+  }
+
+  saveGardenState();
+  renderGardenUI();
+};
+
+window.redeemReward = function (cost, codePrefix, amount) {
+  if (userGarden.seeds < cost) {
+    alert(`🌱 Bạn chưa đủ Hạt Mầm! Bạn đang có ${userGarden.seeds} hạt, cần thêm ${cost - userGarden.seeds} hạt nữa. Hãy chăm chỉ điểm danh tưới cây mỗi ngày nhé.`);
+    return;
+  }
+
+  userGarden.seeds -= cost;
+  const newVoucher = {
+    code: `${codePrefix}_${Math.floor(100 + Math.random() * 900)}`,
+    amount: amount,
+    name: `Voucher giảm ${formatVND(amount)}`
+  };
+  userGarden.vouchers.push(newVoucher);
+
+  saveGardenState();
+  renderGardenUI();
+
+  // Tự động áp dụng vào ô giảm giá đơn hàng
+  applyPromoCodeDirect(newVoucher.code);
+  alert(`🎉 Đổi quà thành công! Bạn nhận được mã ${newVoucher.code} (-${formatVND(amount)}). Mã đã được tự động áp dụng vào giỏ hàng của bạn!`);
+};
+
+window.applyPromoCodeDirect = function (code) {
+  const input = document.getElementById("promo-code-input") || document.getElementById("order-promo-code");
+  if (input) {
+    input.value = code;
+    input.dispatchEvent(new Event("input"));
+    document.getElementById("preorder")?.scrollIntoView({ behavior: "smooth" });
+    showToast(`🏷️ Đã tự động áp dụng mã ${code} vào đơn hàng!`);
+  }
+};
+
+// ================= VÒNG QUAY MAY MẮN (CANVAS WHEEL) =================
+
+function initWheelCanvas() {
+  drawLuckyWheel();
+}
+
+function drawLuckyWheel() {
+  const canvas = document.getElementById("wheel-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const numSectors = WHEEL_SECTORS.length;
+  const arc = (2 * Math.PI) / numSectors;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const r = cx - 8;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < numSectors; i++) {
+    const angle = wheelCurrentAngle + i * arc;
+    ctx.beginPath();
+    ctx.fillStyle = WHEEL_SECTORS[i].color;
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + arc);
+    ctx.lineTo(cx, cy);
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#ffffff";
+    ctx.stroke();
+
+    // Vẽ chữ nhãn trên từng ô
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle + arc / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#0f240d";
+    ctx.font = "bold 12px 'Be Vietnam Pro', sans-serif";
+    ctx.fillText(WHEEL_SECTORS[i].label, r - 15, 4);
+    ctx.restore();
+  }
+}
+
+window.spinLuckyWheel = function () {
+  if (isWheelSpinning) return;
+
+  if (userGarden.spinsLeft <= 0) {
+    if (userGarden.seeds >= 30) {
+      if (!confirm(`Bạn đã hết lượt quay miễn phí hôm nay. Bạn có muốn đổi 30 Hạt Mầm (Bạn đang có ${userGarden.seeds} hạt) để quay thêm 1 lượt không?`)) {
+        return;
+      }
+      userGarden.seeds -= 30;
+      userGarden.spinsLeft = 1;
+      saveGardenState();
+      renderGardenUI();
+    } else {
+      alert("🎡 Bạn đã dùng hết lượt quay hôm nay và không đủ 30 Hạt Mầm để đổi thêm lượt. Hãy quay lại vào ngày mai nhé!");
+      return;
+    }
+  }
+
+  isWheelSpinning = true;
+  userGarden.spinsLeft--;
+  saveGardenState();
+  renderGardenUI();
+
+  const numSectors = WHEEL_SECTORS.length;
+  const arc = (2 * Math.PI) / numSectors;
+
+  // Chọn ngẫu nhiên giải thưởng (ưu tiên voucher hoặc hạt mầm)
+  const winningIndex = Math.floor(Math.random() * (numSectors - 1)); // trừ ô chúc may mắn
+  const prize = WHEEL_SECTORS[winningIndex];
+
+  // Tính góc quay sao cho kim ở trên cùng (3*PI/2) chỉ đúng vào ô trúng thưởng
+  const extraRotations = 5 + Math.floor(Math.random() * 3);
+  const targetSectorCenter = winningIndex * arc + arc / 2;
+  const targetAngle = (3 * Math.PI / 2) - targetSectorCenter;
+  const totalRotation = extraRotations * (2 * Math.PI) + (targetAngle - (wheelCurrentAngle % (2 * Math.PI)));
+
+  const startAngle = wheelCurrentAngle;
+  const startTime = performance.now();
+  const duration = 4000; // 4 giây
+
+  function animateWheel(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Hàm easing xoay chậm dần đều (ease-out cubic)
+    const easeProgress = 1 - Math.pow(1 - progress, 3);
+    wheelCurrentAngle = startAngle + totalRotation * easeProgress;
+    drawLuckyWheel();
+
+    if (progress < 1) {
+      requestAnimationFrame(animateWheel);
+    } else {
+      isWheelSpinning = false;
+      handleWheelPrizeWon(prize);
+    }
+  }
+
+  requestAnimationFrame(animateWheel);
+};
+
+function handleWheelPrizeWon(prize) {
+  if (prize.type === "voucher" || prize.type === "freeship") {
+    const won = {
+      code: `${prize.code}_${Math.floor(100 + Math.random() * 900)}`,
+      amount: prize.value,
+      name: prize.label
+    };
+    userGarden.vouchers.push(won);
+    saveGardenState();
+    renderGardenUI();
+    applyPromoCodeDirect(won.code);
+    alert(`🎉 XIN CHÚC MỪNG!\nBạn đã quay trúng: ${prize.label}!\nMã ưu đãi [${won.code}] đã được tự động thêm vào giỏ hàng của bạn!`);
+  } else if (prize.type === "seeds") {
+    userGarden.seeds += prize.value;
+    saveGardenState();
+    renderGardenUI();
+    showToast(`🎉 Bạn đã quay trúng +${prize.value} Hạt Mầm Xanh 🌱!`);
+  } else if (prize.type === "gift") {
+    const giftCode = `${prize.code}_${Math.floor(100 + Math.random() * 900)}`;
+    userGarden.vouchers.push({ code: giftCode, amount: prize.value, name: prize.label });
+    saveGardenState();
+    renderGardenUI();
+    applyPromoCodeDirect(giftCode);
+    alert(`🎁 TUYỆT VỜI!\nBạn đã trúng phần quà: ${prize.label}!\nMã nhận quà [${giftCode}] đã được ghi nhận vào đơn hàng đợt Thứ Bảy tuần này của bạn!`);
+  } else {
+    showToast("🍀 Chúc bạn may mắn lần sau! Đừng quên ghé lại mỗi ngày để quay tiếp nhé.");
+  }
+}
+
+// ================= ĐỐ VUI NÔNG SẢN & GÓC BẾP =================
+
+window.handleQuizAnswer = function (selectedIndex) {
+  const msgEl = document.getElementById("quiz-result-msg");
+  if (!msgEl) return;
+  msgEl.classList.remove("hidden");
+
+  if (selectedIndex === 2) {
+    msgEl.className = "p-3 rounded-xl bg-emerald-100 border border-emerald-300 text-[#1c560e] text-xs font-bold space-y-1";
+    msgEl.innerHTML = `
+      <div>✅ <strong>HOÀN TOÀN CHÍNH XÁC!</strong></div>
+      <div>Sầu riêng chín cây thật sự có mùi thơm nồng nàn tự nhiên, cuống tươi ứa nhựa và rãnh nở đều. Bạn vừa nhận được <strong>+1 Giọt Nước Tưới Cây 💧</strong> và mã giảm giá <strong>QUIZ10K</strong> (-10.000 đ)!</div>
+    `;
+    userGarden.waterDrops++;
+    if (!userGarden.vouchers.some(v => v.code === "QUIZ10K")) {
+      userGarden.vouchers.push({ code: "QUIZ10K", amount: 10000, name: "Thưởng Đố Vui Nông Nghiệp" });
+    }
+    saveGardenState();
+    renderGardenUI();
+  } else {
+    msgEl.className = "p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold space-y-1";
+    msgEl.innerHTML = `
+      <div>💡 <em>Gần đúng rồi!</em> Cả hai dấu hiệu A và B đều là kinh nghiệm vàng của nhà vườn Bác Năm để nhận biết sầu già chín cây. Đáp án chính xác là <strong>C. Cả A và B đều đúng</strong>. Hãy thử lại để nhận quà nhé!</div>
+    `;
+  }
+};
+
+window.likeRecipe = function (btn) {
+  const countEl = btn.querySelector(".like-count");
+  if (countEl && !btn.dataset.liked) {
+    btn.dataset.liked = "true";
+    let cur = parseInt(countEl.textContent || "0", 10);
+    countEl.textContent = cur + 1;
+    btn.classList.add("bg-rose-50", "text-rose-700");
+    userGarden.seeds += 5;
+    saveGardenState();
+    renderGardenUI();
+    showToast("❤️ Cảm ơn bạn đã thả tim! Bạn được cộng +5 Hạt Mầm Xanh 🌱.");
+  }
+};
+
+window.quickAddRecipeProduct = function (productId) {
+  const p = currentProducts.find(item => String(item.id) === String(productId));
+  if (p) {
+    addToCart(p.id);
+    showToast(`🛒 Đã thêm "${p.name}" vào giỏ hàng! Cuộn xuống để xem đơn.`);
+    document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+  } else {
+    showToast("Sản phẩm đã được chọn. Vui lòng kiểm tra giỏ hàng bên dưới!");
+  }
+};
+

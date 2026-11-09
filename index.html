@@ -100,6 +100,9 @@
         <a href="#products" class="px-3 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-black text-[#256314] bg-[#e1f9cf]/70 border border-[#b8ee99]">
           <i class="fa-solid fa-basket-shopping text-[#3ba117]"></i> <span>Menu Đặt Hàng</span>
         </a>
+        <a href="#interactive-hub" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-extrabold text-amber-950 bg-[#fefce8] border border-amber-300">
+          <span>🎮 Vườn Ảo & Quà</span>
+        </a>
         <a href="trace.html" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1">
           <i class="fa-solid fa-qrcode text-[#3ba117]"></i> <span>Ví Escrow</span>
         </a>
@@ -305,6 +308,16 @@
             </span>
 
             <div class="grid sm:grid-cols-2 gap-2">
+              <a href="#interactive-hub" onclick="toggleMobileNav()" class="flex items-center justify-between p-2.5 rounded-2xl bg-gradient-to-r from-[#fefce8] to-[#f2fbdf] border-2 border-amber-300 hover:border-amber-500 transition-all group">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center text-xs font-black">
+                    🎮
+                  </div>
+                  <span class="font-black text-xs text-amber-950">Vườn Ảo & Vòng Quay May Mắn</span>
+                </div>
+                <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 animate-pulse">Quà Hot</span>
+              </a>
+
               <a href="#campaign" onclick="toggleMobileNav()" class="flex items-center justify-between p-2.5 rounded-2xl bg-[#f7fdf3] border border-[#d2f0b6] hover:border-[#3ba117] hover:bg-[#eaf8dd] transition-all group">
                 <div class="flex items-center gap-2.5">
                   <div class="w-7 h-7 rounded-xl bg-[#e3f8d0] text-[#256314] flex items-center justify-center text-xs">
@@ -1163,7 +1176,377 @@
     </div>
   </section>
 
-  <!-- ================= LOGISTICS WORKFLOW (KẾ HOẠCH GIAO TẬN NHÀ) ================= -->
+  <!-- ================= KHU TƯƠNG TÁC & GIẢI TRÍ MIỆT VƯỜN (TĂNG TƯƠNG TÁC & GIỮ CHÂN KHÁCH HÀNG) ================= -->
+  <section id="interactive-hub" class="py-14 sm:py-18 bg-gradient-to-b from-[#f7fdf3] via-[#eefae6] to-[#f7fdf3] border-b border-[#c8edab] relative overflow-hidden">
+    <!-- Nền trang trí đốm sáng mờ -->
+    <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#82d648]/15 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[#facc15]/15 blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- Tiêu đề Khu Tương Tác -->
+      <div class="text-center max-w-3xl mx-auto space-y-2.5 mb-10">
+        <span class="inline-flex items-center gap-1.5 text-xs uppercase font-black tracking-wider text-[#1c560e] bg-[#e1f9cf] px-4 py-1.5 rounded-full border border-[#82d648] shadow-2xs">
+          <i class="fa-solid fa-gamepad text-[#3ba117] animate-pulse"></i> Khu Tương Tác & Quà Tặng Miệt Vườn
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0f240d] tracking-tight leading-snug">
+          Chăm Cây Ảo — Nhận Nông Sản Thật & Vòng Quay May Mắn
+        </h2>
+        <p class="text-xs sm:text-sm text-[#4b6b32] font-semibold leading-relaxed">
+          Điểm danh mỗi ngày, tưới nước tích <strong class="text-[#256314]">Hạt Mầm Xanh</strong>, đổi voucher giảm giá đến 100K và nhận quà tặng nông sản chín cây giao tận nhà sáng Thứ Bảy!
+        </p>
+      </div>
+
+      <!-- Thanh chọn Tab Tương Tác -->
+      <div class="flex items-center justify-center gap-2 sm:gap-3 mb-8 overflow-x-auto pb-2">
+        <button type="button" onclick="switchInteractiveTab('farm')" id="tab-btn-farm" class="px-4 sm:px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 bg-[#256314] text-white border-2 border-[#173f0c] active:scale-95">
+          <i class="fa-solid fa-seedling text-emerald-300"></i>
+          <span>Vườn Ảo AgriConnect</span>
+        </button>
+        <button type="button" onclick="switchInteractiveTab('wheel')" id="tab-btn-wheel" class="px-4 sm:px-6 py-2.5 rounded-2xl font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 bg-white text-[#1f3813] border border-[#b8ee99] hover:bg-[#e1f9cf] active:scale-95">
+          <i class="fa-solid fa-dharmachakra text-amber-500"></i>
+          <span>Vòng Quay Thu Hoạch</span>
+        </button>
+        <button type="button" onclick="switchInteractiveTab('community')" id="tab-btn-community" class="px-4 sm:px-6 py-2.5 rounded-2xl font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 bg-white text-[#1f3813] border border-[#b8ee99] hover:bg-[#e1f9cf] active:scale-95">
+          <i class="fa-solid fa-utensils text-rose-500"></i>
+          <span>Góc Bếp & Đố Vui</span>
+        </button>
+      </div>
+
+      <!-- ================= TAB 1: VƯỜN ẢO AGRICONNECT (GAMIFICATION MINI-FARM) ================= -->
+      <div id="tab-content-farm" class="grid lg:grid-cols-12 gap-6 items-stretch">
+        
+        <!-- Khung Mô Phỏng Cây Trồng Tương Tác -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-7 border-2 border-[#b8ee99] shadow-md flex flex-col justify-between relative overflow-hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-[#e5f6d5]">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center font-black text-sm">
+                <i class="fa-solid fa-tree"></i>
+              </span>
+              <div>
+                <h3 class="font-black text-sm sm:text-base text-[#0f240d]">Cây Sầu Riêng Ri6 Của Bạn</h3>
+                <p id="tree-stage-badge" class="text-[11px] font-bold text-[#3ba117]">Giai đoạn: Cây non đang đâm chồi lá</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 bg-[#fefce8] border border-[#fde047] px-3 py-1 rounded-full text-xs font-black text-amber-900">
+              <i class="fa-solid fa-fire text-amber-500"></i>
+              <span id="streak-days-display">Chuỗi: 1 ngày</span>
+            </div>
+          </div>
+
+          <!-- Khu Vực Hiển Thị Cây & Hiệu Ứng Rung Rinh -->
+          <div class="relative h-64 sm:h-72 my-4 rounded-2xl bg-gradient-to-b from-[#e0f7cd]/60 via-[#f2fbdf] to-[#d7f2bf] border border-[#c8edab] flex flex-col items-center justify-center overflow-hidden p-4">
+            
+            <!-- Hiệu ứng mặt trời và mây -->
+            <div class="absolute top-3 left-4 text-amber-400 text-2xl animate-spin" style="animation-duration: 20s;">
+              <i class="fa-solid fa-sun"></i>
+            </div>
+            <div class="absolute top-4 right-6 text-white/90 text-xl">
+              <i class="fa-solid fa-cloud"></i>
+            </div>
+
+            <!-- Cây Trồng SVG Đồ Họa Đổi Theo Cấp Độ -->
+            <div id="virtual-tree-container" class="relative transition-transform duration-300 transform hover:scale-105 select-none cursor-pointer" onclick="handleWaterTree()">
+              <div id="tree-visual-icon" class="text-7xl sm:text-8xl filter drop-shadow-lg transition-all duration-500">
+                🌱
+              </div>
+              <!-- Bong bóng hiệu ứng tưới nước -->
+              <div id="water-splash-anim" class="hidden absolute -top-8 left-1/2 -translate-x-1/2 text-2xl text-sky-500 font-black animate-bounce">
+                💧 +25 EXP
+              </div>
+            </div>
+
+            <!-- Thanh Tiến Trình Cây Trưởng Thành -->
+            <div class="w-full max-w-sm mt-4 space-y-1">
+              <div class="flex justify-between text-[11px] font-extrabold text-[#1c560e]">
+                <span id="tree-level-label">Cấp 1: Hạt mầm nảy lộc</span>
+                <span id="tree-exp-text">25 / 100 EXP</span>
+              </div>
+              <div class="w-full h-3.5 rounded-full bg-white border border-[#b8ee99] overflow-hidden p-0.5">
+                <div id="tree-exp-bar" class="h-full rounded-full bg-gradient-to-r from-[#3ba117] via-[#59c228] to-[#ca8a04] transition-all duration-500" style="width: 25%;"></div>
+              </div>
+              <p class="text-[10px] text-center text-[#4b6b32] font-semibold pt-0.5">Tưới thêm <strong id="drops-needed-text">3 lần</strong> để cây kết hoa đơm trái!</p>
+            </div>
+          </div>
+
+          <!-- Nút Thao Tác: Tưới Nước & Điểm Danh -->
+          <div class="grid grid-cols-2 gap-2 sm:gap-3">
+            <button type="button" onclick="handleWaterTree()" id="btn-water-tree" class="py-3 px-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-black text-xs sm:text-sm shadow-md shadow-sky-500/25 flex items-center justify-center gap-2 transition active:scale-95">
+              <i class="fa-solid fa-droplet text-sky-200 text-base"></i>
+              <span>Tưới Nước (<span id="user-water-drops">1</span> giọt)</span>
+            </button>
+            <button type="button" onclick="handleDailyCheckIn()" id="btn-daily-checkin" class="py-3 px-4 rounded-2xl bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e7d14] hover:to-[#4aa720] text-white font-black text-xs sm:text-sm shadow-md shadow-[#3ba117]/25 flex items-center justify-center gap-2 transition active:scale-95">
+              <i class="fa-solid fa-calendar-check text-yellow-200 text-base"></i>
+              <span id="checkin-btn-label">Điểm Danh (+1 Giọt & +20 Hạt)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Khung Đổi Thưởng & Quà Tặng Nông Sản -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-7 border border-[#b8ee99] shadow-md flex flex-col justify-between space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-[#e5f6d5]">
+            <h3 class="font-black text-sm sm:text-base text-[#0f240d] flex items-center gap-2">
+              <i class="fa-solid fa-gift text-amber-500"></i>
+              <span>Kho Đổi Thưởng Của Bạn</span>
+            </h3>
+            <div class="bg-[#e1f9cf] px-3 py-1 rounded-full border border-[#82d648] text-xs font-black text-[#1c560e] flex items-center gap-1">
+              <span>🌱</span>
+              <span id="user-seeds-display">40 Hạt Mầm</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-[#4b6b32] font-semibold leading-relaxed">
+            Dùng Hạt Mầm Xanh tích lũy từ việc điểm danh và tưới cây mỗi ngày để đổi lấy các Voucher giảm giá thực tế áp dụng ngay vào đơn hàng tuần này:
+          </p>
+
+          <!-- Danh Sách Quà Đổi Được -->
+          <div class="space-y-2.5">
+            <div class="p-3 rounded-2xl bg-[#f7fdf3] border border-[#c8edab] flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xs">15k</span>
+                <div>
+                  <h4 class="font-black text-xs text-[#0f240d]">Voucher Giảm 15.000 đ</h4>
+                  <p class="text-[10px] text-slate-500">Đơn từ 250.000 đ</p>
+                </div>
+              </div>
+              <button type="button" onclick="redeemReward(40, 'VOUCHER15K', 15000)" class="px-3 py-1.5 rounded-xl bg-[#3ba117] hover:bg-[#256314] text-white text-[11px] font-black transition active:scale-95 shadow-2xs">
+                40 Hạt 🌱
+              </button>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-[#f7fdf3] border border-[#c8edab] flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xs"><i class="fa-solid fa-truck-fast"></i></span>
+                <div>
+                  <h4 class="font-black text-xs text-[#0f240d]">Miễn Phí Giao Hàng (Freeship)</h4>
+                  <p class="text-[10px] text-slate-500">Tối đa 25.000 đ toàn TP.HCM</p>
+                </div>
+              </div>
+              <button type="button" onclick="redeemReward(80, 'FREESHIP', 25000)" class="px-3 py-1.5 rounded-xl bg-[#3ba117] hover:bg-[#256314] text-white text-[11px] font-black transition active:scale-95 shadow-2xs">
+                80 Hạt 🌱
+              </button>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-[#fefce8] border border-amber-300 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">50k</span>
+                <div>
+                  <h4 class="font-black text-xs text-amber-950">Voucher Đặc Biệt 50.000 đ</h4>
+                  <p class="text-[10px] text-amber-800">Đơn từ 450.000 đ</p>
+                </div>
+              </div>
+              <button type="button" onclick="redeemReward(140, 'VOUCHER50K', 50000)" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-[11px] font-black transition active:scale-95 shadow-2xs">
+                140 Hạt 🌱
+              </button>
+            </div>
+          </div>
+
+          <!-- Danh sách Voucher đã sở hữu -->
+          <div id="user-vouchers-container" class="pt-2 border-t border-[#e5f6d5]">
+            <span class="text-[11px] font-extrabold text-[#1c560e] block mb-1">Mã giảm giá đang có của bạn:</span>
+            <div id="vouchers-list-display" class="flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="text-slate-400 italic font-medium">Chưa có voucher nào. Hãy điểm danh tưới cây để đổi nhé!</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 2: VÒNG QUAY MAY MẮN (LUCKY HARVEST WHEEL) ================= -->
+      <div id="tab-content-wheel" class="hidden bg-white rounded-3xl p-6 sm:p-10 border-2 border-[#b8ee99] shadow-md">
+        <div class="grid lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Bàn Quay 3D Đồ Họa Canvas -->
+          <div class="lg:col-span-6 flex flex-col items-center justify-center relative">
+            <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
+              <!-- Kim chỉ vị trí giải thưởng -->
+              <div class="absolute -top-3 z-30 text-amber-500 text-3xl filter drop-shadow-md">
+                <i class="fa-solid fa-location-pin"></i>
+              </div>
+
+              <!-- Vòng quay Canvas -->
+              <canvas id="wheel-canvas" width="320" height="320" class="rounded-full shadow-xl border-4 border-[#3ba117] transition-transform"></canvas>
+
+              <!-- Nút bấm giữa vòng quay -->
+              <button type="button" onclick="spinLuckyWheel()" id="btn-spin-wheel" class="absolute w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 via-amber-300 to-yellow-200 border-4 border-white text-slate-950 font-black text-xs shadow-lg flex flex-col items-center justify-center hover:scale-105 active:scale-95 transition-all z-20">
+                <i class="fa-solid fa-play text-xs text-rose-600 mb-0.5"></i>
+                <span>QUAY</span>
+              </button>
+            </div>
+            
+            <p class="text-xs font-bold text-[#256314] mt-4 flex items-center gap-1.5">
+              <span>Lượt quay hôm nay:</span>
+              <strong id="user-spins-count" class="px-2 py-0.5 rounded-full bg-[#e1f9cf] text-[#1c560e]">1 lượt miễn phí</strong>
+            </p>
+          </div>
+
+          <!-- Thông tin giải thưởng & Lịch sử trúng quà -->
+          <div class="lg:col-span-6 space-y-4">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black uppercase">
+                🎉 Quay Là Trúng — Đón Đợt Hàng Thứ Bảy
+              </span>
+              <h3 class="text-xl sm:text-2xl font-black text-[#0f240d] mt-2">Cơ Cấu Giải Thưởng Vòng Quay</h3>
+              <p class="text-xs text-[#4b6b32] font-semibold mt-1">Mỗi khách hàng được tặng 1 lượt quay miễn phí mỗi ngày hoặc đổi 30 Hạt Mầm để quay thêm:</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+              <div class="p-2.5 rounded-xl bg-[#f7fdf3] border border-[#c8edab] flex items-center gap-2">
+                <span class="text-base">🎟️</span> <span>Voucher 50.000 đ</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#f7fdf3] border border-[#c8edab] flex items-center gap-2">
+                <span class="text-base">🚚</span> <span>Freeship Chuỗi Lạnh</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#f7fdf3] border border-[#c8edab] flex items-center gap-2">
+                <span class="text-base">🌱</span> <span>+50 Hạt Mầm Xanh</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#f7fdf3] border border-[#c8edab] flex items-center gap-2">
+                <span class="text-base">🍈</span> <span>Tặng 1kg Măng Cụt</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#f7fdf3] border border-[#c8edab] flex items-center gap-2">
+                <span class="text-base">🎁</span> <span>Hộp Quà Bất Ngờ</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#f7fdf3] border border-[#c8edab] flex items-center gap-2">
+                <span class="text-base">🎟️</span> <span>Voucher 20.000 đ</span>
+              </div>
+            </div>
+
+            <!-- Bảng thông báo người trúng quà thời gian thực -->
+            <div class="p-3 rounded-2xl bg-slate-900 text-white text-xs space-y-1.5 border border-slate-800">
+              <div class="flex items-center gap-2 text-[11px] font-black text-amber-300">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Lịch Sử Nhận Quà Gần Đây:</span>
+              </div>
+              <div id="live-winners-feed" class="text-[11px] text-slate-300 space-y-1 font-medium">
+                <p>• Chị Mai Hương (Chung cư Sunview) vừa trúng <strong>Voucher 50.000 đ</strong></p>
+                <p>• Anh Tuấn Kiệt (Q. Bình Thạnh) vừa trúng <strong>Freeship Chuỗi Lạnh</strong></p>
+                <p>• Chị Thảo Nguyên (Q.7) vừa trúng <strong>Tặng 1kg Măng cụt cổ thụ</strong></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= TAB 3: GÓC BẾP & ĐỐ VUI NÔNG SẢN ================= -->
+      <div id="tab-content-community" class="hidden space-y-6">
+        
+        <!-- Câu Đố Vui Nông Nghiệp Nhận Thưởng Hôm Nay -->
+        <div class="bg-white rounded-3xl p-5 sm:p-7 border-2 border-[#b8ee99] shadow-md">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#e5f6d5]">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black">
+                <i class="fa-solid fa-brain"></i>
+              </span>
+              <div>
+                <h3 class="font-black text-sm sm:text-base text-[#0f240d]">Đố Vui Nông Nghiệp — Trả Lời Đúng Tặng Voucher 10K</h3>
+                <p class="text-[11px] font-semibold text-[#4b6b32]">Mỗi ngày 1 câu hỏi thú vị giúp bạn hiểu đúng về nông sản chín tự nhiên</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-[#e1f9cf] text-[#1c560e] text-xs font-black">Hôm Nay: Trái Cây Chín Cây</span>
+          </div>
+
+          <div class="mt-4 space-y-3">
+            <h4 id="quiz-question-title" class="font-black text-sm sm:text-base text-[#0f240d]">
+              ❓ Làm sao để phân biệt sầu riêng Ri6 già chín cây tự nhiên với sầu riêng bị nhúng thuốc ép chín?
+            </h4>
+            <div id="quiz-options-grid" class="grid sm:grid-cols-2 gap-2 text-xs font-bold">
+              <button type="button" onclick="handleQuizAnswer(0)" class="p-3 rounded-xl border border-[#b8ee99] bg-[#f7fdf3] hover:bg-[#e1f9cf] text-left transition active:scale-98">
+                A. Sầu chín cây có cuống tươi xanh, ứa nhựa thơm ngát, gai nở tròn đều và đường rãnh múi tự nứt nhẹ khi già.
+              </button>
+              <button type="button" onclick="handleQuizAnswer(1)" class="p-3 rounded-xl border border-[#b8ee99] bg-[#f7fdf3] hover:bg-[#e1f9cf] text-left transition active:scale-98">
+                B. Sầu nhúng thuốc thì vỏ bóng nhẫy, cuống khô héo thâm đen nhưng múi bên trong vẫn mềm xèo và nhạt vị.
+              </button>
+              <button type="button" onclick="handleQuizAnswer(2)" class="p-3 rounded-xl border border-[#b8ee99] bg-[#f7fdf3] hover:bg-[#e1f9cf] text-left transition active:scale-98">
+                C. Cả A và B đều đúng.
+              </button>
+              <button type="button" onclick="handleQuizAnswer(3)" class="p-3 rounded-xl border border-[#b8ee99] bg-[#f7fdf3] hover:bg-[#e1f9cf] text-left transition active:scale-98">
+                D. Không thể phân biệt được bằng mắt thường.
+              </button>
+            </div>
+            <div id="quiz-result-msg" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+          </div>
+        </div>
+
+        <!-- Món Ngon Nông Sản Từ Khách Hàng (Community Food Feed) -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg sm:text-xl font-black text-[#0f240d]">Góc Bếp Nông Sản — Gợi Ý Món Ngon Tuần Này</h3>
+              <p class="text-xs text-[#4b6b32] font-semibold">Khám phá các món ăn dinh dưỡng nấu từ nông sản sạch và bấm 1 chạm để mua nguyên liệu</p>
+            </div>
+            <button type="button" onclick="alert('Tính năng chia sẻ ảnh món ăn đang được tích hợp! Bạn có thể gửi ảnh qua Chat AI để nhận 50 Hạt mầm thưởng.')" class="px-3.5 py-2 rounded-xl bg-[#3ba117] hover:bg-[#256314] text-white text-xs font-black shadow-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-camera"></i>
+              <span class="hidden sm:inline">Khoe Món Bạn Nấu</span>
+            </button>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-4">
+            <!-- Món 1 -->
+            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between">
+              <div class="relative h-40 rounded-xl overflow-hidden bg-slate-100 mb-2.5">
+                <img src="images/mangosteen-basket.jpg" alt="Gỏi măng cụt gà ta" class="w-full h-full object-cover">
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-white text-[10px] font-bold">Gỏi Măng Cụt Gà Ta</span>
+                <button type="button" onclick="likeRecipe(this)" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1">
+                  <i class="fa-solid fa-heart"></i> <span class="like-count">142</span>
+                </button>
+              </div>
+              <p class="text-xs text-slate-600 font-semibold mb-3">Măng cụt giòn sần sật trộn với gà ta thả vườn và rau thơm, vị chua ngọt thanh tao giải nhiệt.</p>
+              <button type="button" onclick="quickAddRecipeProduct('p2')" class="w-full py-2 rounded-xl bg-[#e1f9cf] hover:bg-[#c8edab] text-[#1c560e] text-xs font-black border border-[#82d648] flex items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-cart-plus"></i> Chọn Mua Măng Cụt
+              </button>
+            </div>
+
+            <!-- Món 2 -->
+            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between">
+              <div class="relative h-40 rounded-xl overflow-hidden bg-slate-100 mb-2.5">
+                <img src="images/bo-sap.jpg" alt="Sinh tố bơ sáp sầu riêng" class="w-full h-full object-cover">
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-white text-[10px] font-bold">Sinh Tố Bơ Sáp Đắk Lắk</span>
+                <button type="button" onclick="likeRecipe(this)" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1">
+                  <i class="fa-solid fa-heart"></i> <span class="like-count">98</span>
+                </button>
+              </div>
+              <p class="text-xs text-slate-600 font-semibold mb-3">Bơ sáp dẻo quánh xay cùng chút sữa chua và cơm sầu riêng Ri6, giàu omega-3 và năng lượng lành mạnh.</p>
+              <button type="button" onclick="quickAddRecipeProduct('p7')" class="w-full py-2 rounded-xl bg-[#e1f9cf] hover:bg-[#c8edab] text-[#1c560e] text-xs font-black border border-[#82d648] flex items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-cart-plus"></i> Chọn Mua Bơ Sáp
+              </button>
+            </div>
+
+            <!-- Món 3 -->
+            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between">
+              <div class="relative h-40 rounded-xl overflow-hidden bg-slate-100 mb-2.5">
+                <img src="images/combo-rau-cu-tuan.jpg" alt="Canh rau củ quả Đà Lạt" class="w-full h-full object-cover">
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-white text-[10px] font-bold">Canh Rau Củ Thập Cẩm</span>
+                <button type="button" onclick="likeRecipe(this)" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1">
+                  <i class="fa-solid fa-heart"></i> <span class="like-count">115</span>
+                </button>
+              </div>
+              <p class="text-xs text-slate-600 font-semibold mb-3">Cà rốt, khoai tây, bắp ngọt và súp lơ xanh Đà Lạt hầm sườn non, nước dùng ngọt đậm tự nhiên.</p>
+              <button type="button" onclick="quickAddRecipeProduct('p14')" class="w-full py-2 rounded-xl bg-[#e1f9cf] hover:bg-[#c8edab] text-[#1c560e] text-xs font-black border border-[#82d648] flex items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-cart-plus"></i> Chọn Mua Rau Củ
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= NÚT BONG BÓNG NỔI TƯƠNG TÁC (FLOATING INTERACTIVE WIDGET) ================= -->
+  <div id="floating-garden-pill" onclick="jumpToInteractiveHub()" class="fixed bottom-24 right-4 z-40 bg-gradient-to-r from-[#22720d] via-[#3ba117] to-[#eab308] text-white px-3.5 py-2.5 rounded-2xl shadow-xl border-2 border-white/80 cursor-pointer flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
+    <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-sm animate-bounce">
+      🌱
+    </div>
+    <div class="text-left">
+      <div class="text-[11px] font-black leading-tight flex items-center gap-1">
+        <span>Vườn Ảo & Quay Quà</span>
+        <span class="w-2 h-2 rounded-full bg-yellow-300 animate-ping"></span>
+      </div>
+      <div id="pill-water-status" class="text-[9px] text-yellow-200 font-bold leading-tight">Điểm danh +1 giọt nước!</div>
+    </div>
+  </div>
   <section id="logistics" class="py-16 sm:py-20 bg-white border-y border-[#dbeef0]/50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
