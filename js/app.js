@@ -322,16 +322,128 @@ window.changeProductVariant = function (productId, variantCode) {
 // ================= SẢN PHẨM & BỘ LỌC KIỂM ĐỊNH =================
 let selectedCategory = "ALL";
 
-window.filterCategory = function (cat) {
-  selectedCategory = cat;
-  document.querySelectorAll(".cat-tab").forEach(tab => {
-    tab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#256314] border border-[#c8edab] hover:bg-[#f1fbe9]";
-  });
-  const activeTab = document.getElementById(`tab-cat-${cat}`);
-  if (activeTab) {
-    activeTab.className = "cat-tab px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-gradient-to-r from-[#389e18] to-[#59c228] text-white shadow-md shadow-[#44a821]/25 flex items-center gap-1.5";
+const CATEGORY_CONFIG = {
+  SEASON_NOW: {
+    name: "🍁 Đang Rộ Vụ Thu – Đông (Đạt Đỉnh Độ Ngọt Brix)",
+    icon: "🍁",
+    badgeBg: "bg-amber-500",
+    desc: "Trái cây đúng vụ chín cây 100%, lượng đường tự nhiên cao nhất và giá tại vườn tốt nhất. Đang rộ: Cam Sành, Hồng Giòn, Bưởi Da Xanh, Quýt Đường, Vú Sữa, Thanh Long.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 ring-2 ring-amber-400 shadow-md shadow-amber-500/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  ALL: {
+    name: "🌾 Tất Cả Nông Sản & Đặc Sản Vùng Miền",
+    icon: "🌾",
+    badgeBg: "bg-[#256314]",
+    desc: "Toàn bộ danh mục trái cây đặc sản, rau củ hữu cơ Đà Lạt, nông sản khô OCOP và combo đi chợ tiết kiệm.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-[#389e18] to-[#59c228] text-white ring-2 ring-[#3ba117] shadow-md shadow-[#44a821]/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  TraiCay: {
+    name: "🍈 Trái Cây Đặc Sản Chín Cây (Miền Tây - Đông Nam Bộ - Tây Nguyên)",
+    icon: "🍈",
+    badgeBg: "bg-[#256314]",
+    desc: "Sầu riêng Ri6, bưởi da xanh, măng cụt, chôm chôm, bơ sáp dẻo, xoài Cát Hòa Lộc, hồng giòn, cam sành, quýt đường, vú sữa Lò Rèn, thanh long ruột đỏ...",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-[#256314] to-[#3ba117] text-white ring-2 ring-[#3ba117] shadow-md shadow-[#44a821]/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  RauCuQua: {
+    name: "🥬 Rau Củ Quả Sạch Đà Lạt (Hữu Cơ & VietGAP)",
+    icon: "🥬",
+    badgeBg: "bg-emerald-700",
+    desc: "Cà chua bi hữu cơ, khoai lang mật Tà Nung, bông cải xanh, xà lách thủy canh, cà rốt baby, bắp ngọt — Cắt sương sớm, chuyển xe lạnh sâu 2–6°C.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-emerald-600 to-emerald-700 text-white ring-2 ring-emerald-500 shadow-md shadow-emerald-600/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  NongSanKho: {
+    name: "🌰 Nông Sản Khô & Hạt Dinh Dưỡng OCOP",
+    icon: "🌰",
+    badgeBg: "bg-amber-800",
+    desc: "Hạt điều rang củi Bình Phước còn vỏ lụa & Macca Đắk Lắk OCOP 4 sao, kiểm định độ ẩm <5%, hút chân không giòn thơm không hôi dầu.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-amber-700 to-amber-800 text-white ring-2 ring-amber-600 shadow-md shadow-amber-800/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  Combo: {
+    name: "🧺 Combo Đi Chợ Tiết Kiệm & Quà Biếu Sang Trọng",
+    icon: "🧺",
+    badgeBg: "bg-teal-700",
+    desc: "Tiết kiệm 15%–25%: Thùng rau củ tuần 5kg, Combo Miệt Vườn, Thầy Cô, Mâm quả ngũ quả Thu - Đông 179k, Hộp quà Tri Ân thượng hạng.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-teal-600 to-teal-700 text-white ring-2 ring-teal-500 shadow-md shadow-teal-600/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  VERIFIED: {
+    name: "✅ Nông Sản Đã Kiểm Định (VietGAP & OCOP Chuẩn)",
+    icon: "✅",
+    badgeBg: "bg-emerald-600",
+    desc: "100% sản phẩm có mã Dynamic QR truy xuất nguồn gốc 4 chặng: Thụ phấn, Chăm bón sinh học, Đo độ Brix và Đóng gói dán tem niêm phong.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-emerald-500 to-emerald-600 text-white ring-2 ring-emerald-400 shadow-md shadow-emerald-500/25 flex items-center gap-1.5 scale-[1.02]"
+  },
+  UglyFood: {
+    name: "⚡ Cứu Hộ Nông Sản 'Ugly Food' (-55% đến -65%)",
+    icon: "⚡",
+    badgeBg: "bg-orange-600",
+    desc: "Nông sản rám nắng vỏ ngoài hoặc chín kỹ cuối tuần, chất lượng ruột ngọt ngon 100%, xả kho trợ giá chống lãng phí thực phẩm.",
+    btnActive: "cat-tab px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white ring-2 ring-orange-400 shadow-md shadow-orange-500/25 flex items-center gap-1.5 scale-[1.02]"
   }
+};
+
+function updateCategoryBadges() {
+  const products = Array.isArray(currentProducts) ? currentProducts : [];
+  const counts = {
+    ALL: products.length,
+    SEASON_NOW: products.filter(p => p.season_tag === "SEASON_NOW" || (p.season_badge && (p.season_badge.includes("Rộ Mùa") || p.season_badge.includes("Thu - Đông") || p.season_badge.includes("Chính Vụ")))).length,
+    TraiCay: products.filter(p => p.category === "TraiCay").length,
+    RauCuQua: products.filter(p => p.category === "RauCuQua").length,
+    NongSanKho: products.filter(p => p.category === "NongSanKho").length,
+    Combo: products.filter(p => p.category === "Combo").length,
+    VERIFIED: products.filter(p => p.verified !== false).length,
+    UglyFood: products.filter(p => p.category === "UglyFood").length
+  };
+
+  Object.entries(counts).forEach(([catKey, count]) => {
+    const tabEl = document.getElementById(`tab-cat-${catKey}`);
+    if (tabEl) {
+      const badge = tabEl.querySelector(".tab-badge");
+      if (badge) badge.textContent = count;
+    }
+  });
+
+  return counts;
+}
+
+window.filterCategory = function (cat, shouldScroll = true) {
+  selectedCategory = cat || "ALL";
+
+  // Cập nhật giao diện tab (Active vs Inactive)
+  document.querySelectorAll(".cat-tab").forEach(tab => {
+    const isUgly = tab.id === "tab-cat-UglyFood";
+    tab.className = isUgly
+      ? "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-orange-600 border border-orange-300 hover:bg-orange-50 flex items-center gap-1.5"
+      : "cat-tab px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-[#256314] border border-[#c8edab] hover:bg-[#f1fbe9] flex items-center gap-1.5";
+  });
+
+  const meta = CATEGORY_CONFIG[selectedCategory] || CATEGORY_CONFIG.ALL;
+  const activeTab = document.getElementById(`tab-cat-${selectedCategory}`);
+  if (activeTab) {
+    activeTab.className = meta.btnActive;
+  }
+
+  // Khi chọn tab mới, xóa trống từ khóa tìm kiếm để hiển thị trọn vẹn sản phẩm danh mục đó
+  const searchInput = document.getElementById("product-search-input");
+  if (searchInput && document.activeElement !== searchInput) {
+    searchInput.value = "";
+  }
+
+  // Cập nhật số lượng trên các badge
+  updateCategoryBadges();
+
+  // Render lưới sản phẩm
   renderProductGrid();
+
+  // Cuộn nhẹ nhàng đến đầu danh sách sản phẩm để khách hàng nhìn thấy ngay
+  if (shouldScroll) {
+    const activeHeader = document.getElementById("active-category-header");
+    if (activeHeader) {
+      const rect = activeHeader.getBoundingClientRect();
+      if (rect.top < 60 || rect.top > 350) {
+        activeHeader.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }
 };
 
 function renderProductGrid() {
@@ -357,6 +469,25 @@ function renderProductGrid() {
     });
   }
 
+  // Cập nhật thanh Active Category Header phía trên danh sách sản phẩm
+  const meta = CATEGORY_CONFIG[selectedCategory] || CATEGORY_CONFIG.ALL;
+  const catNameEl = document.getElementById("active-cat-name");
+  const catIconEl = document.getElementById("active-cat-badge-icon");
+  const catDescEl = document.getElementById("active-cat-desc");
+  const catBadgeEl = document.getElementById("active-cat-count-badge");
+
+  if (catNameEl) catNameEl.textContent = meta.name.replace(/^[^\s]+\s/, "");
+  if (catIconEl) catIconEl.textContent = meta.icon;
+  if (catDescEl) {
+    catDescEl.innerHTML = searchKw
+      ? `Đang lọc theo từ khóa: <strong>"${escapeHTML(searchKw)}"</strong> trong danh mục này. Bấm <strong>[+]</strong> hoặc <strong>[🛒 Chọn Mua]</strong> để đặt hàng ngay:`
+      : `${meta.desc} Bấm nút <strong>[+]</strong> hoặc <strong>[🛒 Chọn Mua]</strong> ngay bên dưới để chọn mua trực tiếp:`;
+  }
+  if (catBadgeEl) {
+    catBadgeEl.textContent = `${items.length} sản phẩm`;
+    catBadgeEl.className = `px-2.5 py-0.5 rounded-full text-xs font-black ${meta.badgeBg || "bg-[#256314]"} text-white shadow-2xs`;
+  }
+
   // Sắp xếp theo lựa chọn (#product-sort-select)
   const sortMode = document.getElementById("product-sort-select")?.value || "DEFAULT";
   if (sortMode === "PRICE_ASC") {
@@ -372,7 +503,13 @@ function renderProductGrid() {
   }
 
   if (items.length === 0) {
-    productListEl.innerHTML = `<div class="col-span-full p-8 text-center rounded-3xl bg-[#f2fbdf] border border-[#c8edab] text-[#256314] text-sm font-semibold">Không tìm thấy nông sản phù hợp với từ khóa hoặc danh mục đã chọn.</div>`;
+    productListEl.innerHTML = `<div class="col-span-full p-8 text-center rounded-3xl bg-[#f2fbdf] border border-[#c8edab] text-[#256314] text-sm font-semibold">
+      <div class="text-3xl mb-2">🍃</div>
+      <p>Không tìm thấy nông sản phù hợp với danh mục hoặc từ khóa đã chọn.</p>
+      <button type="button" onclick="filterCategory('ALL')" class="mt-3 px-4 py-2 bg-[#256314] text-white text-xs font-extrabold rounded-xl hover:bg-[#1a470e] transition">
+        Xem Tất Cả 29 Nông Sản
+      </button>
+    </div>`;
     return;
   }
 
@@ -589,7 +726,8 @@ async function loadProducts() {
     }
   } catch (e) {}
 
-  renderProductGrid();
+  updateCategoryBadges();
+  filterCategory(selectedCategory, false);
   renderSelectedCartItems();
   updateStickyCartBar();
   renderIndexFarmPostsShowcase();
