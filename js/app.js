@@ -416,6 +416,22 @@ async function loadProducts() {
     return;
   }
 
+  // Hỗ trợ tự động lọc từ khóa ?q=... hoặc danh mục ?cat=... khi chuyển từ Menu 3 gạch của trang khác sang
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const qParam = (params.get("q") || "").trim();
+    const catParam = (params.get("cat") || "").trim();
+    if (qParam) {
+      const searchEl = document.getElementById("product-search-input");
+      if (searchEl) searchEl.value = qParam;
+      const drawerSearchEl = document.getElementById("quick-drawer-search-input");
+      if (drawerSearchEl) drawerSearchEl.value = qParam;
+    }
+    if (catParam) {
+      selectedCategory = catParam;
+    }
+  } catch (e) {}
+
   renderProductGrid();
   renderSelectedCartItems();
   updateStickyCartBar();
@@ -493,7 +509,12 @@ function renderTraceSlide() {
         </button>
       </div>
       <div class="text-[11px] text-[#3b5726]">📍 <strong>Vùng trồng:</strong> ${escapeHTML(farm.farm_region)}</div>
-      <div class="text-[11px] text-[#3b5726]">🌱 <strong>Quy trình:</strong> ${escapeHTML(farm.farming_method || "VietGAP")} • 📞 ${escapeHTML(farm.farmer_phone || "0784 203 424")}</div>
+      <div class="text-[11px] text-[#3b5726] flex flex-wrap items-center justify-between gap-1.5">
+        <span>🌱 <strong>Quy trình:</strong> ${escapeHTML(farm.farming_method || "VietGAP")} • 🔒 <strong>SĐT Vườn:</strong> <code class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-bold">${escapeHTML(window.security ? window.security.maskPhone(farm.farmer_phone || "0784203424", "CONFIRMED") : "078****424")}</code> (Đã ẩn chống cắt cầu)</span>
+        <button type="button" onclick="closeTraceabilityModal();openInAppChatModal();" class="px-2.5 py-1 rounded-lg bg-[#3ba117] hover:bg-[#256314] text-white font-extrabold text-[10px] shadow-2xs">
+          💬 Chat Nội Bộ Sàn (Bảo vệ Escrow)
+        </button>
+      </div>
       ${gallery.length > 0 ? `
         <div class="flex items-center gap-1.5 pt-1 overflow-x-auto">
           ${gallery.map(m => m.type === "video" ? `
@@ -843,8 +864,18 @@ window.closeInAppChatModal = function () {
 };
 
 window.sendQuickChatMsg = function (text) {
-  appendChatMessage("USER", text);
+  // Kiểm tra Tường lửa Chống Cắt Cầu & Rò Rỉ SĐT/Zalo (Anti-Disintermediation DLP)
+  const leakCheck = (window.security && typeof window.security.evaluateChatAntiLeakage === "function")
+    ? window.security.evaluateChatAntiLeakage(text)
+    : { blocked: false, sanitizedText: text };
+
+  appendChatMessage("USER", leakCheck.sanitizedText || text);
+
   setTimeout(() => {
+    if (leakCheck.blocked) {
+      appendChatMessage("AI_BLOCK", leakCheck.warningReply);
+      return;
+    }
     if (window.security && typeof window.security.evaluateAiPrompt === "function") {
       const guard = window.security.evaluateAiPrompt(text);
       if (guard.blocked) {
@@ -858,7 +889,7 @@ window.sendQuickChatMsg = function (text) {
     }
     appendChatMessage(
       "FARMER",
-      "Dạ Bác Năm nhận được tin nhắn rồi nha! Bác đã ghi chú chọn kỹ từng trái chuẩn độ chín cho đơn của mình. Nhờ đặt qua Ví Tạm Giữ AgriConnect nên đơn được bảo hành 1 đổi 1 tận tay trong 12h sau khi nhận hàng ạ!"
+      "Dạ Bác Năm nhận được tin nhắn rồi nha! Bác đã ghi chú chọn kỹ từng trái chuẩn độ chín cho đơn của mình. Nhờ đặt qua Ví Tạm Giữ AgriConnect nên mình vừa được tích 5% AgriPoints cho tuần sau, vừa được bảo hành 1 đổi 1 tận tay trong 12h ạ!"
     );
   }, 450);
 };
@@ -1272,6 +1303,11 @@ function priceCart() {
     depositLabel = "Cọc 20% chống boom hàng nông sản tươi (COD):";
   }
 
+  // Tính điểm thưởng giữ chân khách hàng (AgriPoints: Hoàn 5% đơn thường, 8% đơn Subscription vào Ví tích điểm cho tuần sau)
+  const loyaltyInfo = (window.security && typeof window.security.calculateLoyaltyBenefits === "function")
+    ? window.security.calculateLoyaltyBenefits(subtotal, selectedOrderMode)
+    : { pointRatePct: 5, earnedPointsVnd: Math.round(subtotal * 0.05), estimatedOffPlatformExtraCost: 0 };
+
   return {
     items,
     subtotal,
@@ -1288,7 +1324,9 @@ function priceCart() {
     payment_method: paymentMethod,
     order_mode: selectedOrderMode,
     freeship_threshold: freeshipThreshold,
-    is_freeship: (selectedDeliveryType === "HOME" && shippingFee === 0 && items.length > 0)
+    is_freeship: (selectedDeliveryType === "HOME" && shippingFee === 0 && items.length > 0),
+    loyalty_points_vnd: loyaltyInfo.earnedPointsVnd,
+    loyalty_rate_pct: loyaltyInfo.pointRatePct
   };
 }
 
@@ -1409,6 +1447,17 @@ function updateOrderSummary() {
       setText("summary-insurance", `+${formatVND(priced.insurance_fee)}`);
     } else {
       rowInsurance.classList.add("hidden");
+    }
+  }
+
+  const rowLoyalty = document.getElementById("row-loyalty-points");
+  if (rowLoyalty) {
+    if (priced.loyalty_points_vnd > 0) {
+      rowLoyalty.classList.remove("hidden");
+      setText("label-loyalty-points", `🎁 Tích lũy Ví AgriPoints (+${priced.loyalty_rate_pct}% trừ vào đơn tuần sau):`);
+      setText("summary-loyalty-points", `+${formatVND(priced.loyalty_points_vnd)}`);
+    } else {
+      rowLoyalty.classList.add("hidden");
     }
   }
 
@@ -1620,7 +1669,104 @@ window.closeSuccessModal = function () {
 };
 
 window.toggleMobileNav = function () {
-  document.getElementById("mobile-menu")?.classList.toggle("hidden");
+  const menu = document.getElementById("mobile-menu");
+  const icon = document.getElementById("top-right-menu-icon");
+  if (!menu) return;
+  const isNowHidden = menu.classList.toggle("hidden");
+  if (icon) {
+    icon.className = isNowHidden
+      ? "fa-solid fa-bars text-base text-[#256314]"
+      : "fa-solid fa-xmark text-base text-rose-600";
+  }
+  if (!isNowHidden) {
+    setTimeout(() => {
+      document.getElementById("quick-drawer-search-input")?.focus();
+    }, 100);
+  }
+};
+
+// Tìm kiếm trực tiếp ngay trong Menu 3 gạch góc phải (Live Instant Search)
+window.handleQuickDrawerLiveSearch = function (rawQuery) {
+  const box = document.getElementById("quick-drawer-search-results");
+  const mainSearch = document.getElementById("product-search-input");
+  const kw = String(rawQuery || "").trim().toLowerCase();
+
+  if (mainSearch) {
+    mainSearch.value = rawQuery;
+    renderProductGrid();
+  }
+
+  if (!box) return;
+  if (!kw) {
+    box.classList.add("hidden");
+    box.innerHTML = "";
+    return;
+  }
+
+  const matched = (currentProducts || []).filter(p => {
+    const hay = `${p.name || ""} ${p.description || ""} ${p.farm_info?.farmer_name || ""} ${p.farm_info?.farm_region || ""}`.toLowerCase();
+    return hay.includes(kw);
+  }).slice(0, 6);
+
+  box.classList.remove("hidden");
+  if (matched.length === 0) {
+    box.innerHTML = `<div class="p-2.5 rounded-xl bg-white border border-[#c8edab] text-xs font-semibold text-slate-500 text-center">Không tìm thấy sản phẩm khớp với "${escapeHTML(rawQuery)}".</div>`;
+    return;
+  }
+
+  box.innerHTML = matched.map(p => {
+    const pid = escapeHTML(p.id);
+    const qty = cart[p.id] || 0;
+    return `
+      <div class="p-2 rounded-xl bg-white border border-[#b8ee99] flex items-center justify-between gap-2 shadow-2xs">
+        <div class="flex items-center gap-2 min-w-0 cursor-pointer" onclick="quickJumpSearchKeyword('${escapeHTML(p.name.replace(/'/g, "\\'"))}', 'ALL')">
+          <img src="${escapeHTML(p.image_url)}" onerror="this.src='images/hero-fruits.jpg'" class="w-10 h-10 rounded-lg object-cover border border-[#c8edab] shrink-0" alt="" />
+          <div class="min-w-0">
+            <div class="font-extrabold text-xs text-[#0f240d] truncate">${escapeHTML(p.name)}</div>
+            <div class="text-[11px] font-bold text-[#22720d]">${formatVND(p.price_sale)} / ${escapeHTML(p.unit)}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" onclick="quickAddFromDrawer('${pid}')" class="px-2.5 py-1.5 rounded-lg bg-[#3ba117] hover:bg-[#256314] text-white font-extrabold text-[11px] whitespace-nowrap">
+            + Chọn ${qty > 0 ? `(${qty})` : ""}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+};
+
+window.quickAddFromDrawer = function (productId) {
+  changeQty(productId, 1);
+  const inp = document.getElementById("quick-drawer-search-input");
+  if (inp && inp.value) {
+    handleQuickDrawerLiveSearch(inp.value);
+  }
+};
+
+window.handleQuickDrawerSearchSubmit = function (e) {
+  if (e) e.preventDefault();
+  const kw = (document.getElementById("quick-drawer-search-input")?.value || "").trim();
+  quickJumpSearchKeyword(kw, "ALL");
+};
+
+window.quickJumpSearchKeyword = function (keyword = "", category = "ALL") {
+  const mainSearch = document.getElementById("product-search-input");
+  const drawerSearch = document.getElementById("quick-drawer-search-input");
+  if (mainSearch) mainSearch.value = keyword;
+  if (drawerSearch) drawerSearch.value = keyword;
+
+  filterCategory(category || "ALL");
+
+  const menu = document.getElementById("mobile-menu");
+  if (menu && !menu.classList.contains("hidden")) {
+    toggleMobileNav();
+  }
+
+  const productsSec = document.getElementById("products");
+  if (productsSec) {
+    productsSec.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 };
 
 // ================= TRỤ CỘT 6 & 8: BẢO HIỂM ATVSTP, PHÁP LÝ & KINH TẾ TUẦN HOÀN ESG =================

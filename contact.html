@@ -41,12 +41,45 @@
         </div>
       </a>
 
-      <nav class="flex items-center gap-4 text-xs sm:text-sm font-semibold text-slate-600">
-        <a href="index.html" class="hover:text-emerald-700">Trang Chủ</a>
-        <a href="index.html#products" class="hover:text-emerald-700">Trái Cây Vườn</a>
-        <a href="trace.html" class="hover:text-emerald-700">Quét Tem QR</a>
-        <a href="index.html#preorder" class="bg-emerald-600 text-white px-3.5 py-2 rounded-xl hover:bg-emerald-700 transition-colors">Đặt Hàng</a>
+      <nav class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold text-slate-600">
+        <a href="index.html" class="hidden sm:inline hover:text-emerald-700">Trang Chủ</a>
+        <a href="admin.html" class="hidden md:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 text-[#fef08a] text-xs font-extrabold">
+          <i class="fa-solid fa-sliders"></i> Cổng Quản Trị
+        </a>
+        <a href="index.html#preorder" class="bg-emerald-600 text-white px-3.5 py-2 rounded-xl hover:bg-emerald-700 transition-colors text-xs font-extrabold">Đặt Hàng</a>
+        <button type="button" onclick="document.getElementById('contact-top-menu').classList.toggle('hidden')" class="px-3 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#1c560e] border-2 border-[#82d648] font-extrabold text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-bars"></i>
+          <span>Menu</span>
+        </button>
       </nav>
+    </div>
+
+    <!-- Menu 3 gạch góc phải trên trang Liên Hệ -->
+    <div id="contact-top-menu" class="hidden border-t border-slate-200 bg-[#f7fdf3] px-4 py-4 shadow-xl">
+      <div class="max-w-xl ml-auto bg-white rounded-2xl border-2 border-[#b8ee99] p-4 space-y-3 text-xs">
+        <form onsubmit="event.preventDefault();const q=document.getElementById('contact-drawer-q').value.trim();window.location.href='index.html?q='+encodeURIComponent(q)+'#products';" class="flex gap-2">
+          <input type="text" id="contact-drawer-q" placeholder="🔍 Tìm nhanh nông sản (Sầu riêng, Măng cụt, Rau Đà Lạt)..." class="flex-1 px-3 py-2 rounded-xl bg-white border border-[#82d648] text-slate-900 font-bold" />
+          <button type="submit" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-extrabold whitespace-nowrap">Tìm Ngay</button>
+        </form>
+        <div class="grid sm:grid-cols-2 gap-2 font-extrabold">
+          <a href="admin.html" class="p-2.5 rounded-xl bg-slate-900 text-[#fef08a] flex items-center justify-between">
+            <span>⚙️ Cổng Quản Trị Nhóm (PIN: 123456)</span>
+            <span>→</span>
+          </a>
+          <a href="farmer.html" class="p-2.5 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-between">
+            <span>🌾 Cổng Nông Dân (Bác Năm)</span>
+            <span>→</span>
+          </a>
+          <a href="index.html#products" class="p-2.5 rounded-xl bg-emerald-600 text-white flex items-center justify-between">
+            <span>🛒 Menu Đặt Hàng Nông Sản</span>
+            <span>→</span>
+          </a>
+          <a href="trace.html" class="p-2.5 rounded-xl bg-slate-100 text-slate-800 border border-slate-300 flex items-center justify-between">
+            <span>📦 Quét Tem QR & Ví Escrow</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
     </div>
   </header>
 

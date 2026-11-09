@@ -56,10 +56,64 @@
         </div>
       </div>
 
-      <a href="index.html" class="px-3 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#256314] font-extrabold text-xs flex items-center gap-1.5 border border-[#c8edab] transition whitespace-nowrap shrink-0">
-        <i data-lucide="store" class="w-3.5 h-3.5 text-[#3ba117] shrink-0"></i>
-        <span>Về Chợ</span>
-      </a>
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <a href="index.html" class="px-3 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#256314] font-extrabold text-xs flex items-center gap-1.5 border border-[#c8edab] transition whitespace-nowrap shrink-0">
+          <i data-lucide="store" class="w-3.5 h-3.5 text-[#3ba117] shrink-0"></i>
+          <span>Về Chợ</span>
+        </a>
+        <a href="admin.html" class="hidden sm:flex px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-[#fef08a] font-extrabold text-xs items-center gap-1.5 transition whitespace-nowrap shrink-0">
+          <span>⚙️ Cổng Quản Trị</span>
+        </a>
+        <!-- Biểu tượng 3 gạch góc phải bên trên -->
+        <button type="button" onclick="document.getElementById('farmer-top-menu').classList.toggle('hidden')" class="px-3 py-2 rounded-xl bg-[#e1f9cf] hover:bg-[#c8edab] text-[#0f240d] border-2 border-[#72d440] font-extrabold text-xs flex items-center gap-1.5 shadow-2xs transition shrink-0" title="Mở Menu Tìm Kiếm & Chuyển Đổi Cổng">
+          <span class="text-base leading-none">☰</span>
+          <span class="hidden sm:inline">Menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu 3 gạch thả xuống góc phải trên Cổng Nông Dân -->
+    <div id="farmer-top-menu" class="hidden border-t border-[#c8edab] bg-[#f7fdf3] px-3.5 sm:px-6 py-4 shadow-2xl">
+      <div class="max-w-xl ml-auto bg-white rounded-2xl border-2 border-[#b8ee99] p-4 space-y-3 shadow-xl">
+        <!-- Tìm nhanh sản phẩm trong Cổng Nông Dân -->
+        <div class="p-3 rounded-xl bg-[#f0fae8] border border-[#9fe772] space-y-2">
+          <label class="block text-xs font-extrabold text-[#1c560e]">🔍 Tìm nhanh sản phẩm để sửa Ảnh/Video hoặc xem trên Chợ:</label>
+          <div class="flex gap-2">
+            <input type="text" id="farmer-menu-quick-search" oninput="const el=document.getElementById('farmer-manage-search');if(el){el.value=this.value;renderFarmerProductCards();}" placeholder="Gõ tên nông sản: Sầu riêng, Măng cụt, Cà chua..." class="flex-1 px-3 py-2 rounded-xl border border-[#82d648] bg-white text-xs font-bold text-[#0f240d]" />
+            <button type="button" onclick="document.getElementById('farmer-top-menu').classList.add('hidden');document.getElementById('vuon-dang-co-gi').scrollIntoView({behavior:'smooth'});" class="px-3 py-2 rounded-xl bg-[#3ba117] text-white font-extrabold text-xs whitespace-nowrap">
+              Tìm SP
+            </button>
+          </div>
+        </div>
+
+        <!-- Chuyển đổi nhanh Cổng Quản Trị Nhóm & Các trang -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-extrabold">
+          <a href="admin.html" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-[#fef08a] flex items-center justify-between">
+            <span>⚙️ Cổng Quản Trị Nhóm (PIN: 123456)</span>
+            <span>→</span>
+          </a>
+          <a href="index.html" class="p-3 rounded-xl bg-[#3ba117] hover:bg-[#256314] text-white flex items-center justify-between">
+            <span>🛒 Về Chợ Khách Hàng (Trang Chủ)</span>
+            <span>→</span>
+          </a>
+          <a href="trace.html" class="p-2.5 rounded-xl bg-[#f7fdf3] hover:bg-[#e1f9cf] text-[#1c560e] border border-[#c8edab] flex items-center justify-between">
+            <span>📦 Cổng Quét Tem QR & Ví Escrow</span>
+            <span>→</span>
+          </a>
+          <a href="contact.html" class="p-2.5 rounded-xl bg-[#f7fdf3] hover:bg-[#e1f9cf] text-[#1c560e] border border-[#c8edab] flex items-center justify-between">
+            <span>📞 Trang Liên Hệ & Hỗ Trợ</span>
+            <span>→</span>
+          </a>
+        </div>
+
+        <!-- Các tiêu đề trong trang Cổng Nông Dân -->
+        <div class="pt-2 border-t border-[#e5f6d5] grid grid-cols-2 gap-2 text-xs font-bold text-[#1f3813]">
+          <a href="#vi-tien-cua-bac" onclick="document.getElementById('farmer-top-menu').classList.add('hidden')" class="p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">💰 Ví Nhà Vườn & Phí Sàn</a>
+          <a href="#dang-ban-lua-moi" onclick="document.getElementById('farmer-top-menu').classList.add('hidden')" class="p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">🌱 Đăng / Sửa Bài Nông Sản</a>
+          <a href="#vuon-dang-co-gi" onclick="document.getElementById('farmer-top-menu').classList.add('hidden')" class="p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">🧺 Quản Lý 27+ Sản Phẩm</a>
+          <a href="#nhat-ky-nha-vuon" onclick="document.getElementById('farmer-top-menu').classList.add('hidden')" class="p-2 rounded-xl bg-[#f7fdf3] border border-[#d2f0b6]">🏡 Đăng Bản Tin Nhà Vườn</a>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -162,6 +216,28 @@
             <i data-lucide="landmark" class="w-4 h-4"></i>
             <span>Rút Tiền Về Ngân Hàng</span>
           </button>
+        </div>
+      </div>
+
+      <!-- CHÍNH SÁCH GIỮ CHÂN NHÀ VƯỜN & PHÍ SÀN LUỸ TIẾN (CHỐNG CẮT CẦU 2 CHIỀU) -->
+      <div class="mt-4 pt-3.5 border-t border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+        <div class="bg-black/20 rounded-xl p-3 border border-white/10">
+          <div class="font-extrabold text-[#fef08a]">🌟 Hạng Vườn Chuẩn Vàng (340kg/tháng)</div>
+          <p class="text-[11px] text-[#e1f9cf] mt-0.5 leading-relaxed">
+            Phí nền tảng giảm từ 10% còn <strong>7%</strong> (Đạt ≥ 500kg/tháng giảm chỉ còn <strong>5%</strong>!).
+          </p>
+        </div>
+        <div class="bg-black/20 rounded-xl p-3 border border-white/10">
+          <div class="font-extrabold text-[#fef08a]">🌱 Ứng Vốn 30% & Bao Tiêu Cả Vườn</div>
+          <p class="text-[11px] text-[#e1f9cf] mt-0.5 leading-relaxed">
+            Nhận trước <strong>30% tiền cọc Pre-order</strong> để chăm vườn; sàn phụ bán hết cả Loại 1, Loại 2 (-15%), Loại 3 (-30%) & Ugly Food.
+          </p>
+        </div>
+        <div class="bg-rose-950/50 rounded-xl p-3 border border-rose-400/30">
+          <div class="font-extrabold text-rose-200">🛡️ Quy Tắc Chống Cắt Cầu (Tem Mù QR)</div>
+          <p class="text-[11px] text-rose-100/90 mt-0.5 leading-relaxed">
+            100% thùng hàng dán <strong>Tem QR Định danh Sàn</strong>. Gạ khách mua riêng qua Zalo/SĐT bị phạt 500k & tăng phí sàn lên <strong>15%</strong>.
+          </p>
         </div>
       </div>
     </section>
@@ -388,7 +464,7 @@
                 placeholder="VD: VietGAP, GlobalGAP, Thủy canh nhà kính..." />
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-[#1f3813] mb-1">SĐT / Zalo liên hệ Nhà vườn:</label>
+              <label class="block text-[11px] font-bold text-[#1f3813] mb-1">SĐT điều phối Hub (Tự động ẩn <code>078****424</code> trên Chợ):</label>
               <input type="text" id="f-farmer-phone" value="0784 203 424"
                 class="w-full px-3 py-2 rounded-xl border border-[#b8ee99] bg-white text-xs font-bold text-[#0f240d]"
                 placeholder="VD: 0784 203 424" />
@@ -438,13 +514,13 @@
           </div>
         </label>
 
-        <!-- Bước 7: HỢP ĐỒNG ĐIỆN TỬ & CAM KẾT PHÁP LÝ AN TOÀN VỆ SINH THỰC PHẨM (TRỤ CỘT 6) -->
+        <!-- Bước 7: HỢP ĐỒNG ĐIỆN TỬ & CAM KẾT PHÁP LÝ AN TOÀN VỆ SINH THỰC PHẨM + CHỐNG CẮT CẦU (TRỤ CỘT 6) -->
         <div class="p-3.5 rounded-xl bg-[#f7fdf3] border border-[#b8ee99]">
           <label class="flex items-start gap-3 cursor-pointer">
             <input type="checkbox" id="f-safety-commit" required checked class="mt-0.5 w-4 h-4 accent-[#3ba117] rounded shrink-0" />
             <div class="text-xs text-[#243912] leading-relaxed">
-              <strong class="text-[#0f240d]">⚖️ Cam kết Hợp đồng điện tử An toàn thực phẩm (Bắt buộc):</strong>
-              Tôi cam kết <strong>100% không sử dụng thuốc trừ sâu cấm, hóa chất nhúng chín hoặc vượt quá liều lượng</strong> và đảm bảo thời gian cách ly sinh học. Tôi hiểu AgriConnect là nền tảng kết nối (Marketplace) và hộ canh tác chịu trách nhiệm trực tiếp về chất lượng an toàn thực phẩm của lô hàng.
+              <strong class="text-[#0f240d]">⚖️ Cam kết Hợp đồng điện tử ATVSTP & Chống Giao Dịch Ngoài Luồng (Bắt buộc):</strong>
+              Tôi cam kết (1) <strong>100% không sử dụng thuốc trừ sâu cấm, hóa chất nhúng chín</strong>, tuân thủ thời gian cách ly PHI; và (2) <strong>Tuyệt đối không bỏ danh thiếp/SĐT riêng vào thùng hàng hoặc rủ khách giao dịch ngoài sàn (Zalo/Chuyển khoản riêng)</strong> để hưởng mức phí sàn ưu đãi luỹ tiến (5%–7%) và bảo vệ chống boom COD.
             </div>
           </label>
         </div>
@@ -586,8 +662,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261107_v16"></script>
-  <script src="js/supabaseClient.js?v=20261107_v16"></script>
+  <script src="js/config.js?v=20261109_v17"></script>
+  <script src="js/supabaseClient.js?v=20261109_v17"></script>
   <script>
     window.testFarmerRbacBoundary = function () {
       try {

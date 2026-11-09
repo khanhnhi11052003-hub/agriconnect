@@ -1091,6 +1091,125 @@ window.security = {
       threatType: null,
       safeReply: reply
     };
+  },
+
+  // 5. Tường Lửa Chống Cắt Cầu & Rò Rỉ Thông Tin Liên Hệ (Anti-Disintermediation & Contact Leakage DLP)
+  // Tự động phát hiện & che giấu SĐT, Zalo, Facebook, STK ngân hàng hoặc lời rủ giao dịch ngoài luồng trong bài đăng và In-App Chat
+  redactContactLeakage(rawText, sourceContext = "CONTENT") {
+    let text = String(rawText || "");
+    if (!text) return { sanitizedText: "", detected: false, reasons: [] };
+
+    const reasons = [];
+    // Phát hiện số điện thoại Việt Nam (kể cả viết cách bằng dấu chấm, gạch ngang, khoảng trắng: 090 123 4567, +8490...)
+    const phoneRegex = /(?:\+?84|0)(?:[\s.\-_]*\d){8,10}\b/g;
+    if (phoneRegex.test(text)) {
+      reasons.push("Số điện thoại cá nhân");
+      text = text.replace(phoneRegex, "[🔒 Đã ẩn SĐT - Liên hệ qua Chat Nội Bộ Sàn]");
+    }
+
+    // Phát hiện link/từ khóa kéo khách sang Zalo, Facebook, Telegram, Viber hoặc giao dịch ngoài sàn
+    const offPlatformRegex = /(?:zalo\.me\/[^\s]+|fb\.com\/[^\s]+|facebook\.com\/[^\s]+|t\.me\/[^\s]+|kết\s*bạn\s*zalo|nhắn\s*zalo\s*riêng|giao\s*dịch\s*ngoài\s*sàn|mua\s*riêng\s*bên\s*ngoài|chuyển\s*khoản\s*riêng|không\s*qua\s*sàn)/gi;
+    if (offPlatformRegex.test(text)) {
+      reasons.push("Điều hướng giao dịch ngoài nền tảng (Zalo/FB/Ngoài luồng)");
+      text = text.replace(offPlatformRegex, "[🛡️ Đã chặn điều hướng ngoài sàn]");
+    }
+
+    if (reasons.length > 0) {
+      this.logAudit({
+        actor_role: "ANTI_LEAKAGE_DLP",
+        actor_name: "DisintermediationGuard",
+        action: "CONTACT_LEAKAGE_REDACTED",
+        target: sourceContext,
+        severity: "WARN",
+        detail: `Tự động che thông tin liên hệ ngoài luồng (${reasons.join(", ")}) tại [${sourceContext}] để chống cắt cầu.`
+      });
+    }
+
+    return {
+      sanitizedText: text,
+      detected: reasons.length > 0,
+      reasons
+    };
+  },
+
+  evaluateChatAntiLeakage(userMessage) {
+    const raw = String(userMessage || "").trim();
+    const check = this.redactContactLeakage(raw, "IN_APP_CHAT");
+    const solicitationRe = /(?:số\s*điện\s*thoại|sđt|zalo|facebook|fb|chuyển\s*khoản\s*trực\s*tiếp|mua\s*trực\s*tiếp|bỏ\s*qua\s*web|không\s*qua\s*web|liên\s*hệ\s*riêng|gọi\s*riêng|stk\s*cá\s*nhân)/i;
+
+    if (check.detected || solicitationRe.test(raw)) {
+      this.logAudit({
+        actor_role: "ANTI_LEAKAGE_DLP",
+        actor_name: "ChatAntiCircumvention",
+        action: "ANTI_DISINTERMEDIATION_BLOCKED",
+        target: "InAppChat",
+        severity: "DANGER",
+        detail: `Chặn hành vi trao đổi SĐT/Zalo hoặc gạ giao dịch ngoài sàn trong Chat: "${raw.slice(0, 80)}"`
+      });
+      return {
+        blocked: true,
+        sanitizedText: check.sanitizedText,
+        warningReply: `🛡️ [Chính Sách Chống Giao Dịch Ngoài Luồng - Anti-Disintermediation]: Hệ thống đã tự động ẩn Số điện thoại / Zalo / Thông tin chuyển khoản riêng. Lưu ý: (1) Đặt trên Web AgriConnect bạn được Freeship Xe Lạnh (≥350k), giảm 5–8% + Tích lũy 5% AgriPoints (RẺ HƠN mua lẻ bên ngoài 13–18%) và được Bảo hiểm Ví Escrow 12h hoàn tiền 100% nếu trái sượng. (2) Giao dịch ngoài sàn sẽ mất 100% bảo hiểm đổi trả; khách hàng báo cáo hành vi rủ mua ngoài sàn được thưởng nóng Voucher 50.000 đ!`
+      };
+    }
+    return { blocked: false, sanitizedText: raw, warningReply: null };
+  },
+
+  // 6. Chính sách Giữ chân 2 chiều (Two-Sided Retention: AgriPoints cho Khách & Chiết khấu Luỹ tiến cho Nông dân)
+  calculateLoyaltyBenefits(subtotalVnd = 0, orderMode = "SINGLE") {
+    const sub = Number(subtotalVnd || 0);
+    // Tích điểm 5% AgriPoints cho đơn kế tiếp (8% nếu đặt Subscription định kỳ)
+    const pointRate = orderMode === "SUBSCRIPTION_WEEKLY" ? 0.08 : 0.05;
+    const earnedPointsVnd = Math.round(sub * pointRate);
+    // So sánh tổng lợi ích khi mua trên Web vs mua trực tiếp ngoài luồng từ nông dân
+    // Mua ngoài luồng: Tốn ship lẻ liên tỉnh ~65.000đ + 0% hoàn điểm + 0% bảo hiểm sượng hỏng
+    const estimatedOffPlatformExtraCost = sub > 0 ? (45000 + earnedPointsVnd) : 0;
+    return {
+      pointRatePct: Math.round(pointRate * 100),
+      earnedPointsVnd,
+      estimatedOffPlatformExtraCost
+    };
+  },
+
+  getFarmerRetentionTier(monthlyKg = 340, circumventionViolations = 0) {
+    if (circumventionViolations > 0) {
+      return {
+        tierCode: "PENALTY_TIER",
+        tierName: "⚠️ Đang Cảnh Cáo Vi Phạm Cắt Cầu",
+        commissionPct: 15,
+        preorderAdvancePct: 0,
+        badge: "Hạ bậc hiển thị • Phí sàn 15%",
+        nextTierHint: "Tuân thủ 100% giao dịch qua sàn trong 30 ngày để khôi phục mức phí ưu đãi 7%."
+      };
+    }
+    if (monthlyKg >= 500) {
+      return {
+        tierCode: "DIAMOND_FARM",
+        tierName: "💎 Đối Tác Kim Cương (≥ 500kg/tháng)",
+        commissionPct: 5,
+        preorderAdvancePct: 30,
+        badge: "Phí sàn chỉ 5% • Ứng vốn Pre-order 30%",
+        nextTierHint: "Đang hưởng mức phí thấp nhất toàn sàn + Bao tiêu Loại 1, 2, 3 & Ugly Food."
+      };
+    }
+    if (monthlyKg >= 200) {
+      return {
+        tierCode: "GOLD_FARM",
+        tierName: "🌟 Đối Tác Chuẩn Vàng (≥ 200kg/tháng)",
+        commissionPct: 7,
+        preorderAdvancePct: 30,
+        badge: "Phí sàn ưu đãi 7% (Giảm 3%) • Ứng vốn 30%",
+        nextTierHint: `Còn thiếu ${Math.max(0, 500 - monthlyKg)}kg trong tháng để lên Hạng Kim Cương (Phí sàn giảm chỉ còn 5%!).`
+      };
+    }
+    return {
+      tierCode: "STANDARD_FARM",
+      tierName: "🌱 Đối Tác Tiêu Chuẩn (< 200kg/tháng)",
+      commissionPct: 10,
+      preorderAdvancePct: 20,
+      badge: "Phí sàn cơ bản 10%",
+      nextTierHint: `Bán thêm ${Math.max(0, 200 - monthlyKg)}kg qua sàn để giảm phí xuống 7% & mở khóa ứng vốn 30%!`
+    };
   }
 };
 
@@ -1299,12 +1418,21 @@ class AgriDB {
       mediaGallery.push({ id: "v-" + Date.now(), type: "video", url: primaryVid, caption: "Video quay thực tế tại Nhà vườn" });
     }
 
+    const cleanFarmerName = window.security.redactContactLeakage(
+      postData.farm_info?.farmer_name || postData.farmer_name || "Vườn Bác Năm & HTX Liên Kết",
+      "PRODUCT_FARMER_NAME"
+    ).sanitizedText;
+    const cleanFarmStory = window.security.redactContactLeakage(
+      postData.farm_info?.farm_story || postData.farm_story || postData.description || "Thu hoạch sáng sớm Thứ Sáu, vận chuyển Cold-Chain về TP.HCM.",
+      "PRODUCT_DESCRIPTION"
+    ).sanitizedText;
+
     const farmInfo = {
-      farmer_name: postData.farm_info?.farmer_name || postData.farmer_name || "Vườn Bác Năm & HTX Liên Kết",
+      farmer_name: cleanFarmerName,
       farm_region: postData.farm_info?.farm_region || postData.farm_region || "Đông Nam Bộ • Tây Nguyên • Đà Lạt",
       farming_method: postData.farm_info?.farming_method || postData.farming_method || "Canh tác VietGAP • Hữu cơ vi sinh",
       farmer_phone: postData.farm_info?.farmer_phone || postData.farmer_phone || "0784 203 424",
-      farm_story: postData.farm_info?.farm_story || postData.farm_story || "Thu hoạch sáng sớm Thứ Sáu, vận chuyển Cold-Chain về TP.HCM."
+      farm_story: cleanFarmStory
     };
 
     const customList = this._read(LS.farmerCustomProducts);
@@ -1317,11 +1445,15 @@ class AgriDB {
 
     const priceSale = Number(postData.price_sale || existingBase?.price_sale || 65000);
     const priceOriginal = Number(postData.price_original || existingBase?.price_original || Math.round(priceSale * 0.72));
+    const cleanProductName = window.security.redactContactLeakage(
+      postData.name || existingBase?.name || "Nông sản mới đăng từ Nhà vườn",
+      "PRODUCT_TITLE"
+    ).sanitizedText;
 
     const updatedRecord = enrichProductMeta({
       ...(existingBase || {}),
       id: pid,
-      name: postData.name || existingBase?.name || "Nông sản mới đăng từ Nhà vườn",
+      name: cleanProductName,
       category: postData.category || existingBase?.category || "TraiCay",
       highlights: Array.isArray(postData.highlights) && postData.highlights.length > 0
         ? postData.highlights
@@ -1330,7 +1462,7 @@ class AgriDB {
             `Sản lượng mở bán: ${postData.stock_kg || 50} kg • ${postData.harvest_date || "Hái sáng Thứ Sáu"}`,
             `${farmInfo.farming_method} • Bảo hành Ví Escrow 12h`
           ]),
-      description: postData.description || existingBase?.description || farmInfo.farm_story,
+      description: cleanFarmStory || existingBase?.description,
       unit: postData.unit || existingBase?.unit || "kg",
       weight_kg: Number(postData.weight_kg || existingBase?.weight_kg || 1),
       stock_kg: Number(postData.stock_kg || existingBase?.stock_kg || 50),
@@ -1436,14 +1568,23 @@ class AgriDB {
       ? postInput.media_gallery.filter(m => m && m.url)
       : [{ id: "fp-img-" + Date.now(), type: "image", url: postInput.image_url || "images/hero-fruits.jpg", caption: "Hình ảnh thực tế tại Nhà vườn" }];
 
+    const cleanFpTitle = window.security.redactContactLeakage(
+      postInput.title || "Nhật ký mùa vụ & Thu hoạch thực tế tại Nhà vườn",
+      "FARM_POST_TITLE"
+    ).sanitizedText;
+    const cleanFpStory = window.security.redactContactLeakage(
+      postInput.story || "Cập nhật hình ảnh và video thu hoạch nông sản tươi sạch sáng nay tại vườn.",
+      "FARM_POST_STORY"
+    ).sanitizedText;
+
     const record = {
       id: postId,
       farmer_name: postInput.farmer_name || "Nhà Vườn Liên Kết AgriConnect",
       farm_region: postInput.farm_region || "Đông Nam Bộ • Tây Nguyên • Đà Lạt • Miền Tây",
       farming_method: postInput.farming_method || "Canh tác VietGAP • Chín cây tự nhiên 100%",
       farmer_phone: postInput.farmer_phone || "0784 203 424",
-      title: postInput.title || "Nhật ký mùa vụ & Thu hoạch thực tế tại Nhà vườn",
-      story: postInput.story || "Cập nhật hình ảnh và video thu hoạch nông sản tươi sạch sáng nay tại vườn.",
+      title: cleanFpTitle,
+      story: cleanFpStory,
       media_gallery: mediaGallery,
       video_url: postInput.video_url || (mediaGallery.find(m => m.type === "video")?.url || ""),
       updated_at: new Date().toISOString(),

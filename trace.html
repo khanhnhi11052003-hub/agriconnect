@@ -41,14 +41,46 @@
           <span class="text-[9px] uppercase font-extrabold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full ml-1 border border-emerald-200">Đặc Sản Vùng Miền</span>
         </div>
       </a>
-      <div class="flex items-center gap-3">
-        <a href="farmer.html" class="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
+      <div class="flex items-center gap-2">
+        <a href="admin.html" class="hidden sm:flex text-xs font-extrabold text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-300 items-center gap-1.5">
+          <i class="fa-solid fa-sliders text-emerald-700"></i>
+          <span>Cổng Quản Trị</span>
+        </a>
+        <a href="farmer.html" class="hidden sm:flex text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-xl border border-amber-200">
           🌾 Cổng Nông Dân
         </a>
-        <a href="index.html#preorder" class="text-xs font-semibold text-emerald-700 hover:underline flex items-center gap-1">
-          <span>Đặt thêm nông sản</span>
-          <i class="fa-solid fa-arrow-right text-[10px]"></i>
-        </a>
+        <button type="button" onclick="document.getElementById('trace-top-menu').classList.toggle('hidden')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-xs">
+          <i class="fa-solid fa-bars"></i>
+          <span>Menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu 3 gạch góc phải trên trang Tra Cứu QR -->
+    <div id="trace-top-menu" class="hidden max-w-3xl mx-auto mt-3 pt-3 border-t border-slate-200">
+      <div class="bg-[#f7fdf3] rounded-2xl border-2 border-[#b8ee99] p-3.5 space-y-2.5 text-xs">
+        <form onsubmit="event.preventDefault();const q=document.getElementById('trace-drawer-q').value.trim();window.location.href='index.html?q='+encodeURIComponent(q)+'#products';" class="flex gap-2">
+          <input type="text" id="trace-drawer-q" placeholder="🔍 Tìm nhanh nông sản (Sầu riêng, Măng cụt, Rau Đà Lạt)..." class="flex-1 px-3 py-2 rounded-xl bg-white border border-[#82d648] text-slate-900 font-bold" />
+          <button type="submit" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-extrabold whitespace-nowrap">Tìm Ngay</button>
+        </form>
+        <div class="grid sm:grid-cols-2 gap-2 font-extrabold">
+          <a href="admin.html" class="p-2.5 rounded-xl bg-slate-900 text-[#fef08a] flex items-center justify-between">
+            <span>⚙️ Cổng Quản Trị Nhóm (PIN: 123456)</span>
+            <span>→</span>
+          </a>
+          <a href="farmer.html" class="p-2.5 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-between">
+            <span>🌾 Cổng Nông Dân (Bác Năm)</span>
+            <span>→</span>
+          </a>
+          <a href="index.html#products" class="p-2.5 rounded-xl bg-emerald-600 text-white flex items-center justify-between">
+            <span>🛒 Về Menu Đặt Hàng Nông Sản</span>
+            <span>→</span>
+          </a>
+          <a href="contact.html" class="p-2.5 rounded-xl bg-white border border-slate-300 text-slate-800 flex items-center justify-between">
+            <span>📞 Liên Hệ Hỗ Trợ 24/7</span>
+            <span>→</span>
+          </a>
+        </div>
       </div>
     </div>
   </header>
