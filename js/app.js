@@ -20,6 +20,11 @@ window.formatVND = window.formatVND || function (n) {
   return Number(n || 0).toLocaleString("vi-VN") + " đ";
 };
 
+// ================= BỘ NHỚ LƯU TRỮ VÀ TỰ ĐỘNG PHỤC HỒI TƯƠNG TÁC (PERSISTENCE KEYS) =================
+const CART_STORAGE_KEY = "agriconnect_cart_v1";
+const CHECKOUT_DRAFT_KEY = "agriconnect_checkout_draft_v1";
+const USER_ORDERS_KEY = "agriconnect_user_orders_v1";
+
 let currentProducts = [];
 let cart = {}; // { productId: quantity }
 let selectedVariants = {}; // { productId: "GRADE_1" | "GRADE_2" | "GRADE_3" }
@@ -29,6 +34,132 @@ let appliedDiscount = 10000; // Mặc định mã AGRICONNECT giảm 10.000 đ
 let currentTraceProduct = null;
 let currentTraceSlideIdx = 0;
 
+// Tải giỏ hàng từ LocalStorage
+function loadCartState() {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") {
+        cart = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc giỏ hàng từ localStorage:", e);
+  }
+}
+
+// Lưu giỏ hàng vào LocalStorage
+function saveCartState() {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  } catch (e) {
+    console.warn("Lỗi lưu giỏ hàng:", e);
+  }
+}
+
+window.addToCart = function (productId, qty = 1) {
+  changeQty(productId, qty);
+};
+
+// Lưu nháp form đặt hàng (Auto-Save)
+function saveCheckoutDraft() {
+  try {
+    const val = id => (document.getElementById(id)?.value || "").trim();
+    const draft = {
+      name: val("cust-name"),
+      phone: val("cust-phone"),
+      role: val("cust-role"),
+      deliveryType: selectedDeliveryType,
+      house: val("home-house"),
+      street: val("home-street"),
+      ward: val("home-ward"),
+      district: val("home-district"),
+      city: val("home-city"),
+      campus: val("campus-location"),
+      notes: val("cust-notes"),
+      promo: val("promo-code-input"),
+      returnBox: !!document.getElementById("return-box-toggle")?.checked,
+      carbonOffset: !!document.getElementById("carbon-offset-toggle")?.checked,
+      insurance: !!document.getElementById("insurance-toggle")?.checked,
+      paymentMethod: document.querySelector('input[name="payment_method"]:checked')?.value || "VIETQR",
+      updatedAt: new Date().toISOString()
+    };
+    localStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify(draft));
+
+    const statusText = document.getElementById("autosave-status-text");
+    if (statusText) {
+      const d = new Date();
+      const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+      statusText.textContent = `Đã tự động lưu (${timeStr})`;
+    }
+  } catch (e) {
+    console.warn("Lỗi lưu nháp đơn hàng:", e);
+  }
+}
+
+// Khôi phục nháp form đặt hàng khi khách quay lại
+function loadCheckoutDraft() {
+  try {
+    const raw = localStorage.getItem(CHECKOUT_DRAFT_KEY);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    if (!draft || typeof draft !== "object") return;
+
+    const setVal = (id, v) => {
+      const el = document.getElementById(id);
+      if (el && v !== undefined && v !== null && v !== "") el.value = v;
+    };
+
+    setVal("cust-name", draft.name);
+    setVal("cust-phone", draft.phone);
+    if (draft.role) setVal("cust-role", draft.role);
+    setVal("home-house", draft.house);
+    setVal("home-street", draft.street);
+    setVal("home-ward", draft.ward);
+    setVal("home-district", draft.district);
+    if (draft.city) setVal("home-city", draft.city);
+    if (draft.campus) setVal("campus-location", draft.campus);
+    setVal("cust-notes", draft.notes);
+    if (draft.promo) setVal("promo-code-input", draft.promo);
+
+    if (draft.deliveryType && typeof setDeliveryType === "function") {
+      setDeliveryType(draft.deliveryType);
+    }
+
+    if (draft.paymentMethod) {
+      const rad = document.querySelector(`input[name="payment_method"][value="${draft.paymentMethod}"]`);
+      if (rad) rad.checked = true;
+    }
+
+    if (document.getElementById("return-box-toggle") && typeof draft.returnBox === "boolean") {
+      document.getElementById("return-box-toggle").checked = draft.returnBox;
+    }
+    if (document.getElementById("carbon-offset-toggle") && typeof draft.carbonOffset === "boolean") {
+      document.getElementById("carbon-offset-toggle").checked = draft.carbonOffset;
+    }
+    if (document.getElementById("insurance-toggle") && typeof draft.insurance === "boolean") {
+      document.getElementById("insurance-toggle").checked = draft.insurance;
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc nháp đơn hàng:", e);
+  }
+}
+
+// Lắng nghe tự động lưu trường nhập liệu form
+function setupCheckoutAutoSave() {
+  const form = document.getElementById("preorder-form");
+  if (!form) return;
+  let timer = null;
+  form.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(saveCheckoutDraft, 400);
+  });
+  form.addEventListener("change", () => {
+    saveCheckoutDraft();
+  });
+}
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initApp);
 } else {
@@ -36,8 +167,10 @@ if (document.readyState === "loading") {
 }
 
 async function initApp() {
+  loadCartState();
   initCountdownTimer();
   setupEventListeners();
+  setupCheckoutAutoSave();
 
   try {
     await loadBatchInfo();
@@ -52,10 +185,12 @@ async function initApp() {
     showPageError("Không tải được dữ liệu sản phẩm: " + err.message);
   }
 
+  loadCheckoutDraft();
   renderEsgCircularSection();
   syncEditorAuthUI();
   updateOrderSummary();
   initInteractiveGamificationHub();
+  startContinuousLiveActivityEngine();
 }
 
 function showPageError(message) {
@@ -105,7 +240,11 @@ window.quickFomoAdd5Kg = function () {
 
   const addQty = combo5kg ? 1 : 5;
   cart[targetProd.id] = (cart[targetProd.id] || 0) + addQty;
+  saveCartState();
   updateCartUI();
+  if (typeof pushLiveUserActivity === "function") {
+    pushLiveUserActivity(`🔥 Bạn vừa gom nhanh 5kg ${targetProd.name}!`, "cart");
+  }
 
   const preorderEl = document.getElementById("preorder");
   if (preorderEl) preorderEl.scrollIntoView({ behavior: "smooth" });
@@ -1144,11 +1283,20 @@ function changeQty(productId, delta) {
   } else {
     cart[productId] = updated;
   }
+  saveCartState();
   updateCartUI();
+
+  if (delta > 0) {
+    const prod = currentProducts.find(p => String(p.id) === String(productId));
+    if (prod && typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity(`🛒 Đã lưu "${prod.name}" vào giỏ hàng của bạn`, "cart");
+    }
+  }
 }
 
 window.clearCart = function () {
   cart = {};
+  saveCartState();
   updateCartUI();
 };
 
@@ -1768,8 +1916,23 @@ async function handleOrderSubmit(e) {
     const order = await window.db.createOrder(orderInput, priced);
     showSuccessModal(order, priced);
     cart = {};
+    saveCartState();
     updateCartUI();
     renderEsgCircularSection();
+    try {
+      localStorage.removeItem(CHECKOUT_DRAFT_KEY);
+      const orders = JSON.parse(localStorage.getItem(USER_ORDERS_KEY) || "[]");
+      orders.unshift({
+        code: order.order_code,
+        date: new Date().toISOString(),
+        total: order.total_amount,
+        items: priced.items
+      });
+      localStorage.setItem(USER_ORDERS_KEY, JSON.stringify(orders.slice(0, 20)));
+    } catch (e) {}
+    if (typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity(`🎉 Khách hàng ${orderInput.customer_name || 'vừa'} đặt đơn ${order.order_code}!`, "order");
+    }
     document.getElementById("preorder-form")?.reset();
     setDeliveryType(selectedDeliveryType);
     loadBatchInfo().catch(() => {});
@@ -2023,7 +2186,10 @@ let userGarden = {
   streak: 1,
   lastCheckInDate: null,
   spinsLeft: 1,
-  vouchers: []
+  vouchers: [],
+  quizAnsweredDate: null,
+  quizCorrect: false,
+  likedRecipes: {}
 };
 
 const TREE_STAGES = [
@@ -2060,6 +2226,9 @@ function loadGardenState() {
     if (raw) {
       const parsed = JSON.parse(raw);
       userGarden = { ...userGarden, ...parsed };
+      if (!userGarden.likedRecipes || typeof userGarden.likedRecipes !== "object") {
+        userGarden.likedRecipes = {};
+      }
     }
   } catch (e) {
     console.warn("Lỗi đọc trạng thái vườn ảo:", e);
@@ -2170,6 +2339,31 @@ function renderGardenUI() {
     }
   }
 
+  // Khôi phục trạng thái Thả Tim món ngon nông sản
+  if (userGarden.likedRecipes) {
+    Object.keys(userGarden.likedRecipes).forEach(rId => {
+      if (userGarden.likedRecipes[rId]) {
+        const btn = document.querySelector(`[onclick*="${rId}"]`);
+        if (btn) {
+          btn.classList.add("bg-rose-50", "text-rose-700", "border-rose-300");
+        }
+      }
+    });
+  }
+
+  // Khôi phục trạng thái Đố Vui hôm nay
+  if (userGarden.quizAnsweredDate === todayStr && userGarden.quizCorrect) {
+    const msgEl = document.getElementById("quiz-result-msg");
+    if (msgEl) {
+      msgEl.classList.remove("hidden");
+      msgEl.className = "p-3 rounded-xl bg-emerald-100 border border-emerald-300 text-[#1c560e] text-xs font-bold space-y-1";
+      msgEl.innerHTML = `
+        <div>✅ <strong>BẠN ĐÃ HOÀN THÀNH ĐỐ VUI HÔM NAY!</strong></div>
+        <div>Mã giảm giá <strong>QUIZ10K</strong> (-10.000 đ) đã sẵn sàng trong kho voucher của bạn để đặt hàng.</div>
+      `;
+    }
+  }
+
   // Render danh sách voucher đã có
   const voucherListEl = document.getElementById("vouchers-list-display");
   if (voucherListEl) {
@@ -2209,6 +2403,9 @@ window.handleDailyCheckIn = function () {
   saveGardenState();
   renderGardenUI();
   showToast("🎉 Điểm danh thành công! Bạn nhận được +1 Giọt Nước 💧 và +20 Hạt Mầm Xanh 🌱.");
+  if (typeof pushLiveUserActivity === "function") {
+    pushLiveUserActivity("🌿 Bạn vừa điểm danh ngày mới (+1 Giọt Nước & +20 Hạt Mầm)", "checkin");
+  }
 };
 
 window.handleWaterTree = function () {
@@ -2253,6 +2450,9 @@ window.handleWaterTree = function () {
 
   saveGardenState();
   renderGardenUI();
+  if (typeof pushLiveUserActivity === "function") {
+    pushLiveUserActivity("💧 Bạn vừa tưới nước cho vườn cây (+25 EXP)", "water");
+  }
 };
 
 window.redeemReward = function (cost, codePrefix, amount) {
@@ -2275,6 +2475,9 @@ window.redeemReward = function (cost, codePrefix, amount) {
   // Tự động áp dụng vào ô giảm giá đơn hàng
   applyPromoCodeDirect(newVoucher.code);
   alert(`🎉 Đổi quà thành công! Bạn nhận được mã ${newVoucher.code} (-${formatVND(amount)}). Mã đã được tự động áp dụng vào giỏ hàng của bạn!`);
+  if (typeof pushLiveUserActivity === "function") {
+    pushLiveUserActivity(`🎁 Bạn vừa đổi thành công Voucher ${formatVND(amount)}!`, "reward");
+  }
 };
 
 window.applyPromoCodeDirect = function (code) {
@@ -2400,11 +2603,17 @@ function handleWheelPrizeWon(prize) {
     renderGardenUI();
     applyPromoCodeDirect(won.code);
     alert(`🎉 XIN CHÚC MỪNG!\nBạn đã quay trúng: ${prize.label}!\nMã ưu đãi [${won.code}] đã được tự động thêm vào giỏ hàng của bạn!`);
+    if (typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity(`🎡 Bạn vừa quay trúng ${prize.label}!`, "wheel");
+    }
   } else if (prize.type === "seeds") {
     userGarden.seeds += prize.value;
     saveGardenState();
     renderGardenUI();
     showToast(`🎉 Bạn đã quay trúng +${prize.value} Hạt Mầm Xanh 🌱!`);
+    if (typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity(`🎡 Bạn vừa quay trúng +${prize.value} Hạt Mầm Xanh!`, "wheel");
+    }
   } else if (prize.type === "gift") {
     const giftCode = `${prize.code}_${Math.floor(100 + Math.random() * 900)}`;
     userGarden.vouchers.push({ code: giftCode, amount: prize.value, name: prize.label });
@@ -2412,6 +2621,9 @@ function handleWheelPrizeWon(prize) {
     renderGardenUI();
     applyPromoCodeDirect(giftCode);
     alert(`🎁 TUYỆT VỜI!\nBạn đã trúng phần quà: ${prize.label}!\nMã nhận quà [${giftCode}] đã được ghi nhận vào đơn hàng đợt Thứ Bảy tuần này của bạn!`);
+    if (typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity(`🎁 Bạn vừa quay trúng phần quà ${prize.label}!`, "wheel");
+    }
   } else {
     showToast("🍀 Chúc bạn may mắn lần sau! Đừng quên ghé lại mỗi ngày để quay tiếp nhé.");
   }
@@ -2420,6 +2632,7 @@ function handleWheelPrizeWon(prize) {
 // ================= ĐỐ VUI NÔNG SẢN & GÓC BẾP =================
 
 window.handleQuizAnswer = function (selectedIndex) {
+  const todayStr = new Date().toISOString().slice(0, 10);
   const msgEl = document.getElementById("quiz-result-msg");
   if (!msgEl) return;
   msgEl.classList.remove("hidden");
@@ -2428,14 +2641,22 @@ window.handleQuizAnswer = function (selectedIndex) {
     msgEl.className = "p-3 rounded-xl bg-emerald-100 border border-emerald-300 text-[#1c560e] text-xs font-bold space-y-1";
     msgEl.innerHTML = `
       <div>✅ <strong>HOÀN TOÀN CHÍNH XÁC!</strong></div>
-      <div>Sầu riêng chín cây thật sự có mùi thơm nồng nàn tự nhiên, cuống tươi ứa nhựa và rãnh nở đều. Bạn vừa nhận được <strong>+1 Giọt Nước Tưới Cây 💧</strong> và mã giảm giá <strong>QUIZ10K</strong> (-10.000 đ)!</div>
+      <div>Sầu riêng già chín cây thật sự có mùi thơm ngát tự nhiên, cuống tươi ứa nhựa và rãnh nở bung đều. Bạn nhận được <strong>+1 Giọt Nước Tưới Cây 💧</strong> và mã giảm giá <strong>QUIZ10K</strong> (-10.000 đ)!</div>
     `;
-    userGarden.waterDrops++;
-    if (!userGarden.vouchers.some(v => v.code === "QUIZ10K")) {
-      userGarden.vouchers.push({ code: "QUIZ10K", amount: 10000, name: "Thưởng Đố Vui Nông Nghiệp" });
+
+    if (userGarden.quizAnsweredDate !== todayStr || !userGarden.quizCorrect) {
+      userGarden.waterDrops++;
+      if (!userGarden.vouchers.some(v => v.code === "QUIZ10K")) {
+        userGarden.vouchers.push({ code: "QUIZ10K", amount: 10000, name: "Thưởng Đố Vui Nông Nghiệp" });
+      }
     }
+    userGarden.quizAnsweredDate = todayStr;
+    userGarden.quizCorrect = true;
     saveGardenState();
     renderGardenUI();
+    if (typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity("🧠 Bạn vừa giải đúng Đố Vui Nông Nghiệp (+1 Giọt Nước & Voucher 10K)", "quiz");
+    }
   } else {
     msgEl.className = "p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold space-y-1";
     msgEl.innerHTML = `
@@ -2444,28 +2665,151 @@ window.handleQuizAnswer = function (selectedIndex) {
   }
 };
 
-window.likeRecipe = function (btn) {
-  const countEl = btn.querySelector(".like-count");
-  if (countEl && !btn.dataset.liked) {
-    btn.dataset.liked = "true";
-    let cur = parseInt(countEl.textContent || "0", 10);
-    countEl.textContent = cur + 1;
-    btn.classList.add("bg-rose-50", "text-rose-700");
-    userGarden.seeds += 5;
+window.likeRecipe = function (recipeId, btn) {
+  if (!btn && typeof recipeId === "object") {
+    btn = recipeId;
+    recipeId = "recipe_mangcut";
+  }
+  userGarden.likedRecipes = userGarden.likedRecipes || {};
+  const countEl = btn?.querySelector(".like-count") || document.querySelector(`.like-count[data-recipe-id="${recipeId}"]`);
+
+  if (!userGarden.likedRecipes[recipeId]) {
+    userGarden.likedRecipes[recipeId] = true;
+    if (countEl) {
+      let cur = parseInt(countEl.textContent || "0", 10);
+      countEl.textContent = cur + 1;
+    }
+    if (btn) {
+      btn.classList.add("bg-rose-50", "text-rose-700", "border-rose-300");
+    }
+    userGarden.seeds = (userGarden.seeds || 0) + 5;
     saveGardenState();
     renderGardenUI();
     showToast("❤️ Cảm ơn bạn đã thả tim! Bạn được cộng +5 Hạt Mầm Xanh 🌱.");
+    if (typeof pushLiveUserActivity === "function") {
+      pushLiveUserActivity("❤️ Bạn vừa thả tim món ngon nông sản (+5 Hạt Mầm)", "heart");
+    }
+  } else {
+    showToast("❤️ Bạn đã thả tim món ngon này rồi! Hãy thưởng thức và chia sẻ thêm nhé.");
   }
 };
 
 window.quickAddRecipeProduct = function (productId) {
   const p = currentProducts.find(item => String(item.id) === String(productId));
   if (p) {
-    addToCart(p.id);
+    changeQty(p.id, 1);
     showToast(`🛒 Đã thêm "${p.name}" vào giỏ hàng! Cuộn xuống để xem đơn.`);
     document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
   } else {
     showToast("Sản phẩm đã được chọn. Vui lòng kiểm tra giỏ hàng bên dưới!");
   }
 };
+
+// =========================================================================
+// 🚀 CONTINUOUS REAL-TIME LIVE ACTIVITY & COMMUNITY ENGINE
+// =========================================================================
+
+let liveEngineTimer = null;
+let liveToastTimer = null;
+let currentOnlineCount = 33;
+
+const COMMUNITY_ACTIVITIES = [
+  { icon: "🎁", title: "Đổi Voucher Thành Công", text: "Chị Mai Lan (Q.7, TP.HCM) vừa đổi Voucher 50.000đ từ Vườn Ảo!" },
+  { icon: "🛒", title: "Đặt Đơn Đợt Thứ Bảy", text: "Anh Quốc Tuấn (Thủ Đức) vừa đặt 5kg Sầu Riêng Ri6 chín cây!" },
+  { icon: "🎡", title: "Quay Thưởng May Mắn", text: "Bạn Thảo Vy (Bình Thạnh) vừa quay trúng Miễn Phí Giao Hàng 0đ!" },
+  { icon: "🌱", title: "Điểm Danh Chăm Cây", text: "Khách hàng Minh Trí (Tân Bình) vừa điểm danh ngày thứ 5 liên tiếp (+20 hạt)!" },
+  { icon: "🍲", title: "Món Ngon Nông Sản", text: "Chị Hoàng Yến (Q.2) vừa thả tim công thức Gỏi Măng Cụt Gà Ta!" },
+  { icon: "🧠", title: "Đố Vui Nông Nghiệp", text: "Anh Đức Thắng vừa giải đúng câu đố nông sản nhận voucher QUIZ10K!" },
+  { icon: "📦", title: "Sống Xanh Circular", text: "Gia đình chị Ánh (Phú Nhuận) vừa đăng ký trả lại 2 thùng giấy đợt trước!" },
+  { icon: "🚚", title: "Xe Lạnh Gom Hàng", text: "Tiến độ gom hàng đạt 78% tải trọng xe lạnh Bình Phước về TP.HCM!" }
+];
+
+window.startContinuousLiveActivityEngine = function () {
+  if (liveEngineTimer) clearInterval(liveEngineTimer);
+
+  // Lắng nghe đồng bộ đa tab trình duyệt trong thời gian thực
+  window.addEventListener("storage", (e) => {
+    if (e.key === GARDEN_STORAGE_KEY) {
+      loadGardenState();
+      renderGardenUI();
+    } else if (e.key === CART_STORAGE_KEY) {
+      loadCartState();
+      updateCartUI();
+    } else if (e.key === CHECKOUT_DRAFT_KEY) {
+      loadCheckoutDraft();
+    }
+  });
+
+  // Vòng lặp cập nhật liên tục (Continuous Real-Time Loop)
+  let actIndex = 0;
+  liveEngineTimer = setInterval(() => {
+    // 1. Dao động ngẫu nhiên số người online (27 - 45 người)
+    const delta = Math.floor(Math.random() * 5) - 2; // -2, -1, 0, 1, 2
+    currentOnlineCount = Math.max(27, Math.min(48, currentOnlineCount + delta));
+    const onlineEl = document.getElementById("live-online-users-count");
+    if (onlineEl) onlineEl.textContent = currentOnlineCount;
+
+    // 2. Cập nhật dòng ticker cộng đồng
+    const act = COMMUNITY_ACTIVITIES[actIndex % COMMUNITY_ACTIVITIES.length];
+    actIndex++;
+    const tickerEl = document.getElementById("live-community-ticker-text");
+    if (tickerEl) {
+      tickerEl.style.opacity = "0";
+      setTimeout(() => {
+        tickerEl.innerHTML = `${act.icon} <strong>${escapeHTML(act.text)}</strong>`;
+        tickerEl.style.opacity = "1";
+      }, 300);
+    }
+
+    // 3. Định kỳ hiển thị nhẹ toast nổi góc dưới
+    if (Math.random() > 0.45) {
+      showFloatingActivityToast(act.text, act.icon, act.title);
+    }
+  }, 8500);
+};
+
+window.pushLiveUserActivity = function (message, type = "action") {
+  // 1. Cập nhật ngay ticker
+  const tickerEl = document.getElementById("live-community-ticker-text");
+  if (tickerEl) {
+    tickerEl.innerHTML = `🌟 <strong>${escapeHTML(message)}</strong>`;
+  }
+
+  // 2. Hiện ngay toast nổi góc dưới
+  const iconMap = {
+    water: "💧",
+    wheel: "🎡",
+    checkin: "🌿",
+    quiz: "🧠",
+    heart: "❤️",
+    reward: "🎁",
+    cart: "🛒",
+    order: "🎉"
+  };
+  const icon = iconMap[type] || "✨";
+  showFloatingActivityToast(message, icon, "Tương Tác Của Bạn");
+};
+
+function showFloatingActivityToast(message, icon = "🌱", title = "Vừa diễn ra") {
+  const toast = document.getElementById("live-activity-floating-toast");
+  if (!toast) return;
+
+  const titleEl = document.getElementById("live-toast-title");
+  const descEl = document.getElementById("live-toast-desc");
+  const iconEl = document.getElementById("live-toast-icon");
+
+  if (titleEl) titleEl.innerHTML = `<span>${escapeHTML(title)}</span> <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>`;
+  if (descEl) descEl.textContent = message;
+  if (iconEl) iconEl.textContent = icon;
+
+  // Hiển thị toast trượt lên
+  toast.classList.remove("translate-y-24", "opacity-0", "pointer-events-none");
+  toast.classList.add("translate-y-0", "opacity-100");
+
+  if (liveToastTimer) clearTimeout(liveToastTimer);
+  liveToastTimer = setTimeout(() => {
+    toast.classList.add("translate-y-24", "opacity-0", "pointer-events-none");
+    toast.classList.remove("translate-y-0", "opacity-100");
+  }, 4200);
+}
 

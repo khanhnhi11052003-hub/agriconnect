@@ -1185,7 +1185,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       
       <!-- Tiêu đề Khu Tương Tác -->
-      <div class="text-center max-w-3xl mx-auto space-y-2.5 mb-10">
+      <div class="text-center max-w-3xl mx-auto space-y-2.5 mb-6">
         <span class="inline-flex items-center gap-1.5 text-xs uppercase font-black tracking-wider text-[#1c560e] bg-[#e1f9cf] px-4 py-1.5 rounded-full border border-[#82d648] shadow-2xs">
           <i class="fa-solid fa-gamepad text-[#3ba117] animate-pulse"></i> Khu Tương Tác & Quà Tặng Miệt Vườn
         </span>
@@ -1195,6 +1195,25 @@
         <p class="text-xs sm:text-sm text-[#4b6b32] font-semibold leading-relaxed">
           Điểm danh mỗi ngày, tưới nước tích <strong class="text-[#256314]">Hạt Mầm Xanh</strong>, đổi voucher giảm giá đến 100K và nhận quà tặng nông sản chín cây giao tận nhà sáng Thứ Bảy!
         </p>
+      </div>
+
+      <!-- Thanh Trực Tiếp Cộng Đồng & Người Đang Tương Tác (Live Community Stream Ticker) -->
+      <div class="max-w-4xl mx-auto mb-8 bg-white/95 backdrop-blur-sm rounded-2xl p-3 sm:p-3.5 border border-[#b8ee99] shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2 font-bold text-[#1c560e]">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+          <span>Trực tiếp: <strong id="live-online-users-count" class="text-emerald-700 font-black text-sm">32</strong> khách đang online & chăm vườn</span>
+        </div>
+        <div class="flex items-center gap-2 overflow-hidden flex-1 justify-end min-w-[280px]">
+          <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-black text-[10px] shrink-0 uppercase tracking-wider flex items-center gap-1">
+            <i class="fa-solid fa-bolt text-amber-600"></i> Cập nhật liên tục
+          </span>
+          <div id="live-community-ticker-text" class="truncate font-semibold text-slate-700 transition-all duration-300">
+            🎉 Chị Mai Lan (Q.7, TP.HCM) vừa đổi thành công Voucher 50.000đ từ Vườn Ảo!
+          </div>
+        </div>
       </div>
 
       <!-- Thanh chọn Tab Tương Tác -->
@@ -1483,12 +1502,12 @@
 
           <div class="grid sm:grid-cols-3 gap-4">
             <!-- Món 1 -->
-            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between" data-recipe-card="recipe_mangcut">
               <div class="relative h-40 rounded-xl overflow-hidden bg-slate-100 mb-2.5">
                 <img src="images/mangosteen-basket.jpg" alt="Gỏi măng cụt gà ta" class="w-full h-full object-cover">
                 <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-white text-[10px] font-bold">Gỏi Măng Cụt Gà Ta</span>
-                <button type="button" onclick="likeRecipe(this)" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1">
-                  <i class="fa-solid fa-heart"></i> <span class="like-count">142</span>
+                <button type="button" onclick="likeRecipe('recipe_mangcut', this)" class="recipe-like-btn absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1 hover:scale-105 active:scale-95 transition">
+                  <i class="fa-solid fa-heart"></i> <span class="like-count" data-recipe-id="recipe_mangcut">142</span>
                 </button>
               </div>
               <p class="text-xs text-slate-600 font-semibold mb-3">Măng cụt giòn sần sật trộn với gà ta thả vườn và rau thơm, vị chua ngọt thanh tao giải nhiệt.</p>
@@ -1498,12 +1517,12 @@
             </div>
 
             <!-- Món 2 -->
-            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between" data-recipe-card="recipe_bosap">
               <div class="relative h-40 rounded-xl overflow-hidden bg-slate-100 mb-2.5">
                 <img src="images/bo-sap.jpg" alt="Sinh tố bơ sáp sầu riêng" class="w-full h-full object-cover">
                 <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-white text-[10px] font-bold">Sinh Tố Bơ Sáp Đắk Lắk</span>
-                <button type="button" onclick="likeRecipe(this)" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1">
-                  <i class="fa-solid fa-heart"></i> <span class="like-count">98</span>
+                <button type="button" onclick="likeRecipe('recipe_bosap', this)" class="recipe-like-btn absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1 hover:scale-105 active:scale-95 transition">
+                  <i class="fa-solid fa-heart"></i> <span class="like-count" data-recipe-id="recipe_bosap">98</span>
                 </button>
               </div>
               <p class="text-xs text-slate-600 font-semibold mb-3">Bơ sáp dẻo quánh xay cùng chút sữa chua và cơm sầu riêng Ri6, giàu omega-3 và năng lượng lành mạnh.</p>
@@ -1513,12 +1532,12 @@
             </div>
 
             <!-- Món 3 -->
-            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-3 border border-[#b8ee99] shadow-sm flex flex-col justify-between" data-recipe-card="recipe_raucu">
               <div class="relative h-40 rounded-xl overflow-hidden bg-slate-100 mb-2.5">
                 <img src="images/combo-rau-cu-tuan.jpg" alt="Canh rau củ quả Đà Lạt" class="w-full h-full object-cover">
                 <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-white text-[10px] font-bold">Canh Rau Củ Thập Cẩm</span>
-                <button type="button" onclick="likeRecipe(this)" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1">
-                  <i class="fa-solid fa-heart"></i> <span class="like-count">115</span>
+                <button type="button" onclick="likeRecipe('recipe_raucu', this)" class="recipe-like-btn absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-rose-600 text-xs font-black shadow flex items-center gap-1 hover:scale-105 active:scale-95 transition">
+                  <i class="fa-solid fa-heart"></i> <span class="like-count" data-recipe-id="recipe_raucu">115</span>
                 </button>
               </div>
               <p class="text-xs text-slate-600 font-semibold mb-3">Cà rốt, khoai tây, bắp ngọt và súp lơ xanh Đà Lạt hầm sườn non, nước dùng ngọt đậm tự nhiên.</p>
@@ -1545,6 +1564,22 @@
         <span class="w-2 h-2 rounded-full bg-yellow-300 animate-ping"></span>
       </div>
       <div id="pill-water-status" class="text-[9px] text-yellow-200 font-bold leading-tight">Điểm danh +1 giọt nước!</div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST THÔNG BÁO HOẠT ĐỘNG THỜI GIAN THỰC (REAL-TIME LIVE TOAST) ================= -->
+  <div id="live-activity-floating-toast" class="fixed bottom-24 sm:bottom-6 left-4 z-40 max-w-[320px] sm:max-w-sm bg-white/95 backdrop-blur-md rounded-2xl p-3 border-2 border-[#b8ee99] shadow-2xl flex items-center gap-3 transition-all duration-500 transform translate-y-24 opacity-0 pointer-events-none">
+    <div id="live-toast-icon" class="w-9 h-9 rounded-xl bg-[#e1f9cf] text-[#256314] flex items-center justify-center font-black text-base shrink-0 shadow-inner">
+      🌱
+    </div>
+    <div class="min-w-0 flex-1">
+      <div id="live-toast-title" class="text-[11px] font-black text-[#1c560e] flex items-center gap-1.5">
+        <span>Vừa diễn ra</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      </div>
+      <div id="live-toast-desc" class="text-xs text-slate-700 font-semibold leading-snug truncate">
+        Khách hàng vừa chăm sóc vườn cây!
+      </div>
     </div>
   </div>
   <section id="logistics" class="py-16 sm:py-20 bg-white border-y border-[#dbeef0]/50">
@@ -1883,10 +1918,16 @@
 
           <!-- Section 2: Thông Tin Người Nhận -->
           <div class="space-y-4">
-            <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2 border-b border-[#edf4e3] pb-3">
-              <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">2</span>
-              Thông Tin Người Nhận
-            </h3>
+            <div class="flex items-center justify-between border-b border-[#edf4e3] pb-3 flex-wrap gap-2">
+              <h3 class="text-base font-extrabold text-[#243912] flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#e7f2da] text-[#345517] text-xs flex items-center justify-center font-bold">2</span>
+                Thông Tin Người Nhận
+              </h3>
+              <div id="autosave-indicator" class="text-[11px] font-bold text-[#256314] bg-[#e1f9cf] px-2.5 py-1 rounded-full border border-[#b8ee99] flex items-center gap-1.5 shadow-2xs">
+                <i class="fa-solid fa-cloud-arrow-up text-[#3ba117]"></i>
+                <span id="autosave-status-text">Đã tự động lưu thông tin</span>
+              </div>
+            </div>
 
             <div class="grid sm:grid-cols-3 gap-4">
               <div>
@@ -2828,8 +2869,8 @@
   </div>
 
   <!-- Scripts (Kèm version chống cache trình duyệt) -->
-  <script src="js/config.js?v=20261109_v19"></script>
-  <script src="js/supabaseClient.js?v=20261109_v19"></script>
-  <script src="js/app.js?v=20261109_v19"></script>
+  <script src="js/config.js?v=20261109_v20"></script>
+  <script src="js/supabaseClient.js?v=20261109_v20"></script>
+  <script src="js/app.js?v=20261109_v20"></script>
 </body>
 </html>
