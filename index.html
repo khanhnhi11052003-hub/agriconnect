@@ -1748,15 +1748,27 @@
               <!-- Rendered dynamically by updateOrderSummary() in js/app.js -->
             </div>
 
-            <!-- Thu Hồi & Tái Sử Dụng Vật Tư: Đổi Thùng Trống Nhận Ngay Voucher 10.000đ -->
-            <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-300 flex items-start gap-2.5">
-              <input type="checkbox" id="order-return-box-check" onchange="updateOrderSummary()" class="mt-0.5 w-4 h-4 accent-[#3ba117] rounded shrink-0 cursor-pointer">
-              <label for="order-return-box-check" class="text-xs cursor-pointer flex-1">
-                <span class="font-extrabold text-emerald-950">♻️ Đổi thùng trống nhận ngay Voucher giảm 10.000 đ (Thu hồi & Tái sử dụng vật tư)</span>
-                <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
-                  Gửi lại thùng carton/thùng xốp sạch của đơn trước cho Shipper khi nhận hàng (hoặc đăng ký thu hồi tại sảnh chung cư/văn phòng) để giảm ngay <strong>10.000 đ</strong> và cắt giảm 10% chi phí bao bì!
-                </p>
-              </label>
+            <!-- Thu Hồi & Tái Sử Dụng Vật Tư + Tiêu Chuẩn Đóng Gói Sinh Thái (Lá Chuối, Bẹ Cau Ép, Carton Tái Chế) -->
+            <div class="grid sm:grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-300 flex items-start gap-2.5">
+                <input type="checkbox" id="order-return-box-check" onchange="updateOrderSummary()" class="mt-0.5 w-4 h-4 accent-[#3ba117] rounded shrink-0 cursor-pointer">
+                <label for="order-return-box-check" class="text-xs cursor-pointer flex-1">
+                  <span class="font-extrabold text-emerald-950">♻️ Đổi thùng trống & túi giữ nhiệt (-10.000 đ)</span>
+                  <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                    Gửi lại thùng carton/túi giữ nhiệt sạch của đơn trước cho Shipper để giảm ngay <strong>10.000 đ</strong>!
+                  </p>
+                </label>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-[#f0fae8] border border-[#9fe772] flex items-start gap-2.5">
+                <input type="checkbox" id="order-eco-pack-check" checked onchange="updateOrderSummary()" class="mt-0.5 w-4 h-4 accent-[#3ba117] rounded shrink-0 cursor-pointer">
+                <label for="order-eco-pack-check" class="text-xs cursor-pointer flex-1">
+                  <span class="font-extrabold text-[#1c560e]">🍃 Đóng gói Sinh Thái (Lá chuối / Khay bẹ cau ép • Miễn phí 0đ)</span>
+                  <p class="text-[11px] text-[#3b5726] mt-0.5 leading-relaxed">
+                    Thay thế hoàn toàn nilon/xốp bằng <strong>lá chuối tươi, khay bẹ cau ép & hộp carton tái chế 100%</strong> kết hợp túi giữ nhiệt.
+                  </p>
+                </label>
+              </div>
             </div>
             
             <!-- Trụ cột 6: Tính năng Bảo Hiểm Nông Sản & Miễn Trừ Pháp Lý Marketplace -->
@@ -2430,8 +2442,8 @@
   </div>
 
   <!-- Scripts (Kèm version chống cache trình duyệt) -->
-  <script src="js/config.js?v=20261109_v18"></script>
-  <script src="js/supabaseClient.js?v=20261109_v18"></script>
-  <script src="js/app.js?v=20261109_v18"></script>
+  <script src="js/config.js?v=20261109_v19"></script>
+  <script src="js/supabaseClient.js?v=20261109_v19"></script>
+  <script src="js/app.js?v=20261109_v19"></script>
 </body>
 </html>

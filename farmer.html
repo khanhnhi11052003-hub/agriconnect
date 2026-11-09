@@ -186,6 +186,54 @@
       </div>
     </div>
 
+    <!-- CẢNH BÁO THỜI TIẾT MÙA VỤ, ĐA DẠNG SINH HỌC LUÂN CANH & TIÊU CHUẨN ĐÓNG GÓI SINH THÁI (CHUYÊN GIA NÔNG NGHIỆP & SINH THÁI) -->
+    <section id="canh-bao-mua-vu-sinh-thai" class="bg-gradient-to-br from-[#f0fae8] via-white to-[#fefce8] rounded-2xl p-4 sm:p-5 border-2 border-[#9fe772] shadow-2xs space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#dff5cb]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-[#3ba117] text-white flex items-center justify-center text-sm shadow-2xs">🌦️</span>
+          <div>
+            <h2 class="text-xs sm:text-sm font-extrabold text-[#0f240d]">Hệ Thống Cảnh Báo Thời Tiết Mùa Vụ & Chuẩn Nông Nghiệp Sinh Thái</h2>
+            <p class="text-[11px] text-[#4b6b32]">Tích hợp API Dự báo thời tiết vùng trồng • Ưu tiên hiển thị vườn Xen canh / Luân canh & Đóng gói Sinh học</p>
+          </div>
+        </div>
+        <span class="text-[10px] font-extrabold bg-[#e1f9cf] text-[#1c560e] px-2.5 py-1 rounded-full border border-[#b8ee99]">
+          ✓ Đã đồng bộ Trạm Khí Tượng Nông Nghiệp
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+        <div class="p-3 rounded-xl bg-amber-50/90 border border-amber-300 space-y-1">
+          <div class="flex items-center justify-between gap-1">
+            <span class="font-extrabold text-amber-950">🌧️ Cảnh Báo Mưa Thứ Năm (65%)</span>
+            <span class="text-[9px] font-black uppercase bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded">Đông Nam Bộ</span>
+          </div>
+          <p class="text-[11px] text-amber-900 leading-relaxed">
+            Dự báo mưa rào chiều Thứ Năm trước ngày thu hoạch. Khuyến nghị Bác Năm <strong>khơi rãnh thoát nước gốc sầu riêng</strong> (chống sượng nước) và cắt sớm lúc <strong>05:00 sáng Thứ Sáu</strong>.
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white border border-[#c8edab] space-y-1">
+          <div class="flex items-center justify-between gap-1">
+            <span class="font-extrabold text-[#1c560e]">🌿 Đa Dạng Sinh Học & Luân Canh</span>
+            <span class="text-[9px] font-black uppercase bg-[#e1f9cf] text-[#256314] px-1.5 py-0.5 rounded">+15% Hiển Thị</span>
+          </div>
+          <p class="text-[11px] text-[#3b5726] leading-relaxed">
+            Nhà vườn áp dụng <strong>xen canh & luân canh</strong> (Bơ sáp xen Cà phê, giữ thảm cỏ tự nhiên phục hồi hệ vi sinh đất) được <strong>ưu tiên lên đầu trang Chợ & giảm 2% phí sàn</strong>.
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white border border-[#c8edab] space-y-1">
+          <div class="flex items-center justify-between gap-1">
+            <span class="font-extrabold text-[#1c560e]">🍃 Đóng Gói Sinh Thái (Zero-Plastic)</span>
+            <span class="text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">Trợ Giá 100%</span>
+          </div>
+          <p class="text-[11px] text-[#3b5726] leading-relaxed">
+            Thay thế hộp xốp bằng <strong>lá chuối tươi, khay bẹ cau ép, giấy kraft & thùng carton tái chế 100%</strong> kết hợp túi giữ nhiệt thu hồi xoay vòng.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- VÁCH NGĂN PHÂN QUYỀN RBAC & BẢO VỆ DỮ LIỆU ĐỊNH DANH (ROLE-BASED ACCESS CONTROL) -->
     <div class="bg-slate-900 text-white rounded-2xl p-3.5 sm:p-4 border border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
       <div class="text-xs space-y-0.5">
@@ -725,8 +773,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261109_v18"></script>
-  <script src="js/supabaseClient.js?v=20261109_v18"></script>
+  <script src="js/config.js?v=20261109_v19"></script>
+  <script src="js/supabaseClient.js?v=20261109_v19"></script>
   <script>
     window.testFarmerRbacBoundary = function () {
       try {

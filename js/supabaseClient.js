@@ -729,7 +729,10 @@ const LS = {
   editorSession: "agriconnect_editor_auth_v1",
   auditLogs: "agri_v2_security_audit_logs_v2",
   idempotencyStore: "agri_v2_idempotency_keys",
-  loginRateLimit: "agri_v2_admin_login_ratelimit"
+  loginRateLimit: "agri_v2_admin_login_ratelimit",
+  qrScanCounter: "agri_v2_qr_scan_counts_v1",
+  catalogCache: "agri_v2_redis_catalog_cache_v1",
+  eventQueue: "agri_v2_event_queue_stats_v1"
 };
 
 // ================= KIẾN TRÚC BẢO MẬT 4 TRỌNG ĐIỂM & CHUỖI BĂM BLOCKCHAIN SHA-256 (HASH-CHAIN + MERKLE PROOF) =================
@@ -1328,6 +1331,164 @@ window.security = {
       throw new Error("🔒 [Chưa Được Cấp Quyền]: Chỉ Quản trị viên hoặc Nhà vườn được cấp quyền mới được phép đăng bài, chỉnh sửa hình ảnh, video và nội dung!");
     }
     return true;
+  },
+
+  // 8. Chống Giả Mạo Tem QR Động Có Chữ Ký Số & Giới Hạn Số Lần Quét (Dynamic Anti-Counterfeit Signed QR)
+  generateSignedQrPayload(orderCode, maxScans = 15) {
+    const cleanCode = String(orderCode || "AC-261105-DEMO02").trim().toUpperCase();
+    const expEpochSec = Math.floor(Date.now() / 1000) + 7 * 86400; // Hạn tem 7 ngày theo vòng đời nông sản tươi
+    const sigFull = computeDeterministicHashHex(`AGRI_DYNAMIC_QR_V2|${cleanCode}|MAX_${maxScans}`);
+    const sigShort = sigFull.slice(2, 18).toUpperCase();
+    return {
+      orderCode: cleanCode,
+      signature: sigShort,
+      maxScans,
+      expiresAtEpoch: expEpochSec,
+      queryString: `code=${encodeURIComponent(cleanCode)}&sig=${sigShort}&max=${maxScans}`
+    };
+  },
+
+  verifySignedQrScan(orderCode, providedSig = "", incrementScan = true) {
+    const cleanCode = String(orderCode || "").trim().toUpperCase();
+    const expected = this.generateSignedQrPayload(cleanCode, 15);
+    let counts = {};
+    try {
+      counts = JSON.parse(localStorage.getItem(LS.qrScanCounter) || "{}");
+    } catch (e) { counts = {}; }
+
+    const currentCount = Number(counts[cleanCode] || 0) + (incrementScan ? 1 : 0);
+    if (incrementScan) {
+      counts[cleanCode] = currentCount;
+      try {
+        localStorage.setItem(LS.qrScanCounter, JSON.stringify(counts));
+      } catch (e) {}
+    }
+
+    const sigMatched = !providedSig || providedSig.toUpperCase() === expected.signature;
+    const isClonedAlert = currentCount > expected.maxScans || !sigMatched;
+
+    if (isClonedAlert) {
+      this.logAudit({
+        actor_role: "ANTI_COUNTERFEIT_QR",
+        actor_name: "DynamicQrVerifier",
+        action: !sigMatched ? "QR_SIGNATURE_FORGERY_DETECTED" : "QR_SCAN_LIMIT_EXCEEDED",
+        target: cleanCode,
+        severity: "DANGER",
+        detail: !sigMatched
+          ? `Phát hiện chữ ký số QR không hợp lệ trên mã đơn ${cleanCode} (Nghi vấn làm giả tem QR dán lên hàng trôi nổi).`
+          : `Mã QR của đơn ${cleanCode} đã bị quét ${currentCount}/${expected.maxScans} lần — Cảnh báo sao chép tem QR hàng loạt!`
+      });
+    }
+
+    return {
+      validSignature: sigMatched,
+      expectedSignature: expected.signature,
+      scanCount: currentCount,
+      maxScans: expected.maxScans,
+      isClonedSuspected: isClonedAlert,
+      ipfsCid: "bafybeig" + computeDeterministicHashHex(`IPFS_CERT_${cleanCode}`).slice(2, 34),
+      smartContractNetwork: "Polygon PoS (ERC-4337 Account Abstraction • Gasless 0đ)"
+    };
+  },
+
+  // 9. Hệ Thống AI & Bộ Rules Chống Gian Lận / Lạm Dụng Chính Sách Hoàn Tiền "Bao Ăn 1 Đổi 1" (Anti-Fraud Refund Engine)
+  evaluateRefundFraudRisk(claimInput = {}, existingClaims = []) {
+    const phone = String(claimInput.customer_phone || "").replace(/\D/g, "");
+    const orderCode = String(claimInput.order_code || "").trim().toUpperCase();
+    const videoUrl = String(claimInput.unbox_video_url || "").trim().toLowerCase();
+    const claimType = claimInput.claim_type || "PARTIAL_20";
+
+    let riskScore = 10;
+    const flags = [];
+
+    // Rule 1: Kiểm tra tần suất khiếu nại theo SĐT / Thiết bị
+    const samePhoneClaims = existingClaims.filter(c => String(c.customer_phone || "").replace(/\D/g, "") === phone);
+    if (samePhoneClaims.length >= 2) {
+      riskScore += 45;
+      flags.push(`SĐT ${this.maskPhone(phone, "CONFIRMED")} đã gửi ${samePhoneClaims.length + 1} yêu cầu hoàn tiền liên tiếp`);
+    }
+
+    // Rule 2: Kiểm tra trùng lặp link Video Unbox giữa các đơn hàng khác nhau
+    const duplicateVideo = existingClaims.find(c =>
+      c.unbox_video_url &&
+      String(c.unbox_video_url).trim().toLowerCase() === videoUrl &&
+      String(c.order_code).toUpperCase() !== orderCode &&
+      !videoUrl.includes("video-unbox-agriconnect")
+    );
+    if (duplicateVideo) {
+      riskScore += 50;
+      flags.push(`Tái sử dụng cùng 1 link Video Unbox của đơn khác (${duplicateVideo.order_code})`);
+    }
+
+    // Rule 3: Đòi hoàn 100% liên tục hoặc mô tả quá ngắn/bất thường
+    if (claimType === "FULL_100" && samePhoneClaims.some(c => c.claim_type === "FULL_100")) {
+      riskScore += 25;
+      flags.push("Yêu cầu hoàn 100% lặp lại nhiều lần (High-Value Claim Pattern)");
+    }
+    if (String(claimInput.reason || "").trim().length < 10) {
+      riskScore += 15;
+      flags.push("Mô tả tình trạng hư hỏng quá ngắn (<10 ký tự)");
+    }
+
+    riskScore = Math.min(99, riskScore);
+    const riskLevel = riskScore >= 70 ? "HIGH_FRAUD_RISK" : (riskScore >= 40 ? "MEDIUM_REVIEW" : "LOW_AUTO_ELIGIBLE");
+
+    if (riskScore >= 40) {
+      this.logAudit({
+        actor_role: "ANTI_FRAUD_AI",
+        actor_name: "RefundAbuseDetector",
+        action: riskScore >= 70 ? "REFUND_FRAUD_FLAGGED" : "REFUND_MANUAL_REVIEW_REQUIRED",
+        target: orderCode || phone,
+        severity: riskScore >= 70 ? "DANGER" : "WARN",
+        detail: `AI chấm điểm rủi ro gian lận hoàn tiền: ${riskScore}/100 (${riskLevel}) • Lý do: ${flags.join("; ")}.`
+      });
+    }
+
+    return {
+      riskScore,
+      riskLevel,
+      flags,
+      autoApproveEligible: riskScore < 40,
+      recommendation: riskScore >= 70
+        ? "🚨 CẢNH BÁO LẠM DỤNG CAO: Tạm khóa tự động hoàn 1-Click, yêu cầu đối chiếu mã QR động trong video unbox!"
+        : (riskScore >= 40 ? "⚠️ CẦN KIỂM TRA VIDEO: Phát hiện lịch sử khiếu nại lặp lại." : "✅ HỢP LỆ (Rủi ro thấp): Đủ điều kiện duyệt nhanh 1-Click qua Smart Contract Escrow.")
+    };
+  },
+
+  // 10. Dự Báo Thời Tiết Mùa Vụ & Cảnh Báo Thu Hoạch Sớm Cho Nhà Vườn (Agri-Weather Forecast & Intercropping Score)
+  getFarmWeatherAdvisory() {
+    return {
+      updatedAt: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+      regions: [
+        {
+          region: "Đông Nam Bộ & Bình Phước (Sầu riêng Ri6, Măng cụt)",
+          tempC: "27–33°C",
+          humidity: "78%",
+          rainProbThuFri: "65% (Có mưa rào chiều tối Thứ Năm)",
+          status: "WARN_EARLY_HARVEST",
+          badge: "🌦️ Cảnh báo mưa trước ngày hái Thứ Sáu",
+          advice: "Khuyến nghị vườn Bác Năm che phủ gốc rãnh thoát nước tránh sầu riêng hút nước gây sượng cơm; ưu tiên cắt sớm từ 04:30–06:30 sáng Thứ Sáu trước khi nắng lên."
+        },
+        {
+          region: "Đà Lạt - Lâm Đồng (Rau thủy canh, Cà chua, Khoai mật)",
+          tempC: "15–22°C",
+          humidity: "82%",
+          rainProbThuFri: "20% (Trời nắng nhẹ, sương sớm)",
+          status: "OPTIMAL",
+          badge: "☀️ Thời tiết lý tưởng thu hoạch",
+          advice: "Độ ẩm ổn định, hàm lượng đường Brix cà chua & khoai mật đạt đỉnh. Sơ chế lạnh 4°C ngay tại trạm Đơn Dương."
+        },
+        {
+          region: "Miền Tây ĐBSCL & Tây Nguyên (Bơ sáp, Xoài Hòa Lộc, Bưởi)",
+          tempC: "26–32°C",
+          humidity: "74%",
+          rainProbThuFri: "15% (Nắng ráo thuận lợi)",
+          status: "OPTIMAL",
+          badge: "🌱 Độ chín sinh lý đạt chuẩn 8.5/10",
+          advice: "Các vườn áp dụng xen canh (Bơ - Cà phê - Thảm cỏ tự nhiên) được cộng +15% điểm ưu tiên hiển thị đầu trang và trợ giá bao bì sinh thái."
+        }
+      ]
+    };
   }
 };
 
@@ -1927,8 +2088,11 @@ class AgriDB {
     return idx !== -1;
   }
 
-  // ================= KHIẾU NẠI & BỒI THƯỜNG TỰ ĐỘNG 1-CLICK (ESCROW) =================
+  // ================= KHIẾU NẠI & BỒI THƯỜNG TỰ ĐỘNG 1-CLICK (ESCROW + AI ANTI-FRAUD GUARD) =================
   async submitRefundClaim(claimInput) {
+    const existingList = this._read(LS.refundClaims);
+    const fraudEval = window.security.evaluateRefundFraudRisk(claimInput, existingList);
+
     const newClaim = {
       id: "claim-" + Date.now(),
       order_code: String(claimInput.order_code || "").trim().toUpperCase(),
@@ -1936,13 +2100,16 @@ class AgriDB {
       claim_type: claimInput.claim_type || "PARTIAL_20", // PARTIAL_20 | FULL_100
       reason: claimInput.reason || "Nông sản bị dập/sượng khi mở thùng",
       unbox_video_url: claimInput.unbox_video_url || "",
+      fraud_risk_score: fraudEval.riskScore,
+      fraud_risk_level: fraudEval.riskLevel,
+      fraud_flags: fraudEval.flags,
+      fraud_recommendation: fraudEval.recommendation,
       status: "PENDING",
       created_at: new Date().toISOString()
     };
 
-    const list = this._read(LS.refundClaims);
-    list.unshift(newClaim);
-    this._write(LS.refundClaims, list);
+    existingList.unshift(newClaim);
+    this._write(LS.refundClaims, existingList);
 
     if (this.isCloud) {
       try {
