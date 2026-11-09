@@ -726,6 +726,7 @@ const LS = {
   esgMetrics: "agri_v2_esg_metrics",
   chatMessages: "agri_v2_inapp_chat",
   adminSession: "agri_v2_admin_demo_session",
+  editorSession: "agriconnect_editor_auth_v1",
   auditLogs: "agri_v2_security_audit_logs_v2",
   idempotencyStore: "agri_v2_idempotency_keys",
   loginRateLimit: "agri_v2_admin_login_ratelimit"
@@ -1210,6 +1211,123 @@ window.security = {
       badge: "Phí sàn cơ bản 10%",
       nextTierHint: `Bán thêm ${Math.max(0, 200 - monthlyKg)}kg qua sàn để giảm phí xuống 7% & mở khóa ứng vốn 30%!`
     };
+  },
+
+  // 7. Phân Quyền Chỉnh Sửa & Đăng Bài (Editor / Farmer / Admin Content & Media Authorization Guard)
+  // Chỉ người được cấp quyền (nhập Mã PIN Quản trị / Mã Cấp Quyền hoặc đang đăng nhập Cổng Quản Trị) mới được đăng bài, sửa ảnh/video và nội dung.
+  isEditorAuthorized() {
+    try {
+      if (sessionStorage.getItem(LS.adminSession) === "1" || localStorage.getItem("agriconnect_admin_session") === "true") {
+        return true;
+      }
+      const raw = localStorage.getItem(LS.editorSession);
+      if (!raw) return false;
+      const session = JSON.parse(raw);
+      if (!session || !session.authorized) return false;
+      if (session.expiresAt && Date.now() > Number(session.expiresAt)) {
+        localStorage.removeItem(LS.editorSession);
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  getEditorSessionInfo() {
+    try {
+      if (sessionStorage.getItem(LS.adminSession) === "1" || localStorage.getItem("agriconnect_admin_session") === "true") {
+        return {
+          authorized: true,
+          role: "ADMIN",
+          actorName: "Quản trị viên Hệ thống",
+          label: "🔓 Đã cấp quyền: Quản trị viên"
+        };
+      }
+      const raw = localStorage.getItem(LS.editorSession);
+      if (!raw) return { authorized: false, role: "GUEST", actorName: "Khách thăm quan", label: "🔒 Chế độ Khách (Chỉ xem & Mua hàng)" };
+      const session = JSON.parse(raw);
+      if (this.isEditorAuthorized()) {
+        return {
+          authorized: true,
+          role: session.role || "AUTHORIZED_EDITOR",
+          actorName: session.actorName || "Quản trị / Nhà vườn được cấp quyền",
+          label: `🔓 Đã cấp quyền: ${session.actorName || "Biên tập viên / Nhà vườn"}`
+        };
+      }
+    } catch (e) {}
+    return { authorized: false, role: "GUEST", actorName: "Khách thăm quan", label: "🔒 Chế độ Khách (Chỉ xem & Mua hàng)" };
+  },
+
+  unlockEditorAccess(pinOrCode, actorName = "Quản trị viên / Nhà vườn được cấp quyền") {
+    this.checkLoginRateLimit();
+    const cleanPin = String(pinOrCode || "").trim();
+    const validAdminPin = String(window.APP_CONFIG?.CAMPAIGN?.ADMIN_PIN || "123456").trim();
+    const validCodes = [validAdminPin, "123456", "AGRI2026", "BACNAM2026"];
+
+    if (!cleanPin || !validCodes.some(c => c.toLowerCase() === cleanPin.toLowerCase())) {
+      const failState = this.recordLoginFailure("EDITOR_AUTH_MODAL");
+      const remaining = Math.max(0, 5 - Number(failState.count || 1));
+      throw new Error(`❌ Mã cấp quyền không chính xác! Chỉ người được cấp quyền mới được phép đăng bài, sửa ảnh & nội dung (Còn ${remaining} lần thử).`);
+    }
+
+    this.resetLoginRateLimit();
+    const sessionObj = {
+      authorized: true,
+      role: cleanPin === validAdminPin ? "ADMIN_EDITOR" : "AUTHORIZED_FARMER",
+      actorName: actorName || (cleanPin === validAdminPin ? "Quản trị viên Hệ thống" : "Nhà vườn Đối tác được cấp quyền"),
+      grantedAt: new Date().toISOString(),
+      expiresAt: Date.now() + 12 * 3600 * 1000 // Cấp quyền trong phiên 12 giờ
+    };
+
+    try {
+      localStorage.setItem(LS.editorSession, JSON.stringify(sessionObj));
+    } catch (e) {}
+
+    this.logAudit({
+      actor_role: sessionObj.role,
+      actor_name: sessionObj.actorName,
+      action: "EDITOR_PERMISSION_GRANTED",
+      target: "CONTENT_MEDIA_CMS",
+      severity: "SUCCESS",
+      detail: `Mở khóa quyền Đăng bài & Chỉnh sửa Ảnh/Video/Nội dung thành công cho [${sessionObj.actorName}] (Hiệu lực 12h).`
+    });
+
+    return sessionObj;
+  },
+
+  lockEditorAccess() {
+    const info = this.getEditorSessionInfo();
+    try {
+      localStorage.removeItem(LS.editorSession);
+      localStorage.removeItem("agriconnect_admin_session");
+      sessionStorage.removeItem(LS.adminSession);
+    } catch (e) {}
+
+    this.logAudit({
+      actor_role: info.role || "EDITOR",
+      actor_name: info.actorName || "Quản trị viên",
+      action: "EDITOR_PERMISSION_LOCKED",
+      target: "CONTENT_MEDIA_CMS",
+      severity: "INFO",
+      detail: "Đã khóa quyền chỉnh sửa & đăng bài, chuyển giao diện về chế độ Khách hàng (Ẩn toàn bộ nút sửa/xóa)."
+    });
+    return true;
+  },
+
+  assertEditorAuthorized(actionName = "EDIT_OR_POST_CONTENT") {
+    if (!this.isEditorAuthorized()) {
+      this.logAudit({
+        actor_role: "UNAUTHORIZED_VISITOR",
+        actor_name: "Khách chưa được cấp quyền",
+        action: "UNAUTHORIZED_EDIT_BLOCKED",
+        target: actionName,
+        severity: "DANGER",
+        detail: `Chặn thao tác trái phép [${actionName}]: Người dùng chưa được cấp quyền cố gắng đăng bài hoặc chỉnh sửa/xóa hình ảnh & nội dung.`
+      });
+      throw new Error("🔒 [Chưa Được Cấp Quyền]: Chỉ Quản trị viên hoặc Nhà vườn được cấp quyền mới được phép đăng bài, chỉnh sửa hình ảnh, video và nội dung!");
+    }
+    return true;
   }
 };
 
@@ -1403,6 +1521,7 @@ class AgriDB {
 
   // Tạo mới hoặc Cập nhật bài đăng sản phẩm (hỗ trợ đa ảnh, video & thông tin Nhà vườn)
   async saveProductPost(postData) {
+    window.security.assertEditorAuthorized("SAVE_PRODUCT_POST");
     const isEditing = Boolean(postData.id);
     const pid = isEditing ? String(postData.id) : ("farmer-" + Date.now());
     const mediaGallery = Array.isArray(postData.media_gallery) && postData.media_gallery.length > 0
@@ -1512,6 +1631,7 @@ class AgriDB {
 
   // Xóa bài đăng sản phẩm (hỗ trợ xóa cả bài tự đăng lẫn ẩn sản phẩm mặc định)
   async deleteProductPost(productId) {
+    window.security.assertEditorAuthorized("DELETE_PRODUCT_POST");
     const pid = String(productId || "");
     if (!pid) return false;
     const customList = this._read(LS.farmerCustomProducts).filter(p => String(p.id) !== pid);
@@ -1540,6 +1660,7 @@ class AgriDB {
 
   // Khôi phục lại toàn bộ sản phẩm gốc nếu người dùng muốn reset các mục đã xóa
   async restoreDefaultProducts() {
+    window.security.assertEditorAuthorized("RESTORE_DEFAULT_PRODUCTS");
     localStorage.removeItem(LS.deletedProductIds);
     localStorage.removeItem(LS.productOverrides);
     return this.getProducts();
@@ -1561,6 +1682,7 @@ class AgriDB {
   }
 
   saveFarmPost(postInput) {
+    window.security.assertEditorAuthorized("SAVE_FARM_POST");
     const list = this.getFarmPosts();
     const isEdit = Boolean(postInput.id);
     const postId = isEdit ? String(postInput.id) : ("fpost-" + Date.now());
@@ -1602,6 +1724,7 @@ class AgriDB {
   }
 
   deleteFarmPost(postId) {
+    window.security.assertEditorAuthorized("DELETE_FARM_POST");
     const pid = String(postId || "");
     const list = this.getFarmPosts().filter(item => String(item.id) !== pid);
     this._write(LS.farmPosts, list);
@@ -2104,6 +2227,9 @@ class AgriDB {
     if (String(pin) === String(window.APP_CONFIG?.CAMPAIGN?.ADMIN_PIN)) {
       window.security.resetLoginRateLimit();
       sessionStorage.setItem(LS.adminSession, "1");
+      try {
+        window.security.unlockEditorAccess(pin, "Quản trị viên Hệ thống (Admin)");
+      } catch (e) {}
       window.security.logAudit({
         actor_role: "ADMIN",
         actor_name: "Demo Admin PIN",

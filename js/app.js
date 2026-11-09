@@ -53,6 +53,7 @@ async function initApp() {
   }
 
   renderEsgCircularSection();
+  syncEditorAuthUI();
   updateOrderSummary();
 }
 
@@ -233,6 +234,8 @@ function renderProductGrid() {
     return;
   }
 
+  const canEdit = Boolean(window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized());
+
   items.forEach(p => {
     const isCombo = p.category === "Combo";
     const name = escapeHTML(p.name);
@@ -268,7 +271,7 @@ function renderProductGrid() {
         </div>`
       : "";
 
-    const galleryThumbsHtml = (gallery.length > 1 || hasVideo) ? `
+    const galleryThumbsHtml = (gallery.length > 1 || hasVideo || canEdit) ? `
       <div class="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1">
         ${gallery.map((m, idx) => m.type === "video" ? `
           <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener" class="shrink-0 px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-extrabold flex items-center gap-1 shadow-2xs" title="Xem Video thực tế của sản phẩm & Nhà vườn">
@@ -279,9 +282,11 @@ function renderProductGrid() {
             <img src="${escapeHTML(m.url)}" onerror="this.src='images/hero-fruits.jpg'" class="w-full h-full object-cover" alt="Thumb ${idx + 1}" />
           </button>
         `).join("")}
-        <button type="button" onclick="openProductPostModal('${pid}')" class="shrink-0 px-2 py-1 rounded-lg bg-[#f2fbdf] hover:bg-[#e1f9cf] text-[#256314] border border-[#b8ee99] text-[10px] font-extrabold" title="Thêm/Đổi/Xóa ảnh hoặc video">
-          + Ảnh/Video
-        </button>
+        ${canEdit ? `
+          <button type="button" onclick="openProductPostModal('${pid}')" class="shrink-0 px-2 py-1 rounded-lg bg-[#f2fbdf] hover:bg-[#e1f9cf] text-[#256314] border border-[#b8ee99] text-[10px] font-extrabold" title="Thêm/Đổi/Xóa ảnh hoặc video">
+            + Ảnh/Video
+          </button>
+        ` : ""}
       </div>
     ` : "";
 
@@ -315,7 +320,8 @@ function renderProductGrid() {
           </span>
         </div>
 
-        <!-- Nút chỉnh sửa nhanh Ảnh / Video / Thông tin Nhà vườn & Nút Xóa ngay trên thẻ sản phẩm -->
+        <!-- Nút chỉnh sửa nhanh Ảnh / Video / Thông tin Nhà vườn & Nút Xóa ngay trên thẻ sản phẩm (Chỉ hiển thị khi đã được cấp quyền) -->
+        ${canEdit ? `
         <div class="absolute top-3 right-3 flex items-center gap-1">
           <button type="button" onclick="openProductPostModal('${pid}')" class="px-2.5 py-1 rounded-full bg-white/95 hover:bg-[#fef08a] text-[#1c560e] text-[10px] font-black shadow-md border border-[#b8ee99] flex items-center gap-1 transition" title="Chỉnh sửa hình ảnh, video & thông tin Nhà vườn">
             <i class="fa-solid fa-camera text-[#3ba117]"></i>
@@ -325,6 +331,7 @@ function renderProductGrid() {
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
+        ` : ""}
 
         ${qty > 0 ? `<span class="absolute bottom-3 right-3 text-[11px] font-black px-2.5 py-1 rounded-full bg-[#1c560e] text-[#fef08a] shadow-md border border-[#fef08a]/40 animate-pulse">✓ Đã chọn ${qty} ${unit}</span>` : ""}
         <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
@@ -348,7 +355,7 @@ function renderProductGrid() {
           <div class="mt-2 p-2.5 rounded-2xl bg-[#f7fdf3] border border-[#c8edab] text-[11px] space-y-0.5">
             <div class="font-extrabold text-[#1c560e] flex items-center justify-between gap-1">
               <span class="truncate">🏡 ${escapeHTML(farm.farmer_name)}</span>
-              <button type="button" onclick="openProductPostModal('${pid}')" class="text-[10px] font-bold text-[#3ba117] hover:underline shrink-0">✏️ Sửa</button>
+              ${canEdit ? `<button type="button" onclick="openProductPostModal('${pid}')" class="text-[10px] font-bold text-[#3ba117] hover:underline shrink-0">✏️ Sửa</button>` : ""}
             </div>
             <div class="text-[#4d6b33] font-medium truncate">📍 ${escapeHTML(farm.farm_region)}</div>
           </div>
@@ -504,9 +511,11 @@ function renderTraceSlide() {
     <div class="mt-2 p-3 rounded-xl bg-white border border-[#c8edab] text-xs space-y-1">
       <div class="flex items-center justify-between gap-2">
         <span class="font-black text-[#1c560e]">🏡 ${escapeHTML(farm.farmer_name)}</span>
+        ${(window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized()) ? `
         <button type="button" onclick="closeTraceabilityModal();openProductPostModal('${escapeHTML(currentTraceProduct.id)}');" class="px-2 py-0.5 rounded bg-[#e1f9cf] text-[#256314] font-extrabold text-[10px]">
           ✏️ Sửa Ảnh/Video & TT Nhà Vườn
         </button>
+        ` : ""}
       </div>
       <div class="text-[11px] text-[#3b5726]">📍 <strong>Vùng trồng:</strong> ${escapeHTML(farm.farm_region)}</div>
       <div class="text-[11px] text-[#3b5726] flex flex-wrap items-center justify-between gap-1.5">
@@ -534,11 +543,129 @@ function renderTraceSlide() {
   }
 }
 
-// ================= MODAL 6: ĐĂNG BÀI MỚI & CHỈNH SỬA HÌNH ẢNH, VIDEO, THÔNG TIN NHÀ VƯỜN TRỰC TIẾP TRÊN TRANG CHỦ =================
+// ================= MODAL 6 & 7: PHÂN QUYỀN ĐĂNG BÀI MỚI & CHỈNH SỬA HÌNH ẢNH, VIDEO, THÔNG TIN NHÀ VƯỜN =================
 let modalMediaGallery = [];
 let modalReplacingIdx = -1;
+let pendingEditorAction = null;
+
+window.syncEditorAuthUI = function () {
+  const canEdit = Boolean(window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized());
+  const sessionInfo = (window.security && typeof window.security.getEditorSessionInfo === "function")
+    ? window.security.getEditorSessionInfo()
+    : { authorized: canEdit, label: canEdit ? "🔓 Đã cấp quyền chỉnh sửa" : "🔒 Chế độ Khách hàng" };
+
+  document.querySelectorAll(".editor-only-control").forEach(el => {
+    el.classList.toggle("hidden", !canEdit);
+  });
+
+  const unlockBtn1 = document.getElementById("products-unlock-editor-btn");
+  const unlockBtn2 = document.getElementById("showcase-unlock-editor-btn");
+  if (unlockBtn1) unlockBtn1.classList.toggle("hidden", canEdit);
+  if (unlockBtn2) unlockBtn2.classList.toggle("hidden", canEdit);
+
+  const drawerBadge = document.getElementById("drawer-editor-status-badge");
+  const drawerIcon = document.getElementById("drawer-editor-auth-icon");
+  const drawerTitle = document.getElementById("drawer-editor-auth-title");
+  const drawerSub = document.getElementById("drawer-editor-auth-sub");
+
+  if (drawerBadge) {
+    drawerBadge.innerHTML = canEdit
+      ? `<span class="text-emerald-300">🔓 ${escapeHTML(sessionInfo.label)}</span>`
+      : `<span class="text-slate-300">🔒 Chế độ Khách hàng (Đã ẩn nút sửa/xóa)</span>`;
+  }
+  if (drawerIcon) {
+    drawerIcon.className = canEdit
+      ? "fa-solid fa-camera text-emerald-400 text-sm shrink-0"
+      : "fa-solid fa-lock text-amber-300 text-sm shrink-0";
+  }
+  if (drawerTitle) {
+    drawerTitle.textContent = canEdit
+      ? "📝 Đăng Bài / Sửa Ảnh & Video SP"
+      : "🔐 Mở Khóa Quyền Đăng / Sửa Bài";
+  }
+  if (drawerSub) {
+    drawerSub.textContent = canEdit
+      ? "Đã cấp quyền • Bấm để đăng hoặc sửa ngay"
+      : "Chỉ người được cấp quyền mới sửa ảnh/nội dung";
+  }
+};
+
+window.handleEditorPermissionButtonClick = function () {
+  const canEdit = Boolean(window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized());
+  if (canEdit) {
+    openProductPostModal();
+  } else {
+    openEditorAuthModal(() => openProductPostModal());
+  }
+};
+
+window.openEditorAuthModal = function (onSuccessCallback = null) {
+  pendingEditorAction = typeof onSuccessCallback === "function" ? onSuccessCallback : null;
+  const modal = document.getElementById("editor-auth-modal");
+  const errEl = document.getElementById("editor-auth-error");
+  const pinEl = document.getElementById("editor-auth-pin");
+  if (errEl) {
+    errEl.classList.add("hidden");
+    errEl.textContent = "";
+  }
+  if (pinEl) pinEl.value = "";
+  if (modal) {
+    modal.classList.remove("hidden");
+    setTimeout(() => pinEl?.focus(), 100);
+  }
+};
+
+window.closeEditorAuthModal = function () {
+  document.getElementById("editor-auth-modal")?.classList.add("hidden");
+  pendingEditorAction = null;
+};
+
+window.handleEditorAuthSubmit = function (event) {
+  event.preventDefault();
+  const pin = (document.getElementById("editor-auth-pin")?.value || "").trim();
+  const actor = (document.getElementById("editor-auth-actor")?.value || "Quản trị viên Hệ thống").trim();
+  const errEl = document.getElementById("editor-auth-error");
+
+  try {
+    if (!window.security || typeof window.security.unlockEditorAccess !== "function") {
+      throw new Error("Không tìm thấy mô-đun bảo mật.");
+    }
+    const session = window.security.unlockEditorAccess(pin, actor);
+    const cb = pendingEditorAction;
+    closeEditorAuthModal();
+    syncEditorAuthUI();
+    renderProductGrid();
+    if (typeof showToast === "function") {
+      showToast(`🔓 Đã mở khóa quyền Chỉnh sửa & Đăng bài cho: ${session.actorName}!`);
+    }
+    if (cb) cb();
+  } catch (err) {
+    if (errEl) {
+      errEl.textContent = err.message || "Mã PIN cấp quyền không hợp lệ!";
+      errEl.classList.remove("hidden");
+    } else {
+      alert(err.message);
+    }
+  }
+};
+
+window.handleLockEditorAccess = function () {
+  if (window.security && typeof window.security.lockEditorAccess === "function") {
+    window.security.lockEditorAccess();
+  }
+  closeProductPostModal();
+  syncEditorAuthUI();
+  renderProductGrid();
+  if (typeof showToast === "function") {
+    showToast("🔒 Đã khóa quyền chỉnh sửa & đăng bài (Chuyển về giao diện Khách hàng).");
+  }
+};
 
 window.openProductPostModal = function (productId = "") {
+  if (!window.security || !window.security.isEditorAuthorized()) {
+    openEditorAuthModal(() => openProductPostModal(productId));
+    return;
+  }
   const modal = document.getElementById("product-post-modal");
   if (!modal) return;
 
@@ -745,6 +872,10 @@ window.addModalUrlMedia = function () {
 
 window.handleSaveModalProductPost = async function (event) {
   event.preventDefault();
+  if (!window.security || !window.security.isEditorAuthorized()) {
+    openEditorAuthModal();
+    return;
+  }
   const editId = (document.getElementById("mp-edit-id")?.value || "").trim();
   const name = document.getElementById("mp-name")?.value.trim();
   const category = document.getElementById("mp-category")?.value || "TraiCay";
@@ -767,53 +898,73 @@ window.handleSaveModalProductPost = async function (event) {
     farm_story: description
   };
 
-  await window.db.saveProductPost({
-    id: editId || undefined,
-    name,
-    category,
-    unit,
-    price_sale,
-    description,
-    image_url: primaryImg,
-    custom_image_url: primaryImg,
-    video_url,
-    media_gallery: gallery,
-    farm_info
-  });
-
-  // Đồng thời nếu người dùng đăng bài mới, tự động thêm 1 bản tin vào Nhật ký Nhà vườn để hiển thị nổi bật
-  if (!editId) {
-    window.db.saveFarmPost({
-      farmer_name: farm_info.farmer_name,
-      farm_region: farm_info.farm_region,
-      farming_method: farm_info.farming_method,
-      farmer_phone: farm_info.farmer_phone,
-      title: `Lên kệ mới: ${name} (${formatVND(price_sale)}/${unit})`,
-      story: description,
+  try {
+    await window.db.saveProductPost({
+      id: editId || undefined,
+      name,
+      category,
+      unit,
+      price_sale,
+      description,
+      image_url: primaryImg,
+      custom_image_url: primaryImg,
       video_url,
-      media_gallery: gallery
+      media_gallery: gallery,
+      farm_info
     });
-  }
 
-  closeProductPostModal();
-  await loadProducts();
+    // Đồng thời nếu người dùng đăng bài mới, tự động thêm 1 bản tin vào Nhật ký Nhà vườn để hiển thị nổi bật
+    if (!editId) {
+      window.db.saveFarmPost({
+        farmer_name: farm_info.farmer_name,
+        farm_region: farm_info.farm_region,
+        farming_method: farm_info.farming_method,
+        farmer_phone: farm_info.farmer_phone,
+        title: `Lên kệ mới: ${name} (${formatVND(price_sale)}/${unit})`,
+        story: description,
+        video_url,
+        media_gallery: gallery
+      });
+    }
+
+    closeProductPostModal();
+    await loadProducts();
+  } catch (err) {
+    alert(err.message || "Không có quyền thực hiện thao tác này.");
+  }
 };
 
 window.handleDeleteFromModal = async function () {
+  if (!window.security || !window.security.isEditorAuthorized()) {
+    openEditorAuthModal();
+    return;
+  }
   const editId = (document.getElementById("mp-edit-id")?.value || "").trim();
   if (!editId) return;
   if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi kệ hàng không?")) return;
-  await window.db.deleteProductPost(editId);
-  closeProductPostModal();
-  await loadProducts();
+  try {
+    await window.db.deleteProductPost(editId);
+    closeProductPostModal();
+    await loadProducts();
+  } catch (err) {
+    alert(err.message || "Không có quyền xóa.");
+  }
 };
 
 window.handleDeleteProductCard = async function (productId) {
+  if (!window.security || !window.security.isEditorAuthorized()) {
+    openEditorAuthModal(() => handleDeleteProductCard(productId));
+    return;
+  }
   const p = currentProducts.find(item => String(item.id) === String(productId));
   if (!p) return;
   if (!confirm(`Xóa bài đăng sản phẩm "${p.name}" khỏi danh sách?`)) return;
-  await window.db.deleteProductPost(productId);
-  await loadProducts();
+  try {
+    await window.db.deleteProductPost(productId);
+    await loadProducts();
+  } catch (err) {
+    alert(err.message || "Không có quyền xóa.");
+  }
 };
 
 function renderIndexFarmPostsShowcase() {

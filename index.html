@@ -70,28 +70,28 @@
     </div>
   </div>
 
-  <!-- ================= NAVBAR ================= -->
-  <header class="sticky top-0 z-50 glass-nav bg-white/95 backdrop-blur-md border-b border-[#d2f0b6]">
-    <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 h-16 sm:h-[72px] flex items-center justify-between gap-2">
+  <!-- ================= NAVBAR (TỐI ƯU HIỂN THỊ 100% TRÊN CẢ MOBILE & DESKTOP) ================= -->
+  <header class="sticky top-0 z-50 glass-nav bg-white/95 backdrop-blur-md border-b border-[#d2f0b6] shadow-xs">
+    <div class="max-w-7xl mx-auto px-2.5 sm:px-5 lg:px-6 h-14 sm:h-[72px] flex items-center justify-between gap-1.5 sm:gap-2">
       
-      <!-- Brand Logo Độc Quyền (3D SVG: Lá Kép Hữu Cơ + Lục Giác Blockchain + Cầu Nối Vùng Miền) -->
-      <a href="index.html" class="flex items-center gap-2.5 sm:gap-3 shrink-0 group">
-        <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-gradient-to-tr from-[#1e6b16] via-[#3eb31b] to-[#facc15] shadow-md shadow-[#3ba117]/25 group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 shrink-0">
+      <!-- Brand Logo Độc Quyền (Gọn gàng trên Mobile để không bao giờ đẩy tràn nút 3 gạch góc phải) -->
+      <a href="index.html" class="flex items-center gap-2 sm:gap-3 min-w-0 group">
+        <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-gradient-to-tr from-[#1e6b16] via-[#3eb31b] to-[#facc15] shadow-md shadow-[#3ba117]/25 group-hover:scale-105 transition-all duration-300 shrink-0">
           <img src="images/logo-agriconnect.svg" alt="AgriConnect Logo" class="w-full h-full object-contain rounded-[14px]">
-          <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#fef08a] border-2 border-[#173f0c] flex items-center justify-center" title="Đã chứng thực VietGAP & Blockchain Escrow">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#3ba117]"></span>
+          <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#fef08a] border-2 border-[#173f0c] flex items-center justify-center">
+            <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#3ba117]"></span>
           </span>
         </div>
-        <div>
+        <div class="min-w-0">
           <div class="flex items-center gap-1.5 leading-none">
-            <span class="text-lg sm:text-xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#22720d] via-[#3ba117] to-[#ca8a04]">Connect</span></span>
-            <span class="text-[8px] sm:text-[9px] uppercase tracking-wider font-extrabold bg-gradient-to-r from-[#e1f9cf] to-[#fef9c3] text-[#1c560e] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">ĐẶC SẢN VÙNG MIỀN</span>
+            <span class="text-base sm:text-xl font-black tracking-tight text-[#0f240d]">Agri<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#22720d] via-[#3ba117] to-[#ca8a04]">Connect</span></span>
+            <span class="hidden sm:inline-block text-[9px] uppercase tracking-wider font-extrabold bg-gradient-to-r from-[#e1f9cf] to-[#fef9c3] text-[#1c560e] px-2 py-0.5 rounded-full whitespace-nowrap border border-[#b8ee99] shadow-2xs">ĐẶC SẢN VÙNG MIỀN</span>
           </div>
-          <p class="text-[10px] text-[#4b6b32] font-semibold hidden sm:block lg:hidden 2xl:block mt-0.5">Tinh hoa nông sản Việt • Chuỗi lạnh & Ví Escrow</p>
+          <p class="text-[9px] sm:text-[10px] text-[#256314] font-bold truncate mt-0.5">Đặc sản vùng miền • Ví Escrow</p>
         </div>
       </a>
 
-      <!-- Desktop Quick Navigation (Gọn gàng để nhường không gian nổi bật cho nút 3 gạch Menu & Tìm Nhanh ở góc phải) -->
+      <!-- Desktop Quick Navigation -->
       <nav class="hidden xl:flex items-center gap-1 text-xs font-bold text-[#1f3813] whitespace-nowrap">
         <a href="#campaign" class="px-2.5 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all">Đợt Gom</a>
         <a href="#products" class="px-3 py-1.5 rounded-xl hover:text-[#256314] hover:bg-[#eaf8dd] transition-all flex items-center gap-1 font-black text-[#256314] bg-[#e1f9cf]/70 border border-[#b8ee99]">
@@ -105,21 +105,39 @@
         </a>
       </nav>
 
-      <!-- Right Actions (Hiển thị trọn vẹn nút Đặt Hàng, Cổng Quản Trị & Biểu Tượng 3 Gạch ở góc phải bên trên mọi màn hình) -->
+      <!-- Right Actions: Nút Đặt Ngay + Cổng Quản Trị + Biểu Tượng 3 Gạch (Vừa vặn 100% trên màn hình Mobile) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-xs px-3 sm:px-3.5 py-2 rounded-xl shadow-md shadow-[#44a821]/25 transition-all transform active:scale-95 flex items-center gap-1.5 whitespace-nowrap shrink-0">
-          <i class="fa-solid fa-basket-shopping text-xs"></i>
+        <a href="#preorder" class="bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#318814] hover:to-[#4aa720] text-white font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap shrink-0">
+          <i class="fa-solid fa-basket-shopping text-[11px]"></i>
           <span>Đặt Ngay</span>
         </a>
         <a href="admin.html" title="Chuyển nhanh sang Cổng Quản Trị Nhóm" class="hidden md:flex items-center gap-1.5 px-3 py-2 text-xs font-extrabold text-[#fef08a] bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700 whitespace-nowrap shadow-xs">
           <i class="fa-solid fa-sliders text-emerald-400"></i>
           <span>Cổng Quản Trị</span>
         </a>
-        <!-- Biểu tượng 3 gạch (Luôn hiển thị nổi bật ở góc phải bên trên cho cả Desktop & Mobile) -->
-        <button id="top-right-menu-btn" type="button" onclick="toggleMobileNav()" aria-label="Mở Menu 3 Gạch Tìm Kiếm & Chuyển Cổng" title="Mở Menu 3 Gạch: Tìm Kiếm Nhanh, Các Tiêu Đề & Chuyển Đổi Cổng Quản Trị" class="px-3 sm:px-3.5 py-2 text-[#0f240d] bg-[#fef08a] hover:bg-[#fde047] border-2 border-[#3ba117] rounded-xl flex items-center gap-2 font-black text-xs transition-all shadow-md active:scale-95 shrink-0">
-          <i id="top-right-menu-icon" class="fa-solid fa-bars text-base text-[#1c560e]"></i>
-          <span>Menu & Tìm Nhanh</span>
+        <!-- Biểu tượng 3 gạch góc phải bên trên (Hiển thị rõ nét trên cả Điện thoại & Máy tính) -->
+        <button id="top-right-menu-btn" type="button" onclick="toggleMobileNav()" aria-label="Mở Menu 3 Gạch" class="px-2.5 sm:px-3.5 py-2 text-[#0f240d] bg-[#fef08a] hover:bg-[#fde047] border-2 border-[#3ba117] rounded-xl flex items-center gap-1.5 font-black text-xs transition-all shadow-md active:scale-95 shrink-0">
+          <i id="top-right-menu-icon" class="fa-solid fa-bars text-base sm:text-lg text-[#1c560e]"></i>
+          <span class="sm:hidden">Menu</span>
+          <span class="hidden sm:inline">Menu & Tìm Nhanh</span>
         </button>
+      </div>
+    </div>
+
+    <!-- THANH TÌM KIẾM NHANH & CHUYỂN CỔNG TRỰC TIẾP TRÊN MOBILE (Hiển thị ngay dưới Header trên điện thoại giúp khách tìm món & bạn chuyển sang Quản Trị trong 1 chạm) -->
+    <div class="lg:hidden bg-[#f2fbdf] border-t border-[#d2f0b6] px-2.5 py-2">
+      <div class="flex items-center gap-1.5">
+        <form onsubmit="event.preventDefault();quickJumpSearchKeyword(document.getElementById('mobile-header-quick-search').value,'ALL');" class="relative flex-1 min-w-0">
+          <i class="fa-solid fa-magnifying-glass text-[#3ba117] absolute left-2.5 top-1/2 -translate-y-1/2 text-[11px]"></i>
+          <input type="text" id="mobile-header-quick-search" oninput="handleQuickDrawerLiveSearch(this.value)" placeholder="Tìm nhanh: Sầu riêng, Măng cụt, Rau..." class="w-full pl-7 pr-2 py-1.5 rounded-xl border border-[#82d648] bg-white text-[11px] font-bold text-[#0f240d] focus:outline-none focus:ring-2 focus:ring-[#3ba117]" />
+        </form>
+        <a href="admin.html" class="px-2.5 py-1.5 rounded-xl bg-slate-900 text-[#fef08a] font-extrabold text-[11px] flex items-center gap-1 whitespace-nowrap shrink-0 shadow-2xs">
+          <i class="fa-solid fa-sliders text-emerald-400 text-[10px]"></i>
+          <span>Quản Trị</span>
+        </a>
+        <a href="farmer.html" class="px-2 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-[11px] flex items-center gap-1 whitespace-nowrap shrink-0 shadow-2xs">
+          <span>🌾 Vườn</span>
+        </a>
       </div>
     </div>
 
@@ -251,16 +269,29 @@
                 <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
               </a>
 
-              <button type="button" onclick="toggleMobileNav();openProductPostModal();" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 flex items-center justify-between gap-2 text-left transition group">
+              <button type="button" onclick="toggleMobileNav();handleEditorPermissionButtonClick();" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 flex items-center justify-between gap-2 text-left transition group">
                 <div class="flex items-center gap-2 min-w-0">
-                  <i class="fa-solid fa-camera text-amber-300 text-sm shrink-0"></i>
+                  <i id="drawer-editor-auth-icon" class="fa-solid fa-lock text-amber-300 text-sm shrink-0"></i>
                   <div class="min-w-0">
-                    <span class="font-extrabold text-xs block truncate">Đăng Bài / Sửa Ảnh & Video SP</span>
-                    <span class="text-[10px] text-slate-300 block truncate">Mở ngay trên trang chủ</span>
+                    <span id="drawer-editor-auth-title" class="font-extrabold text-xs block truncate">🔐 Mở Khóa Quyền Đăng / Sửa Bài</span>
+                    <span id="drawer-editor-auth-sub" class="text-[10px] text-slate-300 block truncate">Chỉ người được cấp quyền mới sửa ảnh/nội dung</span>
                   </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                <i class="fa-solid fa-key text-[10px] text-amber-300"></i>
               </button>
+            </div>
+
+            <!-- Thanh trạng thái Phân quyền Chỉnh sửa & Đăng bài -->
+            <div class="pt-1 flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 text-[11px]">
+              <span id="drawer-editor-status-badge" class="font-bold text-slate-300">🔒 Đang ở Chế độ Khách hàng (Đã ẩn nút sửa/xóa)</span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" id="drawer-open-post-btn" onclick="toggleMobileNav();openProductPostModal();" class="editor-only-control hidden px-2.5 py-1 rounded-lg bg-[#3ba117] hover:bg-[#256314] text-white font-extrabold text-[10px]">
+                  + Đăng / Sửa SP
+                </button>
+                <button type="button" id="drawer-lock-editor-btn" onclick="handleLockEditorAccess()" class="editor-only-control hidden px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[10px]">
+                  🔒 Khóa Quyền
+                </button>
+              </div>
             </div>
           </div>
 
@@ -612,9 +643,17 @@
               <option value="PRICE_DESC">💎 Giá cao ➔ thấp (Quà VIP)</option>
               <option value="COLD_2_6C">❄️ Ưu tiên Khoang Lạnh 2–6°C (Rau lá)</option>
             </select>
-            <button type="button" onclick="openProductPostModal()" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e7d14] hover:to-[#4aa720] text-white text-xs font-black shadow-md shadow-[#44a821]/25 flex items-center gap-1.5 transition active:scale-95">
+            <button type="button" onclick="openProductPostModal()" class="editor-only-control hidden px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e7d14] hover:to-[#4aa720] text-white text-xs font-black shadow-md shadow-[#44a821]/25 flex items-center gap-1.5 transition active:scale-95">
               <i class="fa-solid fa-circle-plus"></i>
               <span>📝 Đăng Bài / Thêm Ảnh, Video & TT Nhà Vườn</span>
+            </button>
+            <button type="button" id="products-unlock-editor-btn" onclick="openEditorAuthModal()" class="px-3.5 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-[#fef08a] text-xs font-extrabold shadow-xs flex items-center gap-1.5 transition" title="Chỉ Quản trị viên hoặc Nhà vườn được cấp quyền mới được đăng bài & chỉnh sửa ảnh/nội dung">
+              <i class="fa-solid fa-user-shield text-emerald-400"></i>
+              <span>🔐 Cấp Quyền Đăng/Sửa</span>
+            </button>
+            <button type="button" id="products-lock-editor-btn" onclick="handleLockEditorAccess()" class="editor-only-control hidden px-3.5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-xs flex items-center gap-1.5 transition" title="Khóa lại quyền chỉnh sửa để chuyển về giao diện Khách hàng">
+              <i class="fa-solid fa-lock"></i>
+              <span>🔒 Khóa Quyền Sửa</span>
             </button>
           </div>
         </div>
@@ -674,11 +713,15 @@
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button type="button" onclick="openProductPostModal()" class="px-3.5 py-2 rounded-xl bg-[#3ba117] hover:bg-[#2e7d14] text-white font-extrabold text-xs shadow-xs flex items-center gap-1.5 transition">
+            <button type="button" onclick="openProductPostModal()" class="editor-only-control hidden px-3.5 py-2 rounded-xl bg-[#3ba117] hover:bg-[#2e7d14] text-white font-extrabold text-xs shadow-xs flex items-center gap-1.5 transition">
               <i class="fa-solid fa-pen-to-square"></i>
               <span>+ Đăng Bài Nông Sản / Cập Nhật Nhà Vườn</span>
             </button>
-            <a href="farmer.html#nhat-ky-nha-vuon" class="px-3.5 py-2 rounded-xl bg-[#f2fbdf] hover:bg-[#e1f9cf] text-[#256314] border border-[#b8ee99] font-extrabold text-xs transition">
+            <button type="button" id="showcase-unlock-editor-btn" onclick="openEditorAuthModal()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-[#fef08a] font-extrabold text-xs shadow-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-key text-amber-300"></i>
+              <span>🔐 Mở Khóa Quyền Chỉnh Sửa & Đăng Bài</span>
+            </button>
+            <a href="farmer.html#nhat-ky-nha-vuon" class="editor-only-control hidden px-3.5 py-2 rounded-xl bg-[#f2fbdf] hover:bg-[#e1f9cf] text-[#256314] border border-[#b8ee99] font-extrabold text-xs transition">
               🌾 Quản Lý Tại Cổng Nông Dân →
             </a>
           </div>
@@ -2324,9 +2367,71 @@
     </div>
   </div>
 
+  <!-- ================= MODAL 7: XÁC THỰC QUYỀN CHỈNH SỬA & ĐĂNG BÀI (RBAC CONTENT & MEDIA GUARD) ================= -->
+  <div id="editor-auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-2 border-[#3ba117] relative space-y-4">
+      <button type="button" onclick="closeEditorAuthModal()" aria-label="Đóng" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-700 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-start gap-3 pr-8">
+        <div class="w-11 h-11 rounded-2xl bg-slate-900 text-[#fef08a] flex items-center justify-center text-lg shadow-md shrink-0">
+          <i class="fa-solid fa-user-lock"></i>
+        </div>
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#e1f9cf] text-[#256314] text-[10px] font-black uppercase tracking-wider">
+            🛡️ Bảo Vệ Nội Dung & Hình Ảnh Sàn
+          </span>
+          <h3 class="text-base sm:text-lg font-black text-[#0f240d] mt-1">
+            Xác Thực Quyền Đăng Bài & Chỉnh Sửa
+          </h3>
+          <p class="text-[11px] text-[#4b6b32] leading-relaxed">
+            Theo chính sách phân quyền của AgriConnect, <strong>chỉ Quản trị viên hoặc Nhà vườn được cấp quyền</strong> mới được đăng bài mới, thay đổi ảnh/video hoặc chỉnh sửa nội dung.
+          </p>
+        </div>
+      </div>
+
+      <form id="editor-auth-form" onsubmit="handleEditorAuthSubmit(event)" class="space-y-3">
+        <div>
+          <label for="editor-auth-actor" class="block text-xs font-extrabold text-[#1f3813] mb-1">
+            Vai trò / Tên người thực hiện:
+          </label>
+          <select id="editor-auth-actor" class="w-full px-3 py-2.5 rounded-xl border border-[#b8ee99] bg-[#f7fdf3] text-xs font-extrabold text-[#0f240d]">
+            <option value="Quản trị viên Hệ thống (Admin)">👑 Quản trị viên Hệ thống (Admin)</option>
+            <option value="Chủ Vườn Bác Năm (Đã cấp quyền)">🌾 Chủ Vườn Bác Năm (Nhà vườn được cấp quyền)</option>
+            <option value="Ban Điều Phối Nội Dung AgriConnect">📝 Ban Điều Phối Nội Dung AgriConnect</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="editor-auth-pin" class="block text-xs font-extrabold text-[#1f3813] mb-1">
+            Mã PIN Cấp Quyền Chỉnh Sửa & Đăng Bài <span class="text-rose-500">*</span>
+          </label>
+          <input type="password" id="editor-auth-pin" required placeholder="Nhập mã PIN cấp quyền (VD: 123456)..." autocomplete="off"
+            class="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#82d648] bg-white text-sm font-black tracking-widest text-[#0f240d] focus:outline-none focus:ring-2 focus:ring-[#3ba117]" />
+          <p class="text-[10px] text-slate-500 mt-1">
+            💡 Mã PIN Quản trị mặc định: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold text-slate-700">123456</code> (Hoặc mã Nhà vườn: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold text-slate-700">AGRI2026</code>)
+          </p>
+        </div>
+
+        <div id="editor-auth-error" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold"></div>
+
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" onclick="closeEditorAuthModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+            Hủy
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#389e18] to-[#59c228] hover:from-[#2e7d14] hover:to-[#4aa720] text-white font-black text-xs shadow-md flex items-center gap-1.5 transition active:scale-95">
+            <i class="fa-solid fa-unlock-keyhole"></i>
+            <span>Xác Nhận Mở Quyền</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Scripts (Kèm version chống cache trình duyệt) -->
-  <script src="js/config.js?v=20261109_v17"></script>
-  <script src="js/supabaseClient.js?v=20261109_v17"></script>
-  <script src="js/app.js?v=20261109_v17"></script>
+  <script src="js/config.js?v=20261109_v18"></script>
+  <script src="js/supabaseClient.js?v=20261109_v18"></script>
+  <script src="js/app.js?v=20261109_v18"></script>
 </body>
 </html>

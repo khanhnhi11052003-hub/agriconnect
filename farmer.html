@@ -57,7 +57,10 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <a href="index.html" class="px-3 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#256314] font-extrabold text-xs flex items-center gap-1.5 border border-[#c8edab] transition whitespace-nowrap shrink-0">
+        <button type="button" id="farmer-header-auth-btn" onclick="openFarmerAuthModal()" class="px-2.5 sm:px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-[11px] sm:text-xs flex items-center gap-1 shadow-2xs transition whitespace-nowrap shrink-0">
+          <span id="farmer-header-auth-label">🔐 Cấp Quyền Sửa</span>
+        </button>
+        <a href="index.html" class="px-2.5 sm:px-3 py-2 rounded-xl bg-[#f0fae8] hover:bg-[#e1f9cf] text-[#256314] font-extrabold text-[11px] sm:text-xs flex items-center gap-1 border border-[#c8edab] transition whitespace-nowrap shrink-0">
           <i data-lucide="store" class="w-3.5 h-3.5 text-[#3ba117] shrink-0"></i>
           <span>Về Chợ</span>
         </a>
@@ -65,7 +68,7 @@
           <span>⚙️ Cổng Quản Trị</span>
         </a>
         <!-- Biểu tượng 3 gạch góc phải bên trên -->
-        <button type="button" onclick="document.getElementById('farmer-top-menu').classList.toggle('hidden')" class="px-3 py-2 rounded-xl bg-[#e1f9cf] hover:bg-[#c8edab] text-[#0f240d] border-2 border-[#72d440] font-extrabold text-xs flex items-center gap-1.5 shadow-2xs transition shrink-0" title="Mở Menu Tìm Kiếm & Chuyển Đổi Cổng">
+        <button type="button" onclick="document.getElementById('farmer-top-menu').classList.toggle('hidden')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-[#fef08a] hover:bg-[#fde047] text-[#0f240d] border-2 border-[#3ba117] font-extrabold text-xs flex items-center gap-1.5 shadow-2xs transition shrink-0" title="Mở Menu Tìm Kiếm & Chuyển Đổi Cổng">
           <span class="text-base leading-none">☰</span>
           <span class="hidden sm:inline">Menu</span>
         </button>
@@ -161,6 +164,26 @@
       <a href="#dang-ban-lua-moi" class="text-[11px] font-extrabold text-[#256314] bg-[#f2fce9] hover:bg-[#e1f9cf] px-3 py-1.5 rounded-xl border border-[#b8ee99] whitespace-nowrap shrink-0">
         + Báo sản lượng ngay
       </a>
+    </div>
+
+    <!-- BANNER PHÂN QUYỀN ĐĂNG BÀI & CHỈNH SỬA ẢNH/VIDEO/NỘI DUNG (CHỈ AI ĐƯỢC CẤP QUYỀN MỚI ĐƯỢC THAO TÁC) -->
+    <div id="farmer-auth-status-banner" class="bg-gradient-to-r from-amber-50 to-[#f0fae8] rounded-2xl p-3.5 sm:p-4 border-2 border-amber-300 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div class="text-xs space-y-0.5">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="farmer-auth-badge" class="font-extrabold text-amber-900">🔒 Đang Khóa Quyền Chỉnh Sửa & Đăng Bài (Chế độ Chỉ Xem)</span>
+        </div>
+        <p id="farmer-auth-desc" class="text-[#3b5726] text-[11px] leading-relaxed">
+          Theo chính sách bảo mật nội dung, chỉ <strong>Quản trị viên hoặc Nhà vườn được cấp quyền (nhập Mã PIN)</strong> mới được phép đăng bài mới, thay đổi hình ảnh/video và chỉnh sửa nội dung.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="farmer-banner-unlock-btn" onclick="openFarmerAuthModal()" class="px-3.5 py-2 rounded-xl bg-[#3ba117] hover:bg-[#256314] text-white font-extrabold text-xs shadow-xs whitespace-nowrap transition">
+          🔐 Nhập Mã Mở Quyền Đăng/Sửa
+        </button>
+        <button type="button" id="farmer-banner-lock-btn" onclick="lockFarmerEditorAccess()" class="hidden px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-xs whitespace-nowrap transition">
+          🔒 Khóa Quyền Lại
+        </button>
+      </div>
     </div>
 
     <!-- VÁCH NGĂN PHÂN QUYỀN RBAC & BẢO VỆ DỮ LIỆU ĐỊNH DANH (ROLE-BASED ACCESS CONTROL) -->
@@ -654,6 +677,46 @@
 
   </main>
 
+  <!-- MODAL XÁC THỰC QUYỀN CHỈNH SỬA & ĐĂNG BÀI TRÊN CỔNG NÔNG DÂN -->
+  <div id="farmer-auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-2 border-[#3ba117] relative space-y-4">
+      <button type="button" onclick="closeFarmerAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-700 flex items-center justify-center font-bold">✕</button>
+      <div class="flex items-start gap-3 pr-8">
+        <div class="w-11 h-11 rounded-2xl bg-slate-900 text-[#fef08a] flex items-center justify-center text-lg shrink-0">🔐</div>
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#e1f9cf] text-[#256314] text-[10px] font-black uppercase">Bảo Mật Quyền Đăng Bài & Sửa Ảnh</span>
+          <h3 class="text-base sm:text-lg font-extrabold text-[#0f240d] mt-1">Xác Thực Cấp Quyền Nhà Vườn / Quản Trị</h3>
+          <p class="text-[11px] text-[#4b6b32] leading-relaxed">
+            Chỉ người được cấp quyền mới được phép đăng bài mới, thay đổi hình ảnh/video và chỉnh sửa nội dung sản phẩm.
+          </p>
+        </div>
+      </div>
+
+      <form onsubmit="handleFarmerAuthSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-extrabold text-[#1f3813] mb-1">Vai trò thực hiện:</label>
+          <select id="farmer-auth-actor" class="w-full px-3 py-2.5 rounded-xl border border-[#b8ee99] bg-[#f7fdf3] text-xs font-extrabold text-[#0f240d]">
+            <option value="Chủ Vườn Bác Năm (Đã cấp quyền)">🌾 Chủ Vườn Bác Năm (Nhà vườn được cấp quyền)</option>
+            <option value="Quản trị viên Hệ thống (Admin)">👑 Quản trị viên Hệ thống (Admin)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold text-[#1f3813] mb-1">Mã PIN Cấp Quyền <span class="text-rose-500">*</span></label>
+          <input type="password" id="farmer-auth-pin" required placeholder="Nhập mã PIN cấp quyền (VD: 123456)..." autocomplete="off"
+            class="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#82d648] bg-white text-sm font-black tracking-widest text-[#0f240d] focus:outline-none focus:ring-2 focus:ring-[#3ba117]" />
+          <p class="text-[10px] text-slate-500 mt-1">
+            💡 Mã PIN Quản trị: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold">123456</code> hoặc Mã Nhà Vườn: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold">AGRI2026</code>
+          </p>
+        </div>
+        <div id="farmer-auth-error" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold"></div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" onclick="closeFarmerAuthModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">Hủy</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#3ba117] hover:bg-[#256314] text-white font-extrabold text-xs shadow-md transition">🔓 Xác Nhận Mở Quyền</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- TOAST THÔNG BÁO NHẸ NHÀNG -->
   <div id="farmer-toast" class="fixed bottom-5 left-4 right-4 max-w-md mx-auto z-50 hidden">
     <div class="bg-[#173f0c] text-white px-4 py-3 rounded-2xl shadow-xl border border-[#72d440] flex items-center gap-3">
@@ -662,8 +725,8 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20261109_v17"></script>
-  <script src="js/supabaseClient.js?v=20261109_v17"></script>
+  <script src="js/config.js?v=20261109_v18"></script>
+  <script src="js/supabaseClient.js?v=20261109_v18"></script>
   <script>
     window.testFarmerRbacBoundary = function () {
       try {
@@ -681,6 +744,110 @@
     let quickCardUploadProductId = null;
     let allLoadedProducts = [];
     let currentFarmPostMedia = [];
+    let pendingFarmerAction = null;
+
+    function syncFarmerAuthUI() {
+      const canEdit = Boolean(window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized());
+      const info = (window.security && typeof window.security.getEditorSessionInfo === "function")
+        ? window.security.getEditorSessionInfo()
+        : { authorized: canEdit, label: canEdit ? "🔓 Đã cấp quyền chỉnh sửa" : "🔒 Chế độ Chỉ Xem" };
+
+      const headerBtn = document.getElementById("farmer-header-auth-btn");
+      const headerLabel = document.getElementById("farmer-header-auth-label");
+      const banner = document.getElementById("farmer-auth-status-banner");
+      const badge = document.getElementById("farmer-auth-badge");
+      const desc = document.getElementById("farmer-auth-desc");
+      const unlockBtn = document.getElementById("farmer-banner-unlock-btn");
+      const lockBtn = document.getElementById("farmer-banner-lock-btn");
+
+      if (headerLabel) {
+        headerLabel.textContent = canEdit ? "🔓 Đã Cấp Quyền" : "🔐 Cấp Quyền Sửa";
+      }
+      if (headerBtn) {
+        headerBtn.onclick = canEdit ? lockFarmerEditorAccess : () => openFarmerAuthModal();
+      }
+      if (banner) {
+        banner.className = canEdit
+          ? "bg-gradient-to-r from-[#e1f9cf] to-[#f0fae8] rounded-2xl p-3.5 sm:p-4 border-2 border-[#3ba117] shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+          : "bg-gradient-to-r from-amber-50 to-[#f0fae8] rounded-2xl p-3.5 sm:p-4 border-2 border-amber-300 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3";
+      }
+      if (badge) {
+        badge.textContent = canEdit
+          ? `🔓 ${info.label} — Đã mở toàn quyền Đăng bài & Chỉnh sửa Ảnh/Video/Nội dung`
+          : "🔒 Đang Khóa Quyền Chỉnh Sửa & Đăng Bài (Chỉ ai được cấp quyền mới được thao tác)";
+        badge.className = canEdit ? "font-extrabold text-[#1c560e]" : "font-extrabold text-amber-900";
+      }
+      if (desc) {
+        desc.innerHTML = canEdit
+          ? `Bạn đang được cấp quyền hợp lệ. Mọi thao tác đăng bài, đổi ảnh/video và cập nhật thông tin Nhà vườn đều được ghi nhận vào sổ cái bảo mật.`
+          : `Theo chính sách bảo mật nội dung, chỉ <strong>Quản trị viên hoặc Nhà vườn được cấp quyền (nhập Mã PIN)</strong> mới được phép đăng bài mới, thay đổi hình ảnh/video và chỉnh sửa nội dung.`;
+      }
+      if (unlockBtn) unlockBtn.classList.toggle("hidden", canEdit);
+      if (lockBtn) lockBtn.classList.toggle("hidden", !canEdit);
+    }
+
+    function openFarmerAuthModal(onSuccess = null) {
+      pendingFarmerAction = typeof onSuccess === "function" ? onSuccess : null;
+      const modal = document.getElementById("farmer-auth-modal");
+      const errEl = document.getElementById("farmer-auth-error");
+      const pinEl = document.getElementById("farmer-auth-pin");
+      if (errEl) {
+        errEl.classList.add("hidden");
+        errEl.textContent = "";
+      }
+      if (pinEl) pinEl.value = "";
+      if (modal) {
+        modal.classList.remove("hidden");
+        setTimeout(() => pinEl?.focus(), 100);
+      }
+    }
+
+    function closeFarmerAuthModal() {
+      document.getElementById("farmer-auth-modal")?.classList.add("hidden");
+      pendingFarmerAction = null;
+    }
+
+    function handleFarmerAuthSubmit(event) {
+      event.preventDefault();
+      const pin = (document.getElementById("farmer-auth-pin")?.value || "").trim();
+      const actor = (document.getElementById("farmer-auth-actor")?.value || "Chủ Vườn Bác Năm").trim();
+      const errEl = document.getElementById("farmer-auth-error");
+      try {
+        const session = window.security.unlockEditorAccess(pin, actor);
+        const cb = pendingFarmerAction;
+        closeFarmerAuthModal();
+        syncFarmerAuthUI();
+        renderFarmerProductCards();
+        renderFarmPostsList();
+        showFarmerToast(`🔓 Đã cấp quyền Chỉnh sửa & Đăng bài cho: ${session.actorName}!`);
+        if (cb) cb();
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = err.message;
+          errEl.classList.remove("hidden");
+        } else {
+          alert(err.message);
+        }
+      }
+    }
+
+    function lockFarmerEditorAccess() {
+      if (window.security && typeof window.security.lockEditorAccess === "function") {
+        window.security.lockEditorAccess();
+      }
+      syncFarmerAuthUI();
+      renderFarmerProductCards();
+      renderFarmPostsList();
+      showFarmerToast("🔒 Đã khóa quyền chỉnh sửa & đăng bài.");
+    }
+
+    function requireFarmerEditorAuth(callback) {
+      if (window.security && typeof window.security.isEditorAuthorized === "function" && window.security.isEditorAuthorized()) {
+        callback();
+      } else {
+        openFarmerAuthModal(callback);
+      }
+    }
 
     function showFarmerToast(msg) {
       const box = document.getElementById("farmer-toast");
@@ -982,6 +1149,10 @@
 
     // CHỈNH SỬA SẢN PHẨM: Nạp thông tin, hình ảnh, video & thông tin Nhà vườn lên Form
     function startEditProduct(productId) {
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => startEditProduct(productId));
+        return;
+      }
       const p = allLoadedProducts.find(item => String(item.id) === String(productId));
       if (!p) return;
 
@@ -1041,6 +1212,10 @@
     }
 
     async function handleDeleteProduct(productId, productName) {
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => handleDeleteProduct(productId, productName));
+        return;
+      }
       if (!confirm(`Bạn có chắc chắn muốn xóa bài đăng sản phẩm "${productName}" khỏi kệ hàng không?`)) return;
       await window.db.deleteProductPost(productId);
       if (document.getElementById("f-edit-id").value === String(productId)) {
@@ -1051,6 +1226,10 @@
     }
 
     async function handleRestoreDefaultProducts() {
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => handleRestoreDefaultProducts());
+        return;
+      }
       if (!confirm("Khôi phục lại toàn bộ danh sách sản phẩm và hình ảnh mặc định ban đầu?")) return;
       await window.db.restoreDefaultProducts();
       await loadFarmerPortal();
@@ -1059,6 +1238,10 @@
 
     // Đổi ảnh nhanh 1-Click ngay trên thẻ sản phẩm ở danh sách bên dưới
     function triggerQuickCardImageChange(productId) {
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => triggerQuickCardImageChange(productId));
+        return;
+      }
       quickCardUploadProductId = productId;
       let inp = document.getElementById("quick-card-file-input");
       if (!inp) {
@@ -1264,6 +1447,10 @@
     }
 
     function startEditFarmPost(postId) {
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => startEditFarmPost(postId));
+        return;
+      }
       const post = window.db.getFarmPosts().find(item => String(item.id) === String(postId));
       if (!post) return;
       document.getElementById("fp-edit-id").value = post.id;
@@ -1292,6 +1479,10 @@
     }
 
     function handleDeleteFarmPost(postId) {
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => handleDeleteFarmPost(postId));
+        return;
+      }
       if (!confirm("Xóa bài đăng thông tin Nhà vườn này?")) return;
       window.db.deleteFarmPost(postId);
       renderFarmPostsList();
@@ -1300,6 +1491,10 @@
 
     document.getElementById("farm-story-form")?.addEventListener("submit", (e) => {
       e.preventDefault();
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => document.getElementById("farm-story-form")?.requestSubmit());
+        return;
+      }
       const extraImg = (document.getElementById("fp-image-url")?.value || "").trim();
       const extraVid = (document.getElementById("fp-video-url")?.value || "").trim();
       const gallery = [...currentFarmPostMedia];
@@ -1323,6 +1518,7 @@
     });
 
     async function loadFarmerPortal() {
+      syncFarmerAuthUI();
       const wallet = window.db.getFarmerWallet();
       document.getElementById("farmer-wallet-available").textContent = formatVND(wallet.available_balance);
       document.getElementById("farmer-wallet-escrow").textContent = formatVND(wallet.escrow_pending);
@@ -1340,6 +1536,10 @@
 
     document.getElementById("farmer-post-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.security || !window.security.isEditorAuthorized()) {
+        openFarmerAuthModal(() => document.getElementById("farmer-post-form")?.requestSubmit());
+        return;
+      }
       const safetyOk = document.getElementById("f-safety-commit")?.checked;
       if (!safetyOk) {
         alert("Vui lòng đánh dấu đồng ý Cam kết an toàn vệ sinh thực phẩm trước khi đăng bán.");
