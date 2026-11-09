@@ -1,0 +1,202 @@
+[
+  {
+    "number": 1,
+    "badge": "KHỞI NGHIỆP VÀ ĐỔI MỚI SÁNG TẠO - SINH VIÊN",
+    "title": "AgriConnect — Nền Tảng Nông Sản Chín Cây & Ví Escrow",
+    "subtitle": "Từ Nông Trại Chín Tự Nhiên Đến Bàn Ăn Đô Thị Trong 24 Giờ",
+    "cards": [
+      {
+        "title": "Mô Hình Cốt Lõi",
+        "text": "Farm-to-Table Pre-order gom cầu theo tuần • Chuỗi lạnh liên tỉnh 24H • Ví bảo chứng Escrow."
+      },
+      {
+        "title": "Thông Tin Đội Thi",
+        "text": "Nhóm Sinh Viên Khởi Nghiệp AgriConnect • Giảng viên hướng dẫn: Bộ Môn Khởi Nghiệp ĐMST."
+      },
+      {
+        "title": "Sản Phẩm Thực Tế",
+        "text": "Website nguyên mẫu TRL 7 đang chạy trực tiếp trên máy chủ: https://agriconnect-yagt.vercel.app/"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "badge": "SLIDE 2: VẤN ĐỀ THỰC TIỄN VÀ NHU CẦU CẦN GIẢI QUYẾT",
+    "title": "3 Nghịch Lý Của Chuỗi Cung Ứng Nông Sản Truyền Thống",
+    "subtitle": "Tổn thất 32% sản lượng nông sản mỗi năm và rào cản bất đối xứng thông tin thị trường",
+    "cards": [
+      {
+        "title": "1. Nông Dân Bị Ép Giá",
+        "text": "Thương lái ép giá mùa vụ; 40% nông sản lệch chuẩn ngoại hình (Ugly Food) bị đổ bỏ lãng phí."
+      },
+      {
+        "title": "2. Người Dùng Mua Đắt & Bất An",
+        "text": "Giá thành đội lên gấp 2.5 - 3 lần do qua nhiều tầng trung gian; sợ hóa chất kích chín; sượng hỏng không được đền."
+      },
+      {
+        "title": "3. Tổn Thất Xã Hội & Môi Trường",
+        "text": "32% nông sản tổn thất sau thu hoạch vì thiếu chuỗi lạnh; hàng ngàn tấn rác thải nhựa, thùng xốp xả ra mỗi ngày."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "badge": "SLIDE 3: KHÁCH HÀNG MỤC TIÊU VÀ INSIGHT CHÍNH",
+    "title": "Chân Dung Khách Hàng & Nhu Cầu Tiềm Ẩn (Insight)",
+    "subtitle": "Tập trung phân khúc hộ gia đình trẻ tại chung cư và cộng đồng tiêu dùng xanh đô thị",
+    "cards": [
+      {
+        "title": "Chân Dung Khách Hàng Mục Tiêu",
+        "text": "Hộ gia đình trẻ tại các cụm chung cư, giảng viên, nhân viên văn phòng TP.HCM có thói quen chuẩn bị đồ ăn cuối tuần."
+      },
+      {
+        "title": "Insight Cốt Lõi Của Khách Hàng",
+        "text": "\"Tôi sẵn sàng đặt hàng trước từ Thứ Năm để nhận trái cây chín cây ngọt tự nhiên sáng Thứ Bảy, miễn là được cam kết Bao Ăn 1 Đổi 1.\""
+      },
+      {
+        "title": "Insight Của Nhà Vườn Đối Tác",
+        "text": "Cần đầu ra bao tiêu ổn định cả hàng loại 1 và hàng Ugly Food; giao diện đơn giản nhập liệu bằng giọng nói Voice-to-Text."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "badge": "SLIDE 4: GIẢI PHÁP / SẢN PHẨM & QUY TRÌNH HOẠT ĐỘNG",
+    "title": "Mô Hình Phân Phối Farm-to-Table Pre-order 24H",
+    "subtitle": "Quy trình 4 bước khép kín triệt tiêu tồn kho và giữ trọn độ tươi chín cây",
+    "cards": [
+      {
+        "title": "Thứ 2 - Thứ 5: Gom Đơn & Khóa Tiền",
+        "text": "Khách gom đơn Pre-order theo tuần; tiền thanh toán được tạm khóa an toàn vào Ví bảo chứng Escrow."
+      },
+      {
+        "title": "23h59 Thứ 5: Chốt Tuyệt Đối",
+        "text": "Chốt số lượng chính xác -> 05:00 sáng Thứ Sáu nhà vườn mới ra vườn hái quả chín sinh lý tự nhiên 100%."
+      },
+      {
+        "title": "Thứ 6 & Sáng Thứ 7: Chuỗi Lạnh 24H",
+        "text": "Đóng gói bẹ cau/lá chuối, xe lạnh 12-15°C về Hub TP.HCM; giao hỏa tốc đến bàn ăn sáng Thứ Bảy. Hao hụt < 2%."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "badge": "SLIDE 5: GIÁ TRỊ ĐỀ XUẤT & ĐIỂM KHÁC BIỆT CÔNG NGHỆ",
+    "title": "4 Trụ Cột Đổi Mới Công Nghệ Tạo Rào Cản Cạnh Tranh",
+    "subtitle": "Tuyên ngôn giá trị: Tươi hơn siêu thị - Rẻ hơn 25% - Bảo hành tuyệt đối",
+    "cards": [
+      {
+        "title": "1. Ví Escrow & AI Giám Định",
+        "text": "Tiền chỉ mở khóa sau 12h khách quét tem hài lòng; AI tự động duyệt bồi hoàn Bao Ăn 1 Đổi 1 dưới 3 phút."
+      },
+      {
+        "title": "2. Tem Dynamic QR & Merkle Hash",
+        "text": "Mã băm Merkle Root bất biến trên blockchain/IPFS; tem QR động có chữ ký số tự hủy chống làm giả."
+      },
+      {
+        "title": "3. Anti-Disintermediation & Voice",
+        "text": "Thuật toán tự động che số điện thoại chống giao dịch ngầm; Cổng nông dân Voice-to-Text nhập liệu bằng giọng nói."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "badge": "SLIDE 6: MÔ HÌNH KINH DOANH, ĐƠN VỊ KINH TẾ & KÊNH",
+    "title": "Mô Hình Kinh Doanh Đa Tầng & Chỉ Số LTV/CAC = 5.2x",
+    "subtitle": "Cấu trúc doanh thu lành mạnh, tối ưu chi phí qua kênh Đại sứ cư dân",
+    "cards": [
+      {
+        "title": "3 Dòng Doanh Thu Nền Tảng",
+        "text": "Phí sàn (Take-rate): 8% - 12% • Cứu hộ nông sản Ugly Food (Biên lợi nhuận 25-30%) • Thuê bao Eco-Box tuần."
+      },
+      {
+        "title": "Đơn Vị Kinh Tế (Giỏ 450.000 VNĐ)",
+        "text": "Giá vốn nông sản: 80% (360k) • Chuỗi lạnh & Bao bì: 10% (45k) • Biên lợi nhuận gộp vững chắc: 10% (45k)."
+      },
+      {
+        "title": "Kênh Tiếp Cận & Chỉ Số Tài Chính",
+        "text": "Đại sứ cư dân gom đơn chung cư -> Chi phí có khách CAC chỉ 15.000đ, LTV 6 tháng đạt 1.850.000đ -> LTV/CAC = 5.2x."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "badge": "SLIDE 7: MINH CHỨNG THỰC NGHIỆM & TRẢI NGHIỆM THỰC TẾ",
+    "title": "Sản Phẩm Đã Vận Hành Thực Tế (TRL 7) & Dữ Liệu Khảo Sát",
+    "subtitle": "Không dừng lại ở ý tưởng giấy, AgriConnect đã chạy thực nghiệm trên môi trường cloud",
+    "cards": [
+      {
+        "title": "Website Chạy Thực Tế 100%",
+        "text": "Nền tảng live tại https://agriconnect-yagt.vercel.app/ với 3 cổng phân quyền: Khách hàng, Nhà vườn, Quản trị Logistics."
+      },
+      {
+        "title": "Khảo Sát 350 Hộ Chung Cư",
+        "text": "88.6% sẵn sàng đặt hàng trước theo tuần; 92.3% hoàn toàn tin tưởng vào cơ chế bảo hiểm hoàn tiền Ví Escrow."
+      },
+      {
+        "title": "Mạng Lưới Vùng Trồng Thử Nghiệm",
+        "text": "Ký kết nguyên tắc với Liên minh Vườn Bác Năm & 3 HTX tại Bến Tre, Tiền Giang, Đà Lạt với 23 danh mục đặc sản."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "badge": "SLIDE 8: TÁC ĐỘNG XÃ HỘI, MÔI TRƯỜNG & MỤC TIÊU SDGs",
+    "title": "Phát Triển Bền Vững & Kinh Tế Tuần Hoàn (UN SDGs)",
+    "subtitle": "Hài hòa lợi ích 3 bên: Nông dân tăng thu nhập - Khách ăn sạch - Môi trường không rác nhựa",
+    "cards": [
+      {
+        "title": "SDG 1 & 8: Tăng Thu Nhập Nhà Vườn",
+        "text": "Nông dân nhận về giá cao hơn 25% - 35% so với thương lái; đầu ra ổn định không còn bị ép giá."
+      },
+      {
+        "title": "SDG 12: Tiêu Dùng & Sản Xuất Bền Vững",
+        "text": "Cứu hộ hàng tấn nông sản xấu mã Ugly Food, kéo giảm tỷ lệ hao hụt thực phẩm toàn chuỗi từ 32% xuống < 2%."
+      },
+      {
+        "title": "SDG 13: Hành Động Vì Khí Hậu",
+        "text": "100% bao bì sinh học phân hủy (bẹ cau ép, lá chuối); cơ chế đổi thùng giữ nhiệt tái sử dụng 6-8 lần."
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "badge": "SLIDE 9: KẾ HOẠCH TRIỂN KHAI, NGUỒN LỰC & ĐỐI TÁC",
+    "title": "Chiến Lược Tài Sản Nhẹ (Asset-Light) & Lộ Trình 3 Giai Đoạn",
+    "subtitle": "Điểm hòa vốn khả thi chỉ với 1.200 đơn/tuần tại 15 cụm chung cư TP.HCM",
+    "cards": [
+      {
+        "title": "Nguồn Lực Xe Lạnh Asset-Light",
+        "text": "Tận dụng chiều về rỗng của các đội xe tải lạnh xuất khẩu từ miền Tây về TP.HCM, tiết kiệm 60% chi phí vận tải."
+      },
+      {
+        "title": "Lộ Trình Triển Khai Thực Tế",
+        "text": "Q1-Q2/2026: Đạt điểm hòa vốn (1.200 đơn/tuần) -> Q3-Q4/2026: Phủ sóng 50 chung cư -> 2027: Mở rộng Hà Nội, Đà Nẵng."
+      },
+      {
+        "title": "Mạng Lưới Đối Tác Chiến Lược",
+        "text": "HTX nông nghiệp VietGAP, đơn vị logistics 2 chiều, xưởng ép bẹ cau sinh học Quảng Ngãi, Ban quản trị chung cư."
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "badge": "SLIDE 10: KẾT LUẬN & ĐỀ XUẤT KÊU GỌI ĐẦU TƯ",
+    "title": "Kêu Gọi Đầu Tư Vòng Pre-Seed & Đồng Hành Phát Triển",
+    "subtitle": "'AgriConnect — Minh bạch từ tâm, Nâng tầm nông sản Việt!'",
+    "cards": [
+      {
+        "title": "Mục Tiêu Kêu Gọi Đầu Tư",
+        "text": "$50,000 USD (1.25 Tỷ VNĐ) cho 10% Cổ phần (Định giá tiền kỳ Pre-money: 450,000 USD)."
+      },
+      {
+        "title": "Kế Hoạch Phân Bổ Nguồn Vốn",
+        "text": "35% Hub điều phối lạnh • 30% Mở rộng 50 chung cư TP.HCM • 20% Công nghệ AI & Smart Contract • 15% Quỹ ký quỹ Escrow."
+      },
+      {
+        "title": "Kêu Gọi Cố Vấn & Trải Nghiệm",
+        "text": "Kính mời quý thầy cô và Ban Giám khảo trải nghiệm trực tiếp nền tảng tại: https://agriconnect-yagt.vercel.app/"
+      }
+    ]
+  }
+]
