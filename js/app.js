@@ -191,6 +191,7 @@ async function initApp() {
   updateOrderSummary();
   initInteractiveGamificationHub();
   startContinuousLiveActivityEngine();
+  initAiChatbot();
 }
 
 function showPageError(message) {
@@ -3216,4 +3217,388 @@ function showFloatingActivityToast(message, icon = "🌱", title = "Vừa diễn
     toast.classList.remove("translate-y-0", "opacity-100");
   }, 4200);
 }
+
+// =========================================================================
+// 🤖 TRỢ LÝ ẢO AI AGRICONNECT (AGRIBOT AI CONCIERGE 24/7)
+// =========================================================================
+
+const AI_CHAT_STORAGE_KEY = "agriconnect_ai_chat_history_v1";
+let aiChatHistory = [];
+let aiIsTyping = false;
+
+window.initAiChatbot = function () {
+  try {
+    const raw = localStorage.getItem(AI_CHAT_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        aiChatHistory = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc lịch sử chat AI:", e);
+  }
+
+  if (aiChatHistory.length === 0) {
+    aiChatHistory = [
+      {
+        sender: "bot",
+        html: `Xin chào bạn! Mình là <strong>AgriBot AI 🤖</strong> — Trợ lý tư vấn nông sản chín cây & hỗ trợ đặt hàng 24/7 của <strong>AgriConnect</strong>.<br><br>Bạn đang tìm trái cây gì (VD: <em>Sầu riêng Ri6, Hồng giòn Đà Lạt, Cam sành, Combo đi chợ...</em>) hay muốn hỏi về <strong>Ví Escrow bảo hiểm 1 đổi 1</strong>, <strong>lịch giao xe lạnh</strong>? Hãy nhắn tin cho mình nhé!`,
+        actions: [
+          { label: "🍁 Xem trái cây rộ vụ tháng 11", type: "filter", value: "SEASON_NOW" },
+          { label: "🍈 Xem Trái Cây Đặc Sản", type: "filter", value: "TraiCay" }
+        ],
+        time: getCurrentTimeShort()
+      }
+    ];
+  }
+
+  renderAiChatMessages();
+};
+
+function getCurrentTimeShort() {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
+function saveAiChatHistory() {
+  try {
+    // Chỉ giữ tối đa 30 tin nhắn gần nhất
+    const trimmed = aiChatHistory.slice(-30);
+    localStorage.setItem(AI_CHAT_STORAGE_KEY, JSON.stringify(trimmed));
+  } catch (e) {}
+}
+
+window.toggleAiChatbot = function () {
+  const win = document.getElementById("ai-chatbot-window");
+  const trigger = document.getElementById("ai-chatbot-trigger");
+  if (!win) return;
+
+  const isHidden = win.classList.contains("hidden");
+  if (isHidden) {
+    win.classList.remove("hidden");
+    if (trigger) trigger.classList.add("hidden");
+    playAgriSound("tick");
+    setTimeout(() => {
+      document.getElementById("ai-chat-input")?.focus();
+      scrollAiChatToBottom();
+    }, 100);
+  } else {
+    win.classList.add("hidden");
+    if (trigger) trigger.classList.remove("hidden");
+  }
+};
+
+window.clearAiChatHistory = function () {
+  aiChatHistory = [];
+  localStorage.removeItem(AI_CHAT_STORAGE_KEY);
+  initAiChatbot();
+  playAgriSound("tick");
+};
+
+window.askAiQuickQuestion = function (questionText) {
+  const input = document.getElementById("ai-chat-input");
+  if (input) input.value = questionText;
+  processAiUserMessage(questionText);
+};
+
+window.handleAiChatSubmit = function (event) {
+  event.preventDefault();
+  const input = document.getElementById("ai-chat-input");
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text || aiIsTyping) return;
+  input.value = "";
+  processAiUserMessage(text);
+};
+
+function scrollAiChatToBottom() {
+  const feed = document.getElementById("ai-chat-messages");
+  if (feed) {
+    feed.scrollTop = feed.scrollHeight;
+  }
+}
+
+function renderAiChatMessages() {
+  const feed = document.getElementById("ai-chat-messages");
+  if (!feed) return;
+
+  feed.innerHTML = aiChatHistory.map(msg => {
+    if (msg.sender === "user") {
+      return `
+        <div class="flex flex-col items-end gap-1">
+          <div class="max-w-[85%] bg-gradient-to-r from-[#256314] to-[#3ba117] text-white px-3.5 py-2.5 rounded-2xl rounded-tr-none shadow-xs leading-relaxed font-medium">
+            ${escapeHTML(msg.text)}
+          </div>
+          <span class="text-[9px] text-slate-400 font-semibold pr-1">${escapeHTML(msg.time || "")}</span>
+        </div>
+      `;
+    } else {
+      const actionsHtml = Array.isArray(msg.actions) && msg.actions.length > 0
+        ? `<div class="flex flex-wrap gap-1.5 mt-2.5 pt-2 border-t border-[#e5f6d5]">
+            ${msg.actions.map(act => {
+              if (act.type === "add_cart") {
+                return `<button type="button" onclick="aiActionAddToCart('${escapeHTML(act.productId)}')" class="px-2.5 py-1.5 rounded-xl bg-[#256314] hover:bg-[#194c0b] text-white text-[11px] font-black shadow-2xs transition active:scale-95 flex items-center gap-1">🛒 ${escapeHTML(act.label)}</button>`;
+              }
+              if (act.type === "filter") {
+                return `<button type="button" onclick="aiActionFilter('${escapeHTML(act.value)}')" class="px-2.5 py-1.5 rounded-xl bg-[#e1f9cf] hover:bg-[#c8edab] text-[#1c560e] border border-[#b8ee99] text-[11px] font-extrabold transition active:scale-95">${escapeHTML(act.label)}</button>`;
+              }
+              if (act.type === "open_chat_farmer") {
+                return `<button type="button" onclick="toggleAiChatbot();openInAppChatModal();" class="px-2.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-[11px] font-extrabold transition active:scale-95">👨‍🌾 ${escapeHTML(act.label)}</button>`;
+              }
+              if (act.type === "scroll_preorder") {
+                return `<button type="button" onclick="toggleAiChatbot();focusCheckoutForm();" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-black transition active:scale-95">📦 ${escapeHTML(act.label)}</button>`;
+              }
+              return "";
+            }).join("")}
+          </div>`
+        : "";
+
+      return `
+        <div class="flex items-start gap-2">
+          <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#1c560e] to-[#3ba117] text-white flex items-center justify-center text-xs shrink-0 shadow-xs mt-0.5">
+            🤖
+          </div>
+          <div class="max-w-[88%] flex flex-col gap-1">
+            <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-[#c8edab] text-slate-800 shadow-xs leading-relaxed">
+              <div>${msg.html}</div>
+              ${actionsHtml}
+            </div>
+            <span class="text-[9px] text-slate-400 font-semibold pl-1">AgriBot AI • ${escapeHTML(msg.time || "")}</span>
+          </div>
+        </div>
+      `;
+    }
+  }).join("");
+
+  if (aiIsTyping) {
+    feed.innerHTML += `
+      <div class="flex items-start gap-2" id="ai-typing-indicator">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#1c560e] to-[#3ba117] text-white flex items-center justify-center text-xs shrink-0 shadow-xs">
+          🤖
+        </div>
+        <div class="bg-white px-3.5 py-2.5 rounded-2xl rounded-tl-none border border-[#c8edab] shadow-xs flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#3ba117] animate-bounce"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#3ba117] animate-bounce" style="animation-delay:0.15s"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#3ba117] animate-bounce" style="animation-delay:0.3s"></span>
+          <span class="text-[10px] text-[#4d6b33] font-bold ml-1.5">AgriBot đang tìm câu trả lời...</span>
+        </div>
+      </div>
+    `;
+  }
+
+  scrollAiChatToBottom();
+}
+
+window.aiActionAddToCart = function (productId) {
+  const p = (currentProducts || []).find(item => String(item.id) === String(productId));
+  if (!p) return;
+  changeQty(p.id, 1);
+  playAgriSound("chime");
+  if (typeof showToast === "function") {
+    showToast(`🤖 AgriBot đã thêm "${p.name}" vào giỏ hàng của bạn!`);
+  }
+  aiChatHistory.push({
+    sender: "bot",
+    html: `✅ Mình đã thêm <strong>1 ${escapeHTML(p.unit)} ${escapeHTML(p.name)}</strong> (${formatVND(p.price_sale)}) vào giỏ hàng cho bạn rồi nhé! Bạn có muốn thanh toán ngay hay xem thêm món khác ạ?`,
+    actions: [
+      { label: "Điền địa chỉ & Thanh toán Escrow ngay", type: "scroll_preorder" },
+      { label: "Xem thêm Combo tiết kiệm", type: "filter", value: "Combo" }
+    ],
+    time: getCurrentTimeShort()
+  });
+  saveAiChatHistory();
+  renderAiChatMessages();
+};
+
+window.aiActionFilter = function (cat) {
+  filterCategory(cat, true);
+  if (window.innerWidth < 640) {
+    toggleAiChatbot();
+  }
+};
+
+function processAiUserMessage(text) {
+  const cleanText = text.trim();
+  if (!cleanText) return;
+
+  // Lưu tin nhắn người dùng
+  aiChatHistory.push({
+    sender: "user",
+    text: cleanText,
+    time: getCurrentTimeShort()
+  });
+  aiIsTyping = true;
+  renderAiChatMessages();
+
+  // Giả lập thời gian AI xử lý tự nhiên (~550ms)
+  setTimeout(() => {
+    const reply = generateAiSmartResponse(cleanText);
+    aiIsTyping = false;
+    aiChatHistory.push({
+      sender: "bot",
+      html: reply.html,
+      actions: reply.actions || [],
+      time: getCurrentTimeShort()
+    });
+    saveAiChatHistory();
+    renderAiChatMessages();
+    playAgriSound("tick");
+  }, 550);
+}
+
+function generateAiSmartResponse(queryRaw) {
+  const q = queryRaw.toLowerCase();
+  const products = Array.isArray(currentProducts) ? currentProducts : [];
+
+  // 1. Tìm kiếm theo sản phẩm cụ thể trong kho dữ liệu thật
+  const keywordMap = [
+    { keys: ["sầu riêng", "sau rieng", "ri6"], search: "sầu riêng" },
+    { keys: ["măng cụt", "mang cut"], search: "măng cụt" },
+    { keys: ["hồng giòn", "hong gion"], search: "hồng giòn" },
+    { keys: ["cam sành", "cam sanh"], search: "cam sành" },
+    { keys: ["quýt đường", "quyt duong", "quýt"], search: "quýt đường" },
+    { keys: ["vú sữa", "vu sua", "lò rèn"], search: "vú sữa" },
+    { keys: ["bưởi", "buoi"], search: "bưởi" },
+    { keys: ["thanh long"], search: "thanh long" },
+    { keys: ["xoài", "xoai"], search: "xoài" },
+    { keys: ["bơ sáp", "bo sap", "bơ"], search: "bơ sáp" },
+    { keys: ["chôm chôm", "chom chom"], search: "chôm chôm" },
+    { keys: ["nhãn xuồng", "nhan xuong", "nhãn"], search: "nhãn xuồng" },
+    { keys: ["bòn bon", "bon bon"], search: "bòn bon" },
+    { keys: ["dâu da", "dau da"], search: "dâu da" },
+    { keys: ["cà chua", "ca chua"], search: "cà chua" },
+    { keys: ["khoai lang"], search: "khoai lang" },
+    { keys: ["xà lách", "xa lach", "salad", "rau sống"], search: "xà lách" },
+    { keys: ["bông cải", "súp lơ", "ớt chuông"], search: "bông cải" },
+    { keys: ["hạt điều", "macca", "hạt khô", "nông sản khô"], search: "hạt điều" }
+  ];
+
+  for (const item of keywordMap) {
+    if (item.keys.some(k => q.includes(k))) {
+      const matched = products.filter(p => (p.name || "").toLowerCase().includes(item.search) && !p.is_ugly_food);
+      if (matched.length > 0) {
+        const p = matched[0];
+        const brix = p.bio_profile?.brix || "14.0° - 18.0°";
+        const farmName = p.farm_info?.farmer_name || "Liên Minh Vườn Bác Năm";
+        return {
+          html: `Dạ có ngay! Sản phẩm <strong>${escapeHTML(p.name)}</strong> hiện đang có sẵn từ <strong>${escapeHTML(farmName)}</strong>:<br>
+            • 💰 Giá bán tại vườn: <strong>${formatVND(p.price_sale)} / ${escapeHTML(p.unit)}</strong> (có tùy chọn Loại 1 VIP, Loại 2 gia đình -15%)<br>
+            • 🍯 Độ ngọt chuẩn: <strong>Brix ${escapeHTML(brix)}</strong> • Đạt chuẩn VietGAP<br>
+            • 🛡️ Bảo hành tận ruột 1 đổi 1 qua Ví Escrow.<br><br>Bạn có muốn mình thêm nhanh vào giỏ hàng giúp bạn không ạ?`,
+          actions: [
+            { label: `Thêm 1 ${p.unit} vào giỏ`, type: "add_cart", productId: p.id },
+            { label: "Xem toàn bộ Trái cây", type: "filter", value: "TraiCay" }
+          ]
+        };
+      }
+    }
+  }
+
+  // 2. Hỏi về Mùa vụ hiện tại / Trái cây ngon nhất tháng 11
+  if (q.includes("mùa") || q.includes("rộ vụ") || q.includes("thu đông") || q.includes("ngon nhất") || q.includes("tháng 11")) {
+    return {
+      html: `🍁 <strong>Tháng 11 đang rộ vụ Thu – Đông</strong>, đây là thời điểm trái cây đạt đỉnh độ ngọt Brix và giá tại vườn tốt nhất:<br>
+        • <strong>Hồng giòn Đà Lạt</strong> (65.000đ/kg) — ủ hơi giòn tan không chát.<br>
+        • <strong>Cam sành Tam Bình</strong> (32.000đ/kg) & <strong>Quýt đường Lai Vung</strong> (55.000đ/kg).<br>
+        • <strong>Bưởi da xanh Bến Tre</strong> (48.000đ/kg) & <strong>Vú sữa Lò Rèn</strong> (68.000đ/kg).<br>
+        • <strong>Combo 8 Mâm Quả Thu – Đông</strong> chỉ <strong>179.000đ</strong> (giảm 25%).`,
+      actions: [
+        { label: "🍁 Lọc ngay 8 món Đang Rộ Vụ", type: "filter", value: "SEASON_NOW" },
+        { label: "Chọn Combo Thu-Đông 179k", type: "add_cart", productId: "p29" }
+      ]
+    };
+  }
+
+  // 3. Hỏi về Ví Escrow & Bảo hiểm 1 đổi 1 / Trái bị sượng hư
+  if (q.includes("escrow") || q.includes("bảo hiểm") || q.includes("đổi trả") || q.includes("1 đổi 1") || q.includes("hoàn tiền") || q.includes("sượng") || q.includes("hỏng") || q.includes("thối") || q.includes("lỗi")) {
+    return {
+      html: `🛡️ <strong>Cơ chế Ví Escrow & Bảo hành tận ruột 1 đổi 1:</strong><br>
+        1. Tiền thanh toán qua VietQR/MoMo/VNPay được khóa an toàn trên Ví Escrow.<br>
+        2. Sau khi nhận hàng, bạn có <strong>12 giờ (hoặc 24h)</strong> ăn thử nghiệm thu. Hệ thống mới giải ngân cho nhà vườn khi bạn hài lòng.<br>
+        3. Nếu phát hiện quả bị sượng, chua hoặc dập ruột: Chỉ cần chụp ảnh/quay video mở quả gửi lên hệ thống, Ví Escrow sẽ <strong>hoàn tiền 100% hoặc bù quả mới miễn phí</strong> mà không cần trả lại quả hỏng!`,
+      actions: [
+        { label: "Mua hàng được bảo vệ ngay", type: "filter", value: "ALL" }
+      ]
+    };
+  }
+
+  // 4. Hỏi về Lịch giao hàng / Xe lạnh / Phí ship / Freeship
+  if (q.includes("giao hàng") || q.includes("ship") || q.includes("vận chuyển") || q.includes("xe lạnh") || q.includes("thứ mấy") || q.includes("thứ sáu") || q.includes("thứ bảy") || q.includes("lịch")) {
+    return {
+      html: `🚚 <strong>Quy trình thu hoạch & giao xe lạnh trong 24 giờ:</strong><br>
+        • <strong>Thứ Hai – 23h59 Thứ Năm:</strong> Khách đặt trước & gom đơn chung chuyến.<br>
+        • <strong>05:00 sáng Thứ Sáu:</strong> Nhà vườn cắt quả chín cây / rau cắt sương sớm, chuyển lên <strong>Xe lạnh 2 khoang tách biệt</strong> (Khoang 2–6°C cho rau Đà Lạt & Khoang 12–15°C cho trái cây).<br>
+        • <strong>Sáng Thứ Bảy (08:00 – 11:30):</strong> Giao tận tay tại TP.HCM!<br>
+        • 🎁 <strong>Freeship 0đ</strong> cho đơn từ 350.000đ hoặc khi nhận tại điểm tập kết Campus/Văn phòng!`,
+      actions: [
+        { label: "Đặt hàng kịp chuyến tuần này", type: "filter", value: "SEASON_NOW" },
+        { label: "Điền địa chỉ giao hàng", type: "scroll_preorder" }
+      ]
+    };
+  }
+
+  // 5. Hỏi về Combo / Quà biếu / Gia đình / Bé / Văn phòng
+  if (q.includes("combo") || q.includes("quà biếu") || q.includes("biếu") || q.includes("gia đình") || q.includes("văn phòng") || q.includes("cho bé") || q.includes("tư vấn")) {
+    return {
+      html: `🧺 <strong>Gợi ý các Combo bán chạy & tiết kiệm nhất (rẻ hơn 15%–25%):</strong><br>
+        • <strong>Combo 8 Mâm Ngũ Quả Thu – Đông (179.000đ):</strong> Cam sành, Quýt đường, Bưởi da xanh, Hồng giòn & Thanh long.<br>
+        • <strong>Combo 7 Thùng Rau Củ Đi Chợ Tuần 5Kg (165.000đ):</strong> Đủ rau sạch Đà Lạt ăn cả tuần cho gia đình.<br>
+        • <strong>Combo 2 Thầy Cô & Gia Đình (350.000đ):</strong> 1 trái Sầu Ri6 + 2kg Măng cụt cổ thụ.<br>
+        • <strong>Combo 6 Hộp Quà Tri Ân Thượng Hạng (590.000đ):</strong> Kèm hộp quà sang trọng & thiệp chúc.`,
+      actions: [
+        { label: "🧺 Xem tất cả 8 Combo", type: "filter", value: "Combo" },
+        { label: "Thêm Combo Thu Đông 179k", type: "add_cart", productId: "p29" }
+      ]
+    };
+  }
+
+  // 6. Hỏi về Ugly Food / Giờ Vàng / Giảm giá / Voucher / Vườn ảo
+  if (q.includes("giảm giá") || q.includes("ugly") || q.includes("giờ vàng") || q.includes("cứu hộ") || q.includes("voucher") || q.includes("rẻ") || q.includes("khuyến mãi") || q.includes("60%")) {
+    return {
+      html: `⚡ <strong>Săn Nông Sản Giờ Vàng "Ugly Food" & Kho Voucher:</strong><br>
+        • Khung giờ <strong>17:00 – 19:00</strong> mỗi ngày xả kho trái cây rám nắng vỏ ngoài (ruột ngon 100%) giảm sốc <strong>-55% đến -65%</strong>!<br>
+        • Nhập mã <code>AGRICONNECT</code> khi thanh toán để <strong>giảm ngay 10.000đ</strong>.<br>
+        • Chơi <strong>Vườn Ảo & Quay Quà</strong> góc phải màn hình để nhận thêm <strong>Voucher 20k, 50k & Freeship 0đ</strong>!`,
+      actions: [
+        { label: "⚡ Xem ngay 4 món giảm 60%", type: "filter", value: "UglyFood" }
+      ]
+    };
+  }
+
+  // 7. Hỏi về Bác Năm / Nhà vườn / Chat trực tiếp với nông dân
+  if (q.includes("bác năm") || q.includes("nông dân") || q.includes("nhà vườn") || q.includes("chủ vườn") || q.includes("liên hệ") || q.includes("sđt")) {
+    return {
+      html: `👨‍🌾 <strong>Kết nối với Nhà Vườn Bác Năm & Liên Minh HTX:</strong><br>
+        Để bảo vệ quyền lợi bảo hành Ví Escrow và tránh giao dịch ngoài luồng thiếu bảo chứng, hệ thống ẩn SĐT trực tiếp nhưng bạn có thể <strong>Nhắn tin trực tiếp với Bác Năm</strong> ngay trong ứng dụng hoặc xem <strong>Nhật ký canh tác 4 chặng</strong> nhé!`,
+      actions: [
+        { label: "Mở Chat trực tiếp với Bác Năm", type: "open_chat_farmer" }
+      ]
+    };
+  }
+
+  // 8. Hỏi về Blockchain / QR Code / Bao bì bẹ cau / ESG / VietGAP / An toàn thực phẩm
+  if (q.includes("qr") || q.includes("blockchain") || q.includes("nguồn gốc") || q.includes("vietgap") || q.includes("bẹ cau") || q.includes("esg") || q.includes("môi trường") || q.includes("thuốc") || q.includes("an toàn")) {
+    return {
+      html: `⛓️ <strong>Minh bạch Blockchain & Bao bì Bẹ Cau chuẩn ESG:</strong><br>
+        • Mỗi thùng hàng dán <strong>Dynamic QR (chữ ký số + mã băm Merkle Root)</strong> cập nhật nhật ký 4 chặng: Thụ phấn, Phân vi sinh, Đo độ Brix, Giờ cắt hái.<br>
+        • Toàn bộ trái cây đóng gói bằng <strong>khay bẹ cau & lá chuối</strong> trong thùng giữ nhiệt. Trả lại thùng tuần sau được hoàn <strong>+10.000đ điểm thưởng mầm cây</strong>!`,
+      actions: [
+        { label: "✅ Xem 29 món chuẩn VietGAP", type: "filter", value: "VERIFIED" }
+      ]
+    };
+  }
+
+  // 9. Câu trả lời mặc định thông minh cho mọi câu hỏi khác
+  return {
+    html: `Cảm ơn bạn đã nhắn tin! Mình đã ghi nhận câu hỏi: <em>"${escapeHTML(queryRaw)}"</em>.<br><br>
+      Hiện tại AgriConnect đang có <strong>29 đặc sản sạch VietGAP</strong> (Sầu riêng Ri6, Hồng giòn Đà Lạt, Cam sành Tam Bình, Rau củ hữu cơ & Combo tiết kiệm). Bạn muốn mình tư vấn cụ thể về loại quả nào, hay hỗ trợ kiểm tra giỏ hàng/Ví Escrow ạ?`,
+    actions: [
+      { label: "🍁 Xem nông sản rộ vụ", type: "filter", value: "SEASON_NOW" },
+      { label: "🧺 Xem Combo tiết kiệm", type: "filter", value: "Combo" },
+      { label: "👨‍🌾 Nhắn với Bác Năm", type: "open_chat_farmer" }
+    ]
+  };
+}
+
 
